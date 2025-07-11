@@ -1,0 +1,72 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.My_Gps_Assistant" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/lavender</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <item name="android:statusBarColor">@color/lavender</item>
+        <!--        <item name="windowActionBar">false</item>-->
+        <!--        <item name="windowNoTitle">true</item>-->
+        <item name="android:windowFullscreen">true</item>
+
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="android:textColorTertiary">@color/black</item>
+
+
+<!--        <item name="android:textColor">@android:color/black</item>-->
+
+<!--        <item name="android:textColorAlertDialogListItem">@android:color/black</item>-->
+
+<!--        <item name="android:windowBackground">@android:color/transparent</item>-->
+
+<!--        <item name="android:dialogTheme">@style/MyDialogStyle1</item>-->
+<!--        <item name="android:alertDialogTheme">@style/MyDialogStyle1</item>-->
+
+<!--        <item name="preferenceTheme">@style/preference</item>-->
+    </style>
+
+<!--        <style name="MyDialogStyle1" parent="Theme.AppCompat.DayNight.Dialog">-->
+<!--            <item name="android:background">@color/red</item>-->
+<!--        </style>-->
+
+<!--    <style name="MyDialogStyle" parent="Theme.AppCompat.DayNight.Dialog">-->
+<!--        <item name="colorAccent">@color/red</item>-->
+<!--        <item name="android:textColorPrimary">@color/red</item>-->
+<!--        <item name="android:background">@color/red</item>-->
+<!--        <item name="android:textColorSecondary">#00CC00</item>-->
+<!--        <item name="android:textColor">@color/red</item>-->
+<!--        <item name="android:textColorAlertDialogListItem">@color/red</item>-->
+<!--        <item name="android:windowBackground">@android:color/transparent</item>-->
+<!--    </style>-->
+
+<!--    <style name="preference" parent="Theme.AppCompat">-->
+<!--        <item name="android:background">@color/white</item>-->
+<!--    </style>-->
+
+    <style name="Theme.My_Gps_Assistant" parent="Base.Theme.My_Gps_Assistant" />
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in</item>
+        <item name="android:windowExitAnimation">@anim/slide_out</item>
+    </style>
+
+    <style name="MySwitch" parent="Theme.AppCompat.Light">
+        <!-- активное состояние (30% прозрачности для фона) -->
+        <item name="colorControlActivated">#88B30C</item>
+
+        <!-- неактивное состояние ползунка -->
+        <item name="colorSwitchThumbNormal">#6F3F06</item>
+
+        <!-- цвет дорожки для неактивного состояния (30% прозрачности) -->
+        <item name="android:colorForeground">#3C0202</item>
+    </style>
+
+<!--    <style name="Theme.My_Gps_Assistant" parent="Base.Theme.My_Gps_Assistant" />-->
+</resources>

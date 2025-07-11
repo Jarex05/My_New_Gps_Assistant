@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav_custom_field_chet"
+    app:startDestination="@id/listCustomFieldFragmentChet">
+
+    <fragment
+        android:id="@+id/listCustomFieldFragmentChet"
+        android:name="com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.customField.list.ListCustomFieldFragmentChet"
+        android:label="fragment_list_custom_field_chet"
+        tools:layout="@layout/fragment_list_custom_field_chet" >
+        <action
+            android:id="@+id/action_listCustomFieldFragmentChet_to_addCustomFieldFragmentChet"
+            app:destination="@id/addCustomFieldFragmentChet" />
+        <action
+            android:id="@+id/action_listCustomFieldFragmentChet_to_updateCustomFieldFragmentChet"
+            app:destination="@id/updateCustomFieldFragmentChet" />
+    </fragment>
+    <fragment
+        android:id="@+id/addCustomFieldFragmentChet"
+        android:name="com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.customField.add.AddCustomFieldFragmentChet"
+        android:label="fragment_add_custom_field_chet"
+        tools:layout="@layout/fragment_add_custom_field_chet" >
+        <action
+            android:id="@+id/action_addCustomFieldFragmentChet_to_listCustomFieldFragmentChet"
+            app:destination="@id/listCustomFieldFragmentChet" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateCustomFieldFragmentChet"
+        android:name="com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.customField.update.UpdateCustomFieldFragmentChet"
+        android:label="fragment_update_custom_field_chet"
+        tools:layout="@layout/fragment_update_custom_field_chet" >
+        <action
+            android:id="@+id/action_updateCustomFieldFragmentChet_to_listCustomFieldFragmentChet"
+            app:destination="@id/listCustomFieldFragmentChet" />
+        <argument
+            android:name="item_custom_field_chet"
+            app:argType="com.mikhail_ryumkin_r.my_gps_assistant.db.customField.ListItemCustomFieldChet" />
+    </fragment>
+</navigation>

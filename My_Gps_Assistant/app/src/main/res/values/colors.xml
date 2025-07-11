@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="green">#379E07</color>
+    <color name="lavender">#8692f7</color>
+    <color name="red">#EF0505</color>
+    <color name="icon_nav_menu">#134DF0</color>
+    <color name="teal_200">#D58DD5</color>
+    <color name="teal_700">#00C2EF</color>
+    <color name="black1">#E7393A39</color>
+</resources>

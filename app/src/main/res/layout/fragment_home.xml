@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    tools:context=".fragments.HomeFragment">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="800dp"
+        android:layout_marginBottom="130dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_marginTop="76dp"
+        android:layout_marginEnd="10dp"
+        android:showText="true"
+        android:textColor="@color/black"
+        android:textOff="@string/offSwitch"
+        android:textOn="@string/onSwitch"
+        android:theme="@style/MySwitch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints,TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fStartStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="20dp"
+        android:clickable="true"
+        android:src="@drawable/is_play"
+        app:backgroundTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription,KeyboardInaccessibleWidget,SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:src="@drawable/is_my_loc_center"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/fStartStop"
+        app:layout_constraintTop_toBottomOf="@+id/fStartStop"
+        tools:ignore="ContentDescription,KeyboardInaccessibleWidget,SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/tvSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
+        android:textColor="#F81944"
+        android:textSize="16sp"
+        android:textStyle="bold|italic"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/fStartStop"
+        app:layout_constraintEnd_toStartOf="@+id/fStartStop"
+        app:layout_constraintTop_toTopOf="@+id/fStartStop" />
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
+        android:layout_marginEnd="200dp"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvKmPk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="130dp"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvOgr15"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="260dp"
+        android:hint="@string/km_15"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvOgr25"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/km_25"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tvOgr15"
+        app:layout_constraintTop_toBottomOf="@+id/tvOgr15"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvOgr40"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/km_40"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tvOgr25"
+        app:layout_constraintTop_toBottomOf="@+id/tvOgr25"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvOgr50"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/km_50"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tvOgr40"
+        app:layout_constraintTop_toBottomOf="@+id/tvOgr40"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvOgr55"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/km_55"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tvOgr50"
+        app:layout_constraintTop_toBottomOf="@+id/tvOgr50"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvOgr60"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/km_60"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tvOgr55"
+        app:layout_constraintTop_toBottomOf="@+id/tvOgr55"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvOgr65"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/km_65"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tvOgr60"
+        app:layout_constraintTop_toBottomOf="@+id/tvOgr60"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvOgr70"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/km_70"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tvOgr65"
+        app:layout_constraintTop_toBottomOf="@+id/tvOgr65"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvOgr75"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/km_75"
+        android:textAlignment="center"
+        android:paddingTop="5dp"
+        android:textColor="@color/tvOgr"
+        android:textColorHint="@color/tvOgrHint"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="@+id/tvOgr70"
+        app:layout_constraintTop_toBottomOf="@+id/tvOgr70"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvKmPk15"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr15"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr15"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr15" />
+
+    <TextView
+        android:id="@+id/tvKmPk25"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr25"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr25"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr25" />
+
+    <TextView
+        android:id="@+id/tvKmPk40"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr40"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr40"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr40" />
+
+    <TextView
+        android:id="@+id/tvKmPk50"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr50"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr50"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr50" />
+
+    <TextView
+        android:id="@+id/tvKmPk55"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr55"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr55"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr55" />
+
+    <TextView
+        android:id="@+id/tvKmPk60"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr60"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr60"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr60" />
+
+    <TextView
+        android:id="@+id/tvKmPk65"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="10dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr65"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr65"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr65" />
+
+    <TextView
+        android:id="@+id/tvKmPk70"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr70"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr70"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr70"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tvKmPk75"
+        android:layout_width="275dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:elegantTextHeight="true"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="2dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="@+id/tvOgr75"
+        app:layout_constraintStart_toEndOf="@+id/tvOgr75"
+        app:layout_constraintTop_toTopOf="@+id/tvOgr75" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

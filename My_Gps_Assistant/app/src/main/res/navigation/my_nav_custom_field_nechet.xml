@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav_custom_field_nechet"
+    app:startDestination="@id/listCustomFieldFragmentNechet">
+
+    <fragment
+        android:id="@+id/listCustomFieldFragmentNechet"
+        android:name="com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.customField.list.ListCustomFieldFragmentNechet"
+        android:label="fragment_list_custom_field_nechet"
+        tools:layout="@layout/fragment_list_custom_field_nechet" >
+        <action
+            android:id="@+id/action_listCustomFieldFragmentNechet_to_addCustomFieldFragmentNechet"
+            app:destination="@id/addCustomFieldFragmentNechet" />
+        <action
+            android:id="@+id/action_listCustomFieldFragmentNechet_to_updateCustomFieldFragmentNechet"
+            app:destination="@id/updateCustomFieldFragmentNechet" />
+    </fragment>
+    <fragment
+        android:id="@+id/addCustomFieldFragmentNechet"
+        android:name="com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.customField.add.AddCustomFieldFragmentNechet"
+        android:label="fragment_add_custom_field_nechet"
+        tools:layout="@layout/fragment_add_custom_field_nechet" >
+        <action
+            android:id="@+id/action_addCustomFieldFragmentNechet_to_listCustomFieldFragmentNechet"
+            app:destination="@id/listCustomFieldFragmentNechet" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateCustomFieldFragmentNechet"
+        android:name="com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.customField.update.UpdateCustomFieldFragmentNechet"
+        android:label="fragment_update_custom_field_nechet"
+        tools:layout="@layout/fragment_update_custom_field_nechet" >
+        <action
+            android:id="@+id/action_updateCustomFieldFragmentNechet_to_listCustomFieldFragmentNechet"
+            app:destination="@id/listCustomFieldFragmentNechet" />
+        <argument
+            android:name="item_custom_field_nechet"
+            app:argType="com.mikhail_ryumkin_r.my_gps_assistant.db.customField.ListItemCustomFieldNechet" />
+    </fragment>
+</navigation>

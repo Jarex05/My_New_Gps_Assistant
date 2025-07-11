@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".fragments.nechet.customField.add.AddCustomFieldFragmentNechet">
+
+    <EditText
+        android:id="@+id/ed_start_custom_field_nechet"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="72dp"
+        android:ems="10"
+        android:hint="@string/fragment_add_km_start_brake_chet"
+        android:backgroundTint="@color/black"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:maxLength="4"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText,TextContrastCheck" />
+
+    <EditText
+        android:id="@+id/ed_pk_start_custom_field_nechet"
+        android:layout_width="129dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/fragment_add_pk_start_brake_chet"
+        android:backgroundTint="@color/black"
+        android:inputType="number"
+        android:maxLength="2"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="@+id/ed_start_custom_field_nechet"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/ed_start_custom_field_nechet"
+        app:layout_constraintTop_toBottomOf="@+id/ed_start_custom_field_nechet"
+        tools:ignore="Autofill,HardcodedText,MissingConstraints,TextContrastCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fb_save_custom_field_nechet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="150dp"
+        android:clickable="true"
+        android:src="@drawable/is_save_custom_field_nechet"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription,KeyboardInaccessibleWidget,SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fb_cancel_custom_field_nechet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="150dp"
+        android:clickable="true"
+        android:src="@drawable/is_cancel_custom_field_nechet"
+        app:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ContentDescription,KeyboardInaccessibleWidget,SpeakableTextPresentCheck" />
+
+    <EditText
+        android:id="@+id/editAddCustomFieldNechet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:visibility="gone"
+        android:ems="10"
+        android:hint="Введите текст"
+        android:inputType="text"
+        android:maxLength="27"
+        app:layout_constraintStart_toStartOf="@+id/ed_pk_start_custom_field_nechet"
+        app:layout_constraintTop_toBottomOf="@+id/ed_pk_start_custom_field_nechet"
+        tools:ignore="Autofill,HardcodedText,TouchTargetSizeCheck" />
+
+    <Spinner
+        android:id="@+id/spinnerAddNechet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintStart_toStartOf="@+id/ed_pk_start_custom_field_nechet"
+        app:layout_constraintTop_toBottomOf="@+id/ed_pk_start_custom_field_nechet"
+        tools:ignore="TouchTargetSizeCheck" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

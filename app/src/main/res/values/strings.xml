@@ -1,0 +1,120 @@
+<resources>
+    <string name="app_name">Gps Assistant</string>
+    <string name="nav_open">Открыть</string>
+    <string name="nav_close">Закрыть</string>
+    <string name="home">Главная</string>
+    <string name="route">Маршруты</string>
+    <string name="recording_a_route">Запись маршрута</string>
+    <string name="settings">Настройки</string>
+    <string name="settingsPreference">Настройки</string>
+    <string name="setFragment">Установка начала записи км</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="switch1">Чётный/Нечётный</string>
+    <string name="offSwitch">Чётный</string>
+    <string name="onSwitch">Нечётный</string>
+    <string name="create">Создать</string>
+    <string name="limitation_chet">Ограничение</string>
+    <string name="limitation_nechet">Ограничение</string>
+    <string name="demarcation">|</string>
+    <string name="lowering_chet">Опускание</string>
+    <string name="lowering_nechet">Опускание</string>
+    <string name="braking_chet">Торможение</string>
+    <string name="braking_nechet">Торможение</string>
+    <string name="neutral_insert_chet">Нейтральная вставка чётное</string>
+    <string name="neutral_insert_nechet">Нейтральная вставка нечётное</string>
+    <string name="custom_field_chet">Произвольное поле</string>
+    <string name="custom_field_nechet">Произвольное поле</string>
+
+    <string name="location_disabled">Геолокация выключена</string>
+    <string name="location_dialog_message">Включить геолокацию?</string>
+    <string name="distance_save_dialog">Дистанция:</string>
+    <string name="save_dialog">Сохранить</string>
+    <string name="cancel_save_dialog">Выйти</string>
+    <string name="name_save_dialog">Название маршрута</string>
+    <string name="itemDistance">0000.000 км</string>
+    <string name="nameItem">Название</string>
+    <string name="tv_empty">Список пуст</string>
+
+    <string name="backgroundLimitation">Выбор цвета для предупреждения</string>
+    <string name="namePreferenceLimitationsChet">Постоянные предупреждения</string>
+    <string name="namePreferenceLimitationsChetTime">Временные предупреждения</string>
+    <string name="select_color_Limitations">Выберите цвет!</string>
+
+    <string name="backgroundBrake">Выбор цвета для Торможения</string>
+    <string name="namePreferenceBrakeChet">Проба тормозов</string>
+    <string name="namePreferenceBrakeRefresh">Оживление тормозов</string>
+    <string name="select_color_brake">Выберите цвет!</string>
+
+    <!--    Фрагмент Limitations ADD для четного-->
+    <string name="fragment_add_km_start_limitations_chet">Км. начало</string>
+    <string name="fragment_add_pk_start_limitations_chet">Пк. начало</string>
+    <string name="fragment_add_km_finish_limitations_chet">Км. финиш</string>
+    <string name="fragment_add_pk_finish_limitations_chet">Пк. финиш</string>
+    <string name="fragment_add_speed_limitations_chet">Скорость</string>
+
+    <!--    Фрагмент Limitations ADD для нечетного-->
+    <string name="fragment_add_km_start_limitations_nechet">Км. начало</string>
+    <string name="fragment_add_pk_start_limitations_nechet">Пк. начало</string>
+    <string name="fragment_add_km_finish_limitations_nechet">Км. финиш</string>
+    <string name="fragment_add_pk_finish_limitations_nechet">Пк. финиш</string>
+    <string name="fragment_add_speed_limitations_nechet">Скорость</string>
+
+    <!--    Фрагмент Limitations Update для четного-->
+    <string name="fragment_update_km_start_limitations_chet">Км. начало</string>
+    <string name="fragment_update_pk_start_limitations_chet">Пк. начало</string>
+    <string name="fragment_update_km_finish_limitations_chet">Км. финиш</string>
+    <string name="fragment_update_pk_finish_limitations_chet">Пк. финиш</string>
+    <string name="fragment_update_speed_limitations_chet">Скорость</string>
+
+    <!--    Фрагмент Limitations Update для нечетного-->
+    <string name="fragment_update_km_start_limitations_nechet">Км. начало</string>
+    <string name="fragment_update_pk_start_limitations_nechet">Пк. начало</string>
+    <string name="fragment_update_km_finish_limitations_nechet">Км. финиш</string>
+    <string name="fragment_update_pk_finish_limitations_nechet">Пк. финиш</string>
+    <string name="fragment_update_speed_limitations_nechet">Скорость</string>
+
+    <!--    Фрагмент Brake ADD для четного-->
+    <string name="fragment_add_km_start_brake_chet">Км. начало</string>
+    <string name="fragment_add_pk_start_brake_chet">Пк. начало</string>
+
+    <!--    Фрагмент Brake ADD для нечетного-->
+    <string name="fragment_add_km_start_brake_nechet">Км. начало</string>
+    <string name="fragment_add_pk_start_brake_nechet">Пк. начало</string>
+
+    <!--    Фрагмент Brake Update для четного-->
+    <string name="fragment_update_km_start_brake_chet">Км. начало</string>
+    <string name="fragment_update_pk_start_brake_chet">Пк. начало</string>
+
+    <!--    Фрагмент Brake Update для нечетного-->
+    <string name="fragment_update_km_start_brake_nechet">Км. начало</string>
+    <string name="fragment_update_pk_start_brake_nechet">Пк. начало</string>
+
+    <!--    Фрагмент Pantograph ADD для четного-->
+    <string name="fragment_add_km_start_pantograph_chet">Км. начало</string>
+    <string name="fragment_add_pk_start_pantograph_chet">Пк. начало</string>
+
+    <!--    Фрагмент Pantograph ADD для нечетного-->
+    <string name="fragment_add_km_start_pantograph_nechet">Км. начало</string>
+    <string name="fragment_add_pk_start_pantograph_nechet">Пк. начало</string>
+
+    <!--    Фрагмент Pantograph Update для четного-->
+    <string name="fragment_update_km_start_pantograph_chet">Км. начало</string>
+    <string name="fragment_update_pk_start_pantograph_chet">Пк. начало</string>
+
+    <!--    Фрагмент Pantograph Update для нечетного-->
+    <string name="fragment_update_km_start_pantograph_nechet">Км. начало</string>
+    <string name="fragment_update_pk_start_pantograph_nechet">Пк. начало</string>
+    <string name="router_name">Запись маршрута</string>
+
+    <!--    Поля на главном экране-->
+    <string name="km_15">15</string>
+    <string name="km_25">25</string>
+    <string name="km_40">40</string>
+    <string name="km_50">50</string>
+    <string name="km_55">55</string>
+    <string name="km_60">60</string>
+    <string name="km_65">65</string>
+    <string name="km_70">70</string>
+    <string name="km_75">75</string>
+</resources>

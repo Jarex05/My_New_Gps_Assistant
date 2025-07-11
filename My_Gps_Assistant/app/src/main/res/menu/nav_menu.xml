@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn = "navigation_view">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/recording_a_route"
+            android:icon="@drawable/baseline_recording_a_route_24"
+            android:title="@string/recording_a_route"/>
+
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/baseline_settings_24"
+            android:title="@string/settingsPreference"/>
+
+        <item
+            android:id="@+id/setFragment"
+            android:icon="@drawable/baseline_settings_24"
+            android:title="@string/setFragment"/>
+
+    </group>
+
+</menu>

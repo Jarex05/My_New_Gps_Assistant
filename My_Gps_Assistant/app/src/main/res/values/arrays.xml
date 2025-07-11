@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string-array name="backgroundLimitations">
+        <item>Голубой</item>
+        <item>Красный</item>
+        <item>Зелёный</item>
+        <item>Розовый</item>
+        <item>Оранжевый</item>
+        <item>Жёлтый</item>
+        <item>Серый</item>
+    </string-array>
+    <string-array name="backgroundLimitations_value">
+        <item>#FF009EDA</item>
+        <item>#EDED556C</item>
+        <item>#ED3FF832</item>
+        <item>#EDCC60DC</item>
+        <item>#E67C5D</item>
+        <item>#E6E356</item>
+        <item>#414341</item>
+    </string-array>
+
+    <string-array name="backgroundLimitationsTime">
+        <item>Голубой</item>
+        <item>Красный</item>
+        <item>Зелёный</item>
+        <item>Розовый</item>
+        <item>Оранжевый</item>
+        <item>Жёлтый</item>
+        <item>Серый</item>
+    </string-array>
+    <string-array name="backgroundLimitations_valueTime">
+        <item>#FF009EDA</item>
+        <item>#EDED556C</item>
+        <item>#ED3FF832</item>
+        <item>#EDCC60DC</item>
+        <item>#E67C5D</item>
+        <item>#E6E356</item>
+        <item>#414341</item>
+    </string-array>
+
+    <string-array name="backgroundBrake">
+        <item>Голубой</item>
+        <item>Красный</item>
+        <item>Зелёный</item>
+        <item>Розовый</item>
+        <item>Оранжевый</item>
+        <item>Жёлтый</item>
+        <item>Серый</item>
+    </string-array>
+    <string-array name="backgroundBrake_value">
+        <item>#FF009EDA</item>
+        <item>#EDED556C</item>
+        <item>#ED3FF832</item>
+        <item>#EDCC60DC</item>
+        <item>#E67C5D</item>
+        <item>#E6E356</item>
+        <item>#414341</item>
+    </string-array>
+
+    <string-array name="backgroundBrakeRefresh">
+        <item>Голубой</item>
+        <item>Красный</item>
+        <item>Зелёный</item>
+        <item>Розовый</item>
+        <item>Оранжевый</item>
+        <item>Жёлтый</item>
+        <item>Серый</item>
+    </string-array>
+    <string-array name="backgroundBrakeRefresh_value">
+        <item>#FF009EDA</item>
+        <item>#EDED556C</item>
+        <item>#ED3FF832</item>
+        <item>#EDCC60DC</item>
+        <item>#E67C5D</item>
+        <item>#E6E356</item>
+        <item>#414341</item>
+    </string-array>
+    
+</resources>

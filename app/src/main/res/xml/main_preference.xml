@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/backgroundLimitation">
+
+        <ListPreference
+            android:defaultValue="#FF009EDA"
+            android:key="color_limitation_key"
+            android:entries="@array/backgroundLimitations"
+            android:entryValues="@array/backgroundLimitations_value"
+            android:title="@string/namePreferenceLimitationsChet"
+            app:icon="@drawable/ic_circle"
+            app:summary="@string/select_color_Limitations">
+
+        </ListPreference>
+
+        <ListPreference
+            android:defaultValue="#FF009EDA"
+            android:key="color_limitation_time_key"
+            android:entries="@array/backgroundLimitationsTime"
+            android:entryValues="@array/backgroundLimitations_valueTime"
+            android:title="@string/namePreferenceLimitationsChetTime"
+            app:icon="@drawable/ic_circle_time"
+            app:summary="@string/select_color_Limitations">
+
+        </ListPreference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/backgroundBrake">
+
+        <ListPreference
+            android:defaultValue="#FF009EDA"
+            android:key="color_brake_key"
+            android:entries="@array/backgroundBrake"
+            android:entryValues="@array/backgroundBrake_value"
+            android:title="@string/namePreferenceBrakeChet"
+            app:icon="@drawable/ic_circle_brake"
+            app:summary="@string/select_color_brake">
+
+        </ListPreference>
+
+        <ListPreference
+            android:defaultValue="#FF009EDA"
+            android:key="color_brake_refresh_key"
+            android:entries="@array/backgroundBrakeRefresh"
+            android:entryValues="@array/backgroundBrakeRefresh_value"
+            android:title="@string/namePreferenceBrakeRefresh"
+            app:icon="@drawable/ic_circle_brake_refresh"
+            app:summary="@string/select_color_brake">
+
+        </ListPreference>
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
