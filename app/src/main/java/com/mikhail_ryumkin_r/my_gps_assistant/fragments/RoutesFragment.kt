@@ -13,7 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mikhail_ryumkin_r.my_gps_assistant.MainApp
 import com.mikhail_ryumkin_r.my_gps_assistant.databinding.FragmentRoutesBinding
@@ -122,7 +121,8 @@ class RoutesFragment : Fragment(), TrackAdapter.Listener {
                             outputStream.close()
                             Toast.makeText(requireContext(), "File saved!", Toast.LENGTH_SHORT).show()
                         }
-                    } catch (e: java.lang.Exception) {
+                        //catch (e: java.lang.Exception)
+                    } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 } else {
@@ -181,6 +181,7 @@ class RoutesFragment : Fragment(), TrackAdapter.Listener {
             TrackAdapter.ClickType.OPEN -> {
                 model.currentTrack.value = track
                 openFragment(HomeFragment.newInstance())
+                //kkk
             }
         }
     }
