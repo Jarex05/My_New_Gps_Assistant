@@ -181,7 +181,6 @@ class RoutesFragment : Fragment(), TrackAdapter.Listener {
             TrackAdapter.ClickType.OPEN -> {
                 model.currentTrack.value = track
                 openFragment(HomeFragment.newInstance())
-                //kkk
             }
         }
     }
