@@ -328,7 +328,6 @@ class HomeFragment : Fragment() {
             activity?.startService(Intent(activity, MyLocationService::class.java))
         }
         binding.fStartStop.setImageResource(R.drawable.is_stop)
-        //ggg
 
         switch.isVisible = switch.isGone
         binding.fCenter.isGone = binding.fCenter.isVisible
