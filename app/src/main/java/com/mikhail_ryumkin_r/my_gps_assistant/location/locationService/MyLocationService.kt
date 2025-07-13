@@ -209,7 +209,6 @@ class MyLocationService : Service() {
     private var fragmentLatLongToService: String = ""
     private var isTrack = true
     private val distanceKmList = ArrayList<ListLatLongKm>()
-    private val tvList = ArrayList<ListTv>()
     private lateinit var geoPointsTrack: ArrayList<GeoPoint>
 
     private var lastLocation: Location? = null
@@ -450,41 +449,43 @@ class MyLocationService : Service() {
     }
 
     private fun soundOgranichenie() {
-        if (isOgranichenie == 15){
-            playSound(ogr15)
-            isOgranichenie = 0
-        }
-        else if (isOgranichenie == 25){
-            playSound(ogr25)
-            isOgranichenie = 0
-        }
-        else if (isOgranichenie == 40){
-            playSound(ogr40)
-            isOgranichenie = 0
-        }
-        else if (isOgranichenie == 50){
-            playSound(ogr50)
-            isOgranichenie = 0
-        }
-        else if (isOgranichenie == 55){
-            playSound(ogr55)
-            isOgranichenie = 0
-        }
-        else if (isOgranichenie == 60){
-            playSound(ogr60)
-            isOgranichenie = 0
-        }
-        else if (isOgranichenie == 65){
-            playSound(ogr65)
-            isOgranichenie = 0
-        }
-        else if (isOgranichenie == 70){
-            playSound(ogr70)
-            isOgranichenie = 0
-        }
-        else if(isOgranichenie == 75){
-            playSound(ogr75)
-            isOgranichenie = 0
+        when (isOgranichenie) {
+            15 -> {
+                playSound(ogr15)
+                isOgranichenie = 0
+            }
+            25 -> {
+                playSound(ogr25)
+                isOgranichenie = 0
+            }
+            40 -> {
+                playSound(ogr40)
+                isOgranichenie = 0
+            }
+            50 -> {
+                playSound(ogr50)
+                isOgranichenie = 0
+            }
+            55 -> {
+                playSound(ogr55)
+                isOgranichenie = 0
+            }
+            60 -> {
+                playSound(ogr60)
+                isOgranichenie = 0
+            }
+            65 -> {
+                playSound(ogr65)
+                isOgranichenie = 0
+            }
+            70 -> {
+                playSound(ogr70)
+                isOgranichenie = 0
+            }
+            75 -> {
+                playSound(ogr75)
+                isOgranichenie = 0
+            }
         }
     }
 
@@ -1438,33 +1439,43 @@ class MyLocationService : Service() {
 
                                     val arrayListSpeed = mutableListOf(int15, int25, int40, int50, int55, int60, int65, int70, int75)
 
-                                    if (speedNechet == 15) {
-                                        int15 = item.speedNechet
-                                        arrayListSpeed.add(int15)
-                                    } else if (speedNechet == 25) {
-                                        int25 = item.speedNechet
-                                        arrayListSpeed.add(int25)
-                                    } else if (speedNechet == 40) {
-                                        int40 = item.speedNechet
-                                        arrayListSpeed.add(int40)
-                                    } else if (speedNechet == 50) {
-                                        int50 = item.speedNechet
-                                        arrayListSpeed.add(int50)
-                                    } else if (speedNechet == 55) {
-                                        int55 = item.speedNechet
-                                        arrayListSpeed.add(int55)
-                                    } else if (speedNechet == 60) {
-                                        int60 = item.speedNechet
-                                        arrayListSpeed.add(int60)
-                                    } else if (speedNechet == 65) {
-                                        int65 = item.speedNechet
-                                        arrayListSpeed.add(int65)
-                                    } else if (speedNechet == 70) {
-                                        int70 = item.speedNechet
-                                        arrayListSpeed.add(int70)
-                                    } else if (speedNechet == 75) {
-                                        int75 = item.speedNechet
-                                        arrayListSpeed.add(int75)
+                                    when (speedNechet) {
+                                        15 -> {
+                                            int15 = item.speedNechet
+                                            arrayListSpeed.add(int15)
+                                        }
+                                        25 -> {
+                                            int25 = item.speedNechet
+                                            arrayListSpeed.add(int25)
+                                        }
+                                        40 -> {
+                                            int40 = item.speedNechet
+                                            arrayListSpeed.add(int40)
+                                        }
+                                        50 -> {
+                                            int50 = item.speedNechet
+                                            arrayListSpeed.add(int50)
+                                        }
+                                        55 -> {
+                                            int55 = item.speedNechet
+                                            arrayListSpeed.add(int55)
+                                        }
+                                        60 -> {
+                                            int60 = item.speedNechet
+                                            arrayListSpeed.add(int60)
+                                        }
+                                        65 -> {
+                                            int65 = item.speedNechet
+                                            arrayListSpeed.add(int65)
+                                        }
+                                        70 -> {
+                                            int70 = item.speedNechet
+                                            arrayListSpeed.add(int70)
+                                        }
+                                        75 -> {
+                                            int75 = item.speedNechet
+                                            arrayListSpeed.add(int75)
+                                        }
                                     }
 
                                     Log.d("MyLog", "minSpeed = ${arrayListSpeed.min()}")
@@ -3153,42 +3164,52 @@ class MyLocationService : Service() {
 
                                     val arrayListSpeed = mutableListOf(int15, int25, int40, int50, int55, int60, int65, int70, int75)
 
-                                    if (speedChet == 15) {
-                                        Log.d("MyLog18", "Зашли в 15!")
-                                        int15 = item.speedChet
-                                        arrayListSpeed.add(int15)
-                                    } else if (speedChet == 25) {
-                                        Log.d("MyLog18", "Зашли в 25!")
-                                        int25 = item.speedChet
-                                        arrayListSpeed.add(int25)
-                                    } else if (speedChet == 40) {
-                                        Log.d("MyLog18", "Зашли в 40!")
-                                        int40 = item.speedChet
-                                        arrayListSpeed.add(int40)
-                                    } else if (speedChet == 50) {
-                                        Log.d("MyLog18", "Зашли в 50!")
-                                        int50 = item.speedChet
-                                        arrayListSpeed.add(int50)
-                                    } else if (speedChet == 55) {
-                                        Log.d("MyLog18", "Зашли в 55!")
-                                        int55 = item.speedChet
-                                        arrayListSpeed.add(int55)
-                                    } else if (speedChet == 60) {
-                                        Log.d("MyLog18", "Зашли в 60!")
-                                        int60 = item.speedChet
-                                        arrayListSpeed.add(int60)
-                                    } else if (speedChet == 65) {
-                                        Log.d("MyLog18", "Зашли в 65!")
-                                        int65 = item.speedChet
-                                        arrayListSpeed.add(int65)
-                                    } else if (speedChet == 70) {
-                                        Log.d("MyLog18", "Зашли в 70!")
-                                        int70 = item.speedChet
-                                        arrayListSpeed.add(int70)
-                                    } else if (speedChet == 75) {
-                                        Log.d("MyLog18", "Зашли в 75!")
-                                        int75 = item.speedChet
-                                        arrayListSpeed.add(int75)
+                                    when (speedChet) {
+                                        15 -> {
+                                            Log.d("MyLog18", "Зашли в 15!")
+                                            int15 = item.speedChet
+                                            arrayListSpeed.add(int15)
+                                        }
+                                        25 -> {
+                                            Log.d("MyLog18", "Зашли в 25!")
+                                            int25 = item.speedChet
+                                            arrayListSpeed.add(int25)
+                                        }
+                                        40 -> {
+                                            Log.d("MyLog18", "Зашли в 40!")
+                                            int40 = item.speedChet
+                                            arrayListSpeed.add(int40)
+                                        }
+                                        50 -> {
+                                            Log.d("MyLog18", "Зашли в 50!")
+                                            int50 = item.speedChet
+                                            arrayListSpeed.add(int50)
+                                        }
+                                        55 -> {
+                                            Log.d("MyLog18", "Зашли в 55!")
+                                            int55 = item.speedChet
+                                            arrayListSpeed.add(int55)
+                                        }
+                                        60 -> {
+                                            Log.d("MyLog18", "Зашли в 60!")
+                                            int60 = item.speedChet
+                                            arrayListSpeed.add(int60)
+                                        }
+                                        65 -> {
+                                            Log.d("MyLog18", "Зашли в 65!")
+                                            int65 = item.speedChet
+                                            arrayListSpeed.add(int65)
+                                        }
+                                        70 -> {
+                                            Log.d("MyLog18", "Зашли в 70!")
+                                            int70 = item.speedChet
+                                            arrayListSpeed.add(int70)
+                                        }
+                                        75 -> {
+                                            Log.d("MyLog18", "Зашли в 75!")
+                                            int75 = item.speedChet
+                                            arrayListSpeed.add(int75)
+                                        }
                                     }
 
                                     Log.d("MyLog18", "minSpeed = ${arrayListSpeed.min()}")
