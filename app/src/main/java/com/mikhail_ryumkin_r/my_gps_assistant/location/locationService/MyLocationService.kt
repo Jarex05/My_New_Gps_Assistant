@@ -13873,6 +13873,11 @@ class MyLocationService : Service() {
                                                     myBrakeList[0] = itemBrakesList + 100
                                                     speedLimit = true
                                                 }
+                                                if (mySpeed.isEmpty()) {
+                                                    if (myLimitationList.isNotEmpty()) {
+                                                        myLimitationList.removeAt(0)
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -13894,7 +13899,8 @@ class MyLocationService : Service() {
                                     if (myBrakeList.isEmpty()){
                                         for (itemLimitationsList in myLimitationList){
                                             for (itemPantographsList in myPantographList){
-                                                if (faktStartKmChet + 2000 == itemLimitationsList && faktStartKmChet + 3000 == itemPantographsList){
+                                                if (faktStartKmChet + 2000 == itemLimitationsList &&
+                                                    faktStartKmChet + 3000 == itemPantographsList){
                                                     Log.d("MyLog", "Озвучиваем Ограничение скорости! 6")
 
                                                     soundVoice2000()
@@ -13905,6 +13911,11 @@ class MyLocationService : Service() {
                                                     myLimitationList.removeAt(0)
                                                     myPantographList[0] = itemPantographsList + 100
                                                     speedLimit = true
+                                                }
+                                                if (mySpeed.isEmpty()) {
+                                                    if (myLimitationList.isNotEmpty()) {
+                                                        myLimitationList.removeAt(0)
+                                                    }
                                                 }
                                             }
                                         }
@@ -13931,6 +13942,10 @@ class MyLocationService : Service() {
                                                 if (mySpeed.isNotEmpty()) {
                                                     val limit = itemPantographsList - 1000
                                                     myLimitationList.add(limit)
+                                                } else {
+                                                    if (myLimitationList.isNotEmpty()) {
+                                                        myLimitationList.removeAt(0)
+                                                    }
                                                 }
                                                 if (mySpeed.isEmpty() && faktStartKmChet + 3000 == itemPantographsList && faktStartKmChet + 4000 == itemBrakesList){
                                                     Log.d("MyLog", "Совпадение Опускания с Торможением!")
@@ -13952,9 +13967,12 @@ class MyLocationService : Service() {
                                             if (mySpeed.isNotEmpty()) {
                                                 val limit = itemPantographsList - 1000
                                                 myLimitationList.add(limit)
-//                                                speedLimit = true
+                                            } else {
+                                                if (myLimitationList.isNotEmpty()) {
+                                                    myLimitationList.removeAt(0)
+                                                }
                                             }
-                                            else if (mySpeed.isEmpty() && faktStartKmChet + 3000 == itemPantographsList){
+                                            if (mySpeed.isEmpty() && faktStartKmChet + 3000 == itemPantographsList){
                                                 Log.d("MyLog", "Озвучиваем Опускание! 2121")
 
                                                 playSound(pantograph)
@@ -13984,9 +14002,12 @@ class MyLocationService : Service() {
                                             if (mySpeed.isNotEmpty()) {
                                                 val limit = itemBrakesList - 2000
                                                 myLimitationList.add(limit)
-//                                                speedLimit = true
+                                            } else {
+                                                if (myLimitationList.isNotEmpty()) {
+                                                    myLimitationList.removeAt(0)
+                                                }
                                             }
-                                            else if (mySpeed.isEmpty() && faktStartKmChet + 4000 == itemBrakesList) {
+                                            if (mySpeed.isEmpty() && faktStartKmChet + 4000 == itemBrakesList) {
                                                 Log.d("MyLog", "Озвучиваем Торможение!22")
 
                                                 playSound(brake)
@@ -23483,6 +23504,11 @@ class MyLocationService : Service() {
                                                     myBrakeList[0] = itemBrakesList - 100
                                                     speedLimit = true
                                                 }
+                                                if (mySpeed.isEmpty()) {
+                                                    if (myLimitationList.isNotEmpty()) {
+                                                        myLimitationList.removeAt(0)
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -23504,7 +23530,8 @@ class MyLocationService : Service() {
                                     if (myBrakeList.isEmpty()){
                                         for (itemLimitationsList in myLimitationList){
                                             for (itemPantographsList in myPantographList){
-                                                if (faktStartKmNechet - 2000 == itemLimitationsList && faktStartKmNechet - 3000 == itemPantographsList){
+                                                if (faktStartKmNechet - 2000 == itemLimitationsList &&
+                                                    faktStartKmNechet - 3000 == itemPantographsList){
                                                     Log.d("MyLog", "Озвучиваем Ограничение скорости! 6")
 
                                                     soundVoice2000()
@@ -23515,6 +23542,11 @@ class MyLocationService : Service() {
                                                     myLimitationList.removeAt(0)
                                                     myPantographList[0] = itemPantographsList - 100
                                                     speedLimit = true
+                                                }
+                                                if (mySpeed.isEmpty()) {
+                                                    if (myLimitationList.isNotEmpty()) {
+                                                        myLimitationList.removeAt(0)
+                                                    }
                                                 }
                                             }
                                         }
@@ -23541,6 +23573,10 @@ class MyLocationService : Service() {
                                                 if (mySpeed.isNotEmpty()) {
                                                     val limit = itemPantographsList + 1000
                                                     myLimitationList.add(limit)
+                                                } else {
+                                                    if (myLimitationList.isNotEmpty()) {
+                                                        myLimitationList.removeAt(0)
+                                                    }
                                                 }
                                                 if (mySpeed.isEmpty() && faktStartKmNechet - 3000 == itemPantographsList && faktStartKmNechet - 4000 == itemBrakesList){
                                                     Log.d("MyLog", "Совпадение Опускания с Торможением!")
@@ -23562,9 +23598,12 @@ class MyLocationService : Service() {
                                             if (mySpeed.isNotEmpty()) {
                                                 val limit = itemPantographsList + 1000
                                                 myLimitationList.add(limit)
-//                                                speedLimit = true
+                                            } else {
+                                                if (myLimitationList.isNotEmpty()) {
+                                                    myLimitationList.removeAt(0)
+                                                }
                                             }
-                                            else if (mySpeed.isEmpty() && faktStartKmNechet - 3000 == itemPantographsList){
+                                            if (mySpeed.isEmpty() && faktStartKmNechet - 3000 == itemPantographsList){
                                                 Log.d("MyLog", "Озвучиваем Опускание! 2121")
 
                                                 playSound(pantograph)
@@ -23594,9 +23633,12 @@ class MyLocationService : Service() {
                                             if (mySpeed.isNotEmpty()) {
                                                 val limit = itemBrakesList + 2000
                                                 myLimitationList.add(limit)
-//                                                speedLimit = true
+                                            } else {
+                                                if (myLimitationList.isNotEmpty()) {
+                                                    myLimitationList.removeAt(0)
+                                                }
                                             }
-                                            else if (mySpeed.isEmpty() && faktStartKmNechet - 4000 == itemBrakesList) {
+                                            if (mySpeed.isEmpty() && faktStartKmNechet - 4000 == itemBrakesList) {
                                                 Log.d("MyLog", "Озвучиваем Торможение!22")
 
                                                 playSound(brake)
