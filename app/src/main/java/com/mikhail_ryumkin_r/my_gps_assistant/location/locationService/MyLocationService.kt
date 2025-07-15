@@ -52,11 +52,12 @@ import java.io.IOException
 class MyLocationService : Service() {
     private var isOgranichenie: Int = 0
     private var speedLimit = true
-    private var isNeutralInsert600 = true
+
+//    val arrayListSpeed = mutableListOf<Int>()
 
     //**********************************************
 
-    val mySpeed = mutableListOf<Int>()
+    var mySpeed = mutableListOf<Int>()
 
     //**********************************************
 
@@ -1141,7 +1142,6 @@ class MyLocationService : Service() {
                                 piketStartNechet = item.picketStartNechet
                                 titleFinishNechet = item.finishNechet
                                 piketFinishNechet = item.picketFinishNechet
-                                speedNechet = item.speedNechet
 
                                 // Расчёт начала ограничения по киллометро
 
@@ -1437,56 +1437,65 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2200 && distance >= faktNachKmNechet + 2102){
 
-                                    val arrayListSpeed = mutableListOf(int15, int25, int40, int50, int55, int60, int65, int70, int75)
+                                    speedNechet = item.speedNechet
+
+                                    val arrayListSpeed = mutableListOf<Int>()
 
                                     when (speedNechet) {
                                         15 -> {
                                             int15 = item.speedNechet
-                                            arrayListSpeed.add(int15)
+                                            arrayListSpeed.add(15)
                                         }
                                         25 -> {
                                             int25 = item.speedNechet
-                                            arrayListSpeed.add(int25)
+                                            arrayListSpeed.add(25)
                                         }
                                         40 -> {
                                             int40 = item.speedNechet
-                                            arrayListSpeed.add(int40)
+                                            arrayListSpeed.add(40)
                                         }
                                         50 -> {
                                             int50 = item.speedNechet
-                                            arrayListSpeed.add(int50)
+                                            arrayListSpeed.add(50)
                                         }
                                         55 -> {
                                             int55 = item.speedNechet
-                                            arrayListSpeed.add(int55)
+                                            arrayListSpeed.add(55)
                                         }
                                         60 -> {
                                             int60 = item.speedNechet
-                                            arrayListSpeed.add(int60)
+                                            arrayListSpeed.add(60)
                                         }
                                         65 -> {
                                             int65 = item.speedNechet
-                                            arrayListSpeed.add(int65)
+                                            arrayListSpeed.add(65)
                                         }
                                         70 -> {
                                             int70 = item.speedNechet
-                                            arrayListSpeed.add(int70)
+                                            arrayListSpeed.add(70)
                                         }
                                         75 -> {
                                             int75 = item.speedNechet
-                                            arrayListSpeed.add(int75)
+                                            arrayListSpeed.add(75)
                                         }
                                     }
 
                                     Log.d("MyLog", "minSpeed = ${arrayListSpeed.min()}")
-                                    speedNechetMin = arrayListSpeed.min()
+//                                    speedNechetMin = arrayListSpeed.min()
+
+                                    val i = arrayListSpeed.min()
+                                    if (i == 15 || i == 25 || i == 40 || i == 50 || i == 55 || i == 60 || i == 65 || i == 70 || i == 75) {
+                                        mySpeed.add(i)
+                                        val mySpeed1 = mySpeed.toMutableSet().toMutableList()
+                                        mySpeed = mySpeed1
+                                    }
                                 }
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 15 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 15")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1503,7 +1512,7 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 25 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 25")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1520,7 +1529,7 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 40 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 40")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1537,7 +1546,7 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 50 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 50")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1554,7 +1563,7 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 55 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 55")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1571,7 +1580,7 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 60 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 60")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1588,7 +1597,7 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 65 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 65")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1605,7 +1614,7 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 70 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 70")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1622,7 +1631,7 @@ class MyLocationService : Service() {
 
                                 if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 75 && speedLimit){
                                     Log.d("MyLog18", "Зашли в 75")
-                                    mySpeed.add(speedNechetMin)
+//                                    mySpeed.add(speedNechetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -1634,11 +1643,6 @@ class MyLocationService : Service() {
                                     int75 = 150
                                     speedLimit = !speedLimit
                                 }
-
-//                                if (distance <= faktNachKmNechet + 2000 && distance >= faktNachKmNechet + 1902 && !speedLimit){
-//                                    speedLimit = true
-//                                    Log.d("MyLog18", "Зашли в speedLimit = $speedLimit")
-//                                }
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2864,7 +2868,7 @@ class MyLocationService : Service() {
                                 piketStartChet = item.picketStartChet
                                 titleFinishChet = item.finishChet
                                 piketFinishChet = item.picketFinishChet
-                                speedChet = item.speedChet
+
 
                                 // Расчёт начала ограничения по киллометро
 
@@ -3162,63 +3166,75 @@ class MyLocationService : Service() {
 
                                 if (distance >= faktNachKmChet - 2200 && distance <= faktNachKmChet - 2102) {
 
-                                    val arrayListSpeed = mutableListOf(int15, int25, int40, int50, int55, int60, int65, int70, int75)
+                                    speedChet = item.speedChet
+
+                                    val arrayListSpeed = mutableListOf<Int>()
 
                                     when (speedChet) {
                                         15 -> {
-                                            Log.d("MyLog18", "Зашли в 15!")
-                                            int15 = item.speedChet
-                                            arrayListSpeed.add(int15)
+                                            Log.d("MyLog28", "Зашли и расчитали 15!")
+                                            val int15 = 15
+                                            arrayListSpeed.add(15)
                                         }
                                         25 -> {
-                                            Log.d("MyLog18", "Зашли в 25!")
-                                            int25 = item.speedChet
-                                            arrayListSpeed.add(int25)
+                                            Log.d("MyLog28", "Зашли и расчитали 25!")
+                                            val int25 = 25
+                                            arrayListSpeed.add(25)
                                         }
                                         40 -> {
-                                            Log.d("MyLog18", "Зашли в 40!")
-                                            int40 = item.speedChet
-                                            arrayListSpeed.add(int40)
+                                            Log.d("MyLog28", "Зашли и расчитали 40!")
+                                            val int40 = 40
+                                            arrayListSpeed.add(40)
                                         }
                                         50 -> {
-                                            Log.d("MyLog18", "Зашли в 50!")
-                                            int50 = item.speedChet
-                                            arrayListSpeed.add(int50)
+                                            Log.d("MyLog28", "Зашли и расчитали 50!")
+                                            val int50 = 50
+                                            arrayListSpeed.add(50)
                                         }
                                         55 -> {
-                                            Log.d("MyLog18", "Зашли в 55!")
-                                            int55 = item.speedChet
-                                            arrayListSpeed.add(int55)
+                                            Log.d("MyLog28", "Зашли и расчитали 55!")
+                                            val int55 = 55
+                                            arrayListSpeed.add(55)
                                         }
                                         60 -> {
-                                            Log.d("MyLog18", "Зашли в 60!")
-                                            int60 = item.speedChet
-                                            arrayListSpeed.add(int60)
+                                            Log.d("MyLog28", "Зашли и расчитали 60!")
+                                            val int60 = 60
+                                            arrayListSpeed.add(60)
                                         }
                                         65 -> {
-                                            Log.d("MyLog18", "Зашли в 65!")
-                                            int65 = item.speedChet
-                                            arrayListSpeed.add(int65)
+                                            Log.d("MyLog28", "Зашли и расчитали 65!")
+                                            val int65 = 65
+                                            arrayListSpeed.add(65)
                                         }
                                         70 -> {
-                                            Log.d("MyLog18", "Зашли в 70!")
-                                            int70 = item.speedChet
-                                            arrayListSpeed.add(int70)
+                                            Log.d("MyLog28", "Зашли и расчитали 70!")
+                                            val int70 = 70
+                                            arrayListSpeed.add(70)
                                         }
                                         75 -> {
-                                            Log.d("MyLog18", "Зашли в 75!")
-                                            int75 = item.speedChet
-                                            arrayListSpeed.add(int75)
+                                            Log.d("MyLog28", "Зашли и расчитали 75!")
+                                            val int75 = 75
+                                            arrayListSpeed.add(75)
                                         }
                                     }
 
-                                    Log.d("MyLog18", "minSpeed = ${arrayListSpeed.min()}")
-                                    speedChetMin = arrayListSpeed.min()
+                                    Log.d("MyLog28", "arrayListSpeed = $arrayListSpeed")
+
+                                    Log.d("MyLog28", "minSpeed arrayListSpeed = ${arrayListSpeed.min()}")
+//                                    speedChetMin = arrayListSpeed.min()
+                                    val i = arrayListSpeed.min()
+                                    if (i == 15 || i == 25 || i == 40 || i == 50 || i == 55 || i == 60 || i == 65 || i == 70 || i == 75) {
+                                        mySpeed.add(i)
+                                        val mySpeed1 = mySpeed.toMutableSet().toMutableList()
+                                        val mySpeed2 = mySpeed1
+                                        Log.d("MyLog29", "mySpeed2 = $mySpeed2")
+                                        mySpeed = mySpeed1
+                                    }
                                 }
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 15 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 15")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 15")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3234,8 +3250,8 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 25 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 25!")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 25!")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3251,8 +3267,8 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 40 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 40!")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 40!")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3268,8 +3284,8 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 50 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 50!")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 50!")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3285,8 +3301,8 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 55 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 55!")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 55!")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3302,8 +3318,8 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 60 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 60!")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 60!")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3319,8 +3335,8 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 65 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 65!")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 65!")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3336,8 +3352,8 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 70 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 70!")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 70!")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3353,8 +3369,8 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 75 && speedLimit){
-                                    Log.d("MyLog17", "Зашли - в 75!")
-                                    mySpeed.add(speedChetMin)
+                                    Log.d("MyLog29", "Зашли - в 75!")
+//                                    mySpeed.add(speedChetMin)
                                     int15 = 150
                                     int25 = 150
                                     int40 = 150
@@ -3366,11 +3382,6 @@ class MyLocationService : Service() {
                                     int75 = 150
                                     speedLimit = !speedLimit
                                 }
-
-//                                if (distance >= faktNachKmChet - 2000 && distance <= faktNachKmChet - 1902 && !speedLimit){
-//                                    speedLimit = true
-//                                    Log.d("MyLog17", "Зашли - speedLimit = $speedLimit")
-//                                }
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -4000,12 +4011,6 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 }
-
-//                                if (distance >= faktNachKmCustomFieldChet - 799 && distance <= faktNachKmCustomFieldChet - 701){
-//                                    val customFieldChet = faktStartKmChet
-//                                    customField700.add(customFieldChet)
-//                                    customField = item.fieldChetCustom
-//                                }
                             }
                         }
 
@@ -4412,7 +4417,6 @@ class MyLocationService : Service() {
                                                 Log.d("MyLog2", "Озвучиваем Нейтральную вставку!")
 
                                                 customField700List.removeAt(0)
-                                                isNeutralInsert600 = true
                                             }
                                         }
                                     }
@@ -4527,7 +4531,7 @@ class MyLocationService : Service() {
                                                                             myLimitationList[0] = itemLimitationsList + 100
                                                                             myPantographList[0] = itemPantographsList + 100
                                                                             myBrakeList[0] = itemBrakesList + 100
-                                                                            isNeutralInsert600 = true
+                                                                            speedLimit = true
                                                                         }
                                                                     }
                                                                 }
@@ -4582,7 +4586,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList + 100
                                                                         myPantographList[0] = itemPantographsList + 100
                                                                         myBrakeList[0] = itemBrakesList + 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -4634,7 +4638,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList + 100
                                                                         myPantographList[0] = itemPantographsList + 100
                                                                         myBrakeList[0] = itemBrakesList + 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -4692,6 +4696,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList + 100
                                                                         myPantographList[0] = itemPantographsList + 100
                                                                         myBrakeList[0] = itemBrakesList + 100
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -4742,7 +4747,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -4796,6 +4801,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -4843,6 +4849,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -4895,7 +4902,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList + 100
                                                                         myPantographList[0] = itemPantographsList + 100
                                                                         myBrakeList[0] = itemBrakesList + 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -4946,7 +4953,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -4994,7 +5001,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -5048,6 +5055,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -5094,7 +5102,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5144,6 +5152,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5187,6 +5196,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5238,7 +5248,7 @@ class MyLocationService : Service() {
                                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                                         myLimitationList[0] = itemLimitationsList + 100
                                                                         myBrakeList[0] = itemBrakesList + 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -5289,7 +5299,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -5337,7 +5347,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -5391,6 +5401,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -5437,7 +5448,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5487,6 +5498,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5530,6 +5542,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5581,7 +5594,7 @@ class MyLocationService : Service() {
                                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                                         myLimitationList[0] = itemLimitationsList + 100
                                                                         myPantographList[0] = itemPantographsList + 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -5632,7 +5645,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -5680,7 +5693,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -5734,6 +5747,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -5780,7 +5794,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5830,6 +5844,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5873,6 +5888,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -5924,7 +5940,6 @@ class MyLocationService : Service() {
                                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                                         myPantographList[0] = itemPantographsList + 100
                                                                         myBrakeList[0] = itemBrakesList + 100
-                                                                        isNeutralInsert600 = true
                                                                     }
                                                                 }
                                                             }
@@ -5975,7 +5990,6 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -6023,7 +6037,6 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -6123,7 +6136,6 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -6264,7 +6276,7 @@ class MyLocationService : Service() {
                                                                     myOgranichenieList[0] = itemOgranichenieList + 100
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -6311,7 +6323,7 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -6355,7 +6367,7 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -6405,6 +6417,7 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -6447,7 +6460,7 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -6493,6 +6506,7 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -6532,6 +6546,7 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -6579,7 +6594,6 @@ class MyLocationService : Service() {
                                                                     myOgranichenieList[0] = itemOgranichenieList + 100
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -6626,7 +6640,6 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -6670,7 +6683,6 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -6762,7 +6774,6 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -6894,7 +6905,6 @@ class MyLocationService : Service() {
                                                                     myOgranichenieList[0] = itemOgranichenieList + 100
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myPantographList[0] = itemPantographsList + 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -6941,7 +6951,6 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myPantographList[0] = itemPantographsList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -6985,7 +6994,6 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myPantographList[0] = itemPantographsList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -7077,7 +7085,6 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -7206,7 +7213,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -7249,7 +7255,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -7289,7 +7294,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -7373,7 +7377,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
                                                         myPrev400List[0] = itemMyPrev400List + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -7493,7 +7496,7 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -7536,7 +7539,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -7576,7 +7579,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -7622,6 +7625,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -7660,7 +7664,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -7702,6 +7706,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -7737,6 +7742,7 @@ class MyLocationService : Service() {
                                                         pantograph800List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -7780,7 +7786,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -7823,7 +7828,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -7863,7 +7867,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -7947,7 +7950,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
                                                         myBrakeList[0] = itemBrakesList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -8067,7 +8069,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -8110,7 +8111,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -8150,7 +8150,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -8234,7 +8233,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
                                                         myPantographList[0] = itemPantographsList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -8351,7 +8349,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -8390,7 +8387,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -8426,7 +8422,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -8502,7 +8497,6 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myOgranichenieList[0] = itemOgranichenieList + 100
-                                                    isNeutralInsert600 = true
                                                 }
                                             }
                                         }
@@ -8619,7 +8613,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList + 100
                                                                         myPantographList[0] = itemPantographsList + 100
                                                                         myBrakeList[0] = itemBrakesList + 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -8670,7 +8664,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -8718,7 +8712,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -8772,6 +8766,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -8818,7 +8813,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -8868,6 +8863,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -8911,6 +8907,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -8959,7 +8956,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -9006,7 +9003,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -9050,7 +9047,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -9100,6 +9097,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -9142,7 +9140,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -9188,6 +9186,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -9227,6 +9226,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -9274,7 +9274,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -9321,7 +9321,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -9365,7 +9365,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -9415,6 +9415,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -9457,7 +9458,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -9503,6 +9504,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -9542,6 +9544,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -9589,7 +9592,6 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -9636,7 +9638,6 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -9680,7 +9681,6 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -9772,7 +9772,6 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myPantographList[0] = itemPantographsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -9901,7 +9900,7 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -9944,7 +9943,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -9984,7 +9983,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -10030,6 +10029,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -10068,7 +10068,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -10110,6 +10110,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -10145,6 +10146,7 @@ class MyLocationService : Service() {
                                                         pantograph800List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -10188,7 +10190,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -10231,7 +10232,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -10271,7 +10271,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -10355,7 +10354,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                         myBrakeList[0] = itemBrakesList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -10475,7 +10473,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myPrev400List[0] = itemMyPrev400List + 100
                                                                 myPantographList[0] = itemPantographsList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -10518,7 +10515,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -10558,7 +10554,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -10642,7 +10637,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                         myPantographList[0] = itemPantographsList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -10759,7 +10753,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myPrev400List[0] = itemMyPrev400List + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -10798,7 +10791,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
                                                         myPrev400List[0] = itemMyPrev400List + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -10834,7 +10826,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
                                                         myPrev400List[0] = itemMyPrev400List + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -10910,7 +10901,6 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myPrev400List[0] = itemMyPrev400List + 100
-                                                    isNeutralInsert600 = true
                                                 }
                                             }
                                         }
@@ -11024,7 +11014,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList + 100
                                                                     myPantographList[0] = itemPantographsList + 100
                                                                     myBrakeList[0] = itemBrakesList + 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -11071,7 +11061,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -11115,7 +11105,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -11165,6 +11155,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -11207,7 +11198,7 @@ class MyLocationService : Service() {
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -11253,6 +11244,7 @@ class MyLocationService : Service() {
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -11292,6 +11284,7 @@ class MyLocationService : Service() {
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -11333,7 +11326,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -11372,7 +11365,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -11408,7 +11401,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -11450,6 +11443,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -11484,7 +11478,7 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myLimitationList[0] = itemLimitationsList + 100
-                                                    isNeutralInsert600 = true
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -11522,6 +11516,7 @@ class MyLocationService : Service() {
 
                                                     brake500List.removeAt(0)
                                                     myLimitationList[0] = itemLimitationsList + 100
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -11553,6 +11548,7 @@ class MyLocationService : Service() {
 
                                                     pantograph800List.removeAt(0)
                                                     myLimitationList[0] = itemLimitationsList + 100
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -11595,7 +11591,7 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -11638,7 +11634,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -11678,7 +11674,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -11724,6 +11720,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -11762,7 +11759,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList + 100
                                                         myBrakeList[0] = itemBrakesList + 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -11804,6 +11801,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList + 100
                                                         myBrakeList[0] = itemBrakesList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -11839,6 +11837,7 @@ class MyLocationService : Service() {
                                                         pantograph800List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList + 100
                                                         myBrakeList[0] = itemBrakesList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -11882,7 +11881,7 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -11925,7 +11924,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -11965,7 +11964,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -12011,6 +12010,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -12049,7 +12049,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList + 100
                                                         myPantographList[0] = itemPantographsList + 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -12091,6 +12091,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList + 100
                                                         myPantographList[0] = itemPantographsList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -12126,6 +12127,7 @@ class MyLocationService : Service() {
                                                         pantograph800List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList + 100
                                                         myPantographList[0] = itemPantographsList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -12169,7 +12171,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -12212,7 +12213,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             myPantographList[0] = itemPantographsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -12252,7 +12252,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myPantographList[0] = itemPantographsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -12336,7 +12335,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myPantographList[0] = itemPantographsList + 100
                                                         myBrakeList[0] = itemBrakesList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -12453,7 +12451,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myBrakeList[0] = itemBrakesList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -12492,7 +12489,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
                                                         myBrakeList[0] = itemBrakesList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -12528,7 +12524,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
                                                         myBrakeList[0] = itemBrakesList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -12604,7 +12599,6 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myBrakeList[0] = itemBrakesList + 100
-                                                    isNeutralInsert600 = true
                                                 }
                                             }
                                         }
@@ -12712,7 +12706,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 + 100
                                                             pantograph800List[0] = itemPantograph800 + 100
                                                             myPantographList[0] = itemPantographsList + 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -12751,7 +12744,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
                                                         myPantographList[0] = itemPantographsList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -12787,7 +12779,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
                                                         myPantographList[0] = itemPantographsList + 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -12863,7 +12854,6 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myPantographList[0] = itemPantographsList + 100
-                                                    isNeutralInsert600 = true
                                                 }
                                             }
                                         }
@@ -12974,6 +12964,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList + 100
                                                                 myPantographList[0] = itemPantographsList + 100
                                                                 myBrakeList[0] = itemBrakesList + 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -13013,6 +13004,7 @@ class MyLocationService : Service() {
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -13052,6 +13044,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myBrakeList[0] = itemBrakesList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -13091,6 +13084,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List + 100
                                                             myLimitationList[0] = itemLimitationsList + 100
                                                             myPantographList[0] = itemPantographsList + 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -13168,6 +13162,7 @@ class MyLocationService : Service() {
                                                         myOgranichenieList.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
                                                         myLimitationList[0] = itemLimitationsList + 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -13303,6 +13298,7 @@ class MyLocationService : Service() {
 
                                                     myOgranichenieList.removeAt(0)
                                                     myLimitationList[0] = itemLimitationsList + 100
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -13431,9 +13427,9 @@ class MyLocationService : Service() {
                                                             playSound(voiceprev)
 
                                                             myPrev400List.removeAt(0)
-                                                            myLimitationList[0] = itemLimitationsList + 200
-                                                            myPantographList[0] = itemPantographsList + 200
-                                                            myBrakeList[0] = itemBrakesList + 200
+                                                            myLimitationList[0] = itemLimitationsList + 100
+                                                            myPantographList[0] = itemPantographsList + 100
+                                                            myBrakeList[0] = itemBrakesList + 100
                                                             isLimitations400m15 = true
                                                             isLimitations400m25 = true
                                                             isLimitations400m40 = true
@@ -13443,6 +13439,8 @@ class MyLocationService : Service() {
                                                             isLimitations400m65 = true
                                                             isLimitations400m70 = true
                                                             isLimitations400m75 = true
+
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -13479,8 +13477,8 @@ class MyLocationService : Service() {
                                                         playSound(voiceprev)
 
                                                         myPrev400List.removeAt(0)
-                                                        myLimitationList[0] = itemLimitationsList + 200
-                                                        myBrakeList[0] = itemBrakesList + 200
+                                                        myLimitationList[0] = itemLimitationsList + 100
+                                                        myBrakeList[0] = itemBrakesList + 100
                                                         isLimitations400m15 = true
                                                         isLimitations400m25 = true
                                                         isLimitations400m40 = true
@@ -13490,6 +13488,8 @@ class MyLocationService : Service() {
                                                         isLimitations400m65 = true
                                                         isLimitations400m70 = true
                                                         isLimitations400m75 = true
+
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -13523,8 +13523,8 @@ class MyLocationService : Service() {
                                                         playSound(voiceprev)
 
                                                         myPrev400List.removeAt(0)
-                                                        myLimitationList[0] = itemLimitationsList + 200
-                                                        myPantographList[0] = itemPantographsList + 200
+                                                        myLimitationList[0] = itemLimitationsList + 100
+                                                        myPantographList[0] = itemPantographsList + 100
                                                         isLimitations400m15 = true
                                                         isLimitations400m25 = true
                                                         isLimitations400m40 = true
@@ -13534,6 +13534,8 @@ class MyLocationService : Service() {
                                                         isLimitations400m65 = true
                                                         isLimitations400m70 = true
                                                         isLimitations400m75 = true
+
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -13567,8 +13569,8 @@ class MyLocationService : Service() {
                                                         playSound(voiceprev)
 
                                                         myPrev400List.removeAt(0)
-                                                        myPantographList[0] = itemPantographsList + 200
-                                                        myBrakeList[0] = itemBrakesList + 200
+                                                        myPantographList[0] = itemPantographsList + 100
+                                                        myBrakeList[0] = itemBrakesList + 100
                                                         isLimitations400m15 = true
                                                         isLimitations400m25 = true
                                                         isLimitations400m40 = true
@@ -13611,7 +13613,7 @@ class MyLocationService : Service() {
                                                     playSound(voiceprev)
 
                                                     myPrev400List.removeAt(0)
-                                                    myLimitationList[0] = itemLimitationsList + 200
+                                                    myLimitationList[0] = itemLimitationsList + 100
                                                     isLimitations400m15 = true
                                                     isLimitations400m25 = true
                                                     isLimitations400m40 = true
@@ -13621,6 +13623,8 @@ class MyLocationService : Service() {
                                                     isLimitations400m65 = true
                                                     isLimitations400m70 = true
                                                     isLimitations400m75 = true
+
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -13651,7 +13655,7 @@ class MyLocationService : Service() {
                                                     playSound(voiceprev)
 
                                                     myPrev400List.removeAt(0)
-                                                    myBrakeList[0] = itemBrakesList + 200
+                                                    myBrakeList[0] = itemBrakesList + 100
                                                     isLimitations400m15 = true
                                                     isLimitations400m25 = true
                                                     isLimitations400m40 = true
@@ -13691,7 +13695,7 @@ class MyLocationService : Service() {
                                                     playSound(voiceprev)
 
                                                     myPrev400List.removeAt(0)
-                                                    myPantographList[0] = itemPantographsList + 200
+                                                    myPantographList[0] = itemPantographsList + 100
                                                     isLimitations400m15 = true
                                                     isLimitations400m25 = true
                                                     isLimitations400m40 = true
@@ -13764,26 +13768,39 @@ class MyLocationService : Service() {
                                         for (itemLimitationsList in myLimitationList){
                                             for (itemBrakesList in myBrakeList) {
                                                 for (itemPantographsList in myPantographList) {
+                                                    if (faktStartKmChet + 2000 == itemLimitationsList &&
+                                                        faktStartKmChet + 4000 == itemBrakesList &&
+                                                        faktStartKmChet + 3000 == itemPantographsList) {
+                                                        if (mySpeed.size > 1) {
+                                                            val limit = itemLimitationsList + 100
+                                                            myLimitationList.add(limit)
+                                                        }
 
-                                                    Log.d("MyLog2", "Ограничение!")
-
-                                                    if (itemLimitationsList == itemBrakesList - 2100 &&  itemLimitationsList == itemPantographsList - 1100) {
-                                                        myLimitationList[0] = itemLimitationsList + 100
-                                                        Log.d("MyLog2", "Ограничение но не надо тут ни чего делать сейчас!")
-                                                    }
-
-                                                    if (faktStartKmChet + 2000 == itemLimitationsList && faktStartKmChet + 4000 == itemBrakesList && faktStartKmChet + 3000 == itemPantographsList) {
-                                                        Log.d("MyLog", "Озвучиваем Ограничение скорости! 111112")
+                                                        Log.d("MyLog2", "Ограничение!")
 
                                                         soundVoice2000()
 
                                                         if (mySpeed.isNotEmpty()) {
                                                             mySpeed.removeAt(0)
                                                         }
+
                                                         myLimitationList.removeAt(0)
                                                         myPantographList[0] = itemPantographsList + 100
                                                         myBrakeList[0] = itemBrakesList + 100
                                                         speedLimit = true
+                                                    }
+                                                    if (mySpeed.isEmpty()) {
+                                                        if (myLimitationList.isNotEmpty()) {
+                                                            myLimitationList.removeAt(0)
+                                                        }
+                                                    }
+
+                                                    if (itemLimitationsList == itemBrakesList - 2100 &&
+                                                        itemLimitationsList == itemPantographsList - 1100) {
+                                                        if (myLimitationList.isNotEmpty()) {
+                                                            myLimitationList[0] = itemLimitationsList + 100
+                                                        }
+                                                        Log.d("MyLog2", "Ограничение но не надо тут ни чего делать сейчас!")
                                                     }
                                                 }
                                             }
@@ -13807,6 +13824,10 @@ class MyLocationService : Service() {
                                     if (myLimitationList.isNotEmpty()){
                                         for (itemLimitationsList in myLimitationList){
                                             if (faktStartKmChet + 2000 == itemLimitationsList){
+                                                if (mySpeed.size > 1) {
+                                                    val limit = itemLimitationsList + 100
+                                                    myLimitationList.add(limit)
+                                                }
 
                                                 Log.d("MyLog", "Озвучиваем Ограничение скорости! 4")
                                                 Log.d("MyLog", "speedChetMin => => => $speedChetMin")
@@ -13839,7 +13860,8 @@ class MyLocationService : Service() {
                                     if (myPantographList.isEmpty()){
                                         for (itemLimitationsList in myLimitationList){
                                             for (itemBrakesList in myBrakeList){
-                                                if (faktStartKmChet + 2000 == itemLimitationsList && faktStartKmChet + 4000 == itemBrakesList){
+                                                if (faktStartKmChet + 2000 == itemLimitationsList &&
+                                                    faktStartKmChet + 4000 == itemBrakesList){
                                                     Log.d("MyLog", "Озвучиваем Ограничение скорости! 5")
 
                                                     soundVoice2000()
@@ -13906,10 +13928,10 @@ class MyLocationService : Service() {
                                         for (itemBrakesList in myBrakeList){
                                             for (itemPantographsList in myPantographList){
                                                 Log.d("MyLog2", "Опускание и Торможение!")
-//                                                if (mySpeed.isNotEmpty()) {
-//                                                    var limit = itemPantographsList - 1000
-//                                                    myLimitationList.add(limit)
-//                                                }
+                                                if (mySpeed.isNotEmpty()) {
+                                                    val limit = itemPantographsList - 1000
+                                                    myLimitationList.add(limit)
+                                                }
                                                 if (mySpeed.isEmpty() && faktStartKmChet + 3000 == itemPantographsList && faktStartKmChet + 4000 == itemBrakesList){
                                                     Log.d("MyLog", "Совпадение Опускания с Торможением!")
                                                     Log.d("MyLog", "Озвучиваем Опускание! 21")
@@ -13930,6 +13952,7 @@ class MyLocationService : Service() {
                                             if (mySpeed.isNotEmpty()) {
                                                 val limit = itemPantographsList - 1000
                                                 myLimitationList.add(limit)
+//                                                speedLimit = true
                                             }
                                             else if (mySpeed.isEmpty() && faktStartKmChet + 3000 == itemPantographsList){
                                                 Log.d("MyLog", "Озвучиваем Опускание! 2121")
@@ -13961,6 +13984,7 @@ class MyLocationService : Service() {
                                             if (mySpeed.isNotEmpty()) {
                                                 val limit = itemBrakesList - 2000
                                                 myLimitationList.add(limit)
+//                                                speedLimit = true
                                             }
                                             else if (mySpeed.isEmpty() && faktStartKmChet + 4000 == itemBrakesList) {
                                                 Log.d("MyLog", "Озвучиваем Торможение!22")
@@ -14003,7 +14027,6 @@ class MyLocationService : Service() {
                                                 Log.d("MyLog2", "Озвучиваем Нейтральную вставку!")
 
                                                 customField700List.removeAt(0)
-                                                isNeutralInsert600 = true
                                             }
                                         }
                                     }
@@ -14118,7 +14141,7 @@ class MyLocationService : Service() {
                                                                             myLimitationList[0] = itemLimitationsList - 100
                                                                             myPantographList[0] = itemPantographsList - 100
                                                                             myBrakeList[0] = itemBrakesList - 100
-                                                                            isNeutralInsert600 = true
+                                                                            speedLimit = true
                                                                         }
                                                                     }
                                                                 }
@@ -14173,7 +14196,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList - 100
                                                                         myPantographList[0] = itemPantographsList - 100
                                                                         myBrakeList[0] = itemBrakesList - 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -14225,7 +14248,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList - 100
                                                                         myPantographList[0] = itemPantographsList - 100
                                                                         myBrakeList[0] = itemBrakesList - 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -14283,6 +14306,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList - 100
                                                                         myPantographList[0] = itemPantographsList - 100
                                                                         myBrakeList[0] = itemBrakesList - 100
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -14333,7 +14357,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -14387,6 +14411,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -14434,6 +14459,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -14486,7 +14512,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList - 100
                                                                         myPantographList[0] = itemPantographsList - 100
                                                                         myBrakeList[0] = itemBrakesList - 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -14537,7 +14563,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -14585,7 +14611,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -14639,6 +14665,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -14685,7 +14712,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -14735,6 +14762,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -14778,6 +14806,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -14829,7 +14858,7 @@ class MyLocationService : Service() {
                                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                                         myLimitationList[0] = itemLimitationsList - 100
                                                                         myBrakeList[0] = itemBrakesList - 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -14880,7 +14909,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -14928,7 +14957,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -14982,6 +15011,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -15028,7 +15058,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -15078,6 +15108,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -15121,6 +15152,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -15172,7 +15204,7 @@ class MyLocationService : Service() {
                                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                                         myLimitationList[0] = itemLimitationsList - 100
                                                                         myPantographList[0] = itemPantographsList - 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -15223,7 +15255,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -15271,7 +15303,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -15325,6 +15357,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -15371,7 +15404,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -15421,6 +15454,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -15464,6 +15498,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -15515,7 +15550,6 @@ class MyLocationService : Service() {
                                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                                         myPantographList[0] = itemPantographsList - 100
                                                                         myBrakeList[0] = itemBrakesList - 100
-                                                                        isNeutralInsert600 = true
                                                                     }
                                                                 }
                                                             }
@@ -15566,7 +15600,6 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -15614,7 +15647,6 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -15714,7 +15746,6 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -15855,7 +15886,7 @@ class MyLocationService : Service() {
                                                                     myOgranichenieList[0] = itemOgranichenieList - 100
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -15902,7 +15933,7 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -15946,7 +15977,7 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -15996,6 +16027,7 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -16038,7 +16070,7 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -16084,6 +16116,7 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -16123,6 +16156,7 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -16170,7 +16204,6 @@ class MyLocationService : Service() {
                                                                     myOgranichenieList[0] = itemOgranichenieList - 100
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -16217,7 +16250,6 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -16261,7 +16293,6 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -16353,7 +16384,6 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -16485,7 +16515,6 @@ class MyLocationService : Service() {
                                                                     myOgranichenieList[0] = itemOgranichenieList - 100
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myPantographList[0] = itemPantographsList - 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -16532,7 +16561,6 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myPantographList[0] = itemPantographsList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -16576,7 +16604,6 @@ class MyLocationService : Service() {
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myPantographList[0] = itemPantographsList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -16668,7 +16695,6 @@ class MyLocationService : Service() {
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -16797,7 +16823,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -16840,7 +16865,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -16880,7 +16904,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -16964,7 +16987,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
                                                         myPrev400List[0] = itemMyPrev400List - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -17084,7 +17106,7 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -17127,7 +17149,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -17167,7 +17189,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -17213,6 +17235,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -17251,7 +17274,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -17293,6 +17316,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -17328,6 +17352,7 @@ class MyLocationService : Service() {
                                                         pantograph800List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -17371,7 +17396,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -17414,7 +17438,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -17454,7 +17477,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -17538,7 +17560,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
                                                         myBrakeList[0] = itemBrakesList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -17658,7 +17679,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -17701,7 +17721,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -17741,7 +17760,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -17825,7 +17843,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
                                                         myPantographList[0] = itemPantographsList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -17942,7 +17959,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -17981,7 +17997,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -18017,7 +18032,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -18093,7 +18107,6 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myOgranichenieList[0] = itemOgranichenieList - 100
-                                                    isNeutralInsert600 = true
                                                 }
                                             }
                                         }
@@ -18210,7 +18223,7 @@ class MyLocationService : Service() {
                                                                         myLimitationList[0] = itemLimitationsList - 100
                                                                         myPantographList[0] = itemPantographsList - 100
                                                                         myBrakeList[0] = itemBrakesList - 100
-                                                                        isNeutralInsert600 = true
+                                                                        speedLimit = true
                                                                     }
                                                                 }
                                                             }
@@ -18261,7 +18274,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -18309,7 +18322,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -18363,6 +18376,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -18409,7 +18423,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -18459,6 +18473,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -18502,6 +18517,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -18550,7 +18566,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -18597,7 +18613,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -18641,7 +18657,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -18691,6 +18707,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -18733,7 +18750,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -18779,6 +18796,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -18818,6 +18836,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -18865,7 +18884,7 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -18912,7 +18931,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -18956,7 +18975,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -19006,6 +19025,7 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -19048,7 +19068,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -19094,6 +19114,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -19133,6 +19154,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -19180,7 +19202,6 @@ class MyLocationService : Service() {
                                                                     myPrev400List[0] = itemMyPrev400List - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
                                                                 }
                                                             }
                                                         }
@@ -19227,7 +19248,6 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -19271,7 +19291,6 @@ class MyLocationService : Service() {
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -19363,7 +19382,6 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myPantographList[0] = itemPantographsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -19492,7 +19510,7 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -19535,7 +19553,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -19575,7 +19593,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -19621,6 +19639,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -19659,7 +19678,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -19701,6 +19720,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -19736,6 +19756,7 @@ class MyLocationService : Service() {
                                                         pantograph800List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -19779,7 +19800,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -19822,7 +19842,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -19862,7 +19881,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -19946,7 +19964,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                         myBrakeList[0] = itemBrakesList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -20066,7 +20083,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myPrev400List[0] = itemMyPrev400List - 100
                                                                 myPantographList[0] = itemPantographsList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -20109,7 +20125,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -20149,7 +20164,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -20233,7 +20247,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                         myPantographList[0] = itemPantographsList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -20350,7 +20363,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myPrev400List[0] = itemMyPrev400List - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -20389,7 +20401,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
                                                         myPrev400List[0] = itemMyPrev400List - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -20425,7 +20436,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
                                                         myPrev400List[0] = itemMyPrev400List - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -20501,7 +20511,6 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myPrev400List[0] = itemMyPrev400List - 100
-                                                    isNeutralInsert600 = true
                                                 }
                                             }
                                         }
@@ -20615,7 +20624,7 @@ class MyLocationService : Service() {
                                                                     myLimitationList[0] = itemLimitationsList - 100
                                                                     myPantographList[0] = itemPantographsList - 100
                                                                     myBrakeList[0] = itemBrakesList - 100
-                                                                    isNeutralInsert600 = true
+                                                                    speedLimit = true
                                                                 }
                                                             }
                                                         }
@@ -20662,7 +20671,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -20706,7 +20715,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList + 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -20756,6 +20765,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -20798,7 +20808,7 @@ class MyLocationService : Service() {
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -20844,6 +20854,7 @@ class MyLocationService : Service() {
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -20883,6 +20894,7 @@ class MyLocationService : Service() {
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -20924,7 +20936,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -20963,7 +20975,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -20999,7 +21011,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -21041,6 +21053,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -21075,7 +21088,7 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myLimitationList[0] = itemLimitationsList - 100
-                                                    isNeutralInsert600 = true
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -21113,6 +21126,7 @@ class MyLocationService : Service() {
 
                                                     brake500List.removeAt(0)
                                                     myLimitationList[0] = itemLimitationsList - 100
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -21144,6 +21158,7 @@ class MyLocationService : Service() {
 
                                                     pantograph800List.removeAt(0)
                                                     myLimitationList[0] = itemLimitationsList - 100
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -21186,7 +21201,7 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -21229,7 +21244,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -21269,7 +21284,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -21315,6 +21330,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -21353,7 +21369,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList - 100
                                                         myBrakeList[0] = itemBrakesList - 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -21395,6 +21411,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList - 100
                                                         myBrakeList[0] = itemBrakesList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -21430,6 +21447,7 @@ class MyLocationService : Service() {
                                                         pantograph800List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList - 100
                                                         myBrakeList[0] = itemBrakesList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -21473,7 +21491,7 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
-                                                                isNeutralInsert600 = true
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -21516,7 +21534,7 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -21556,7 +21574,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -21602,6 +21620,7 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -21640,7 +21659,7 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList - 100
                                                         myPantographList[0] = itemPantographsList - 100
-                                                        isNeutralInsert600 = true
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -21682,6 +21701,7 @@ class MyLocationService : Service() {
                                                         brake500List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList - 100
                                                         myPantographList[0] = itemPantographsList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -21717,6 +21737,7 @@ class MyLocationService : Service() {
                                                         pantograph800List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList - 100
                                                         myPantographList[0] = itemPantographsList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -21760,7 +21781,6 @@ class MyLocationService : Service() {
                                                                 pantograph800List[0] = itemPantograph800 - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
-                                                                isNeutralInsert600 = true
                                                             }
                                                         }
                                                     }
@@ -21803,7 +21823,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             myPantographList[0] = itemPantographsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -21843,7 +21862,6 @@ class MyLocationService : Service() {
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myPantographList[0] = itemPantographsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -21927,7 +21945,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         myPantographList[0] = itemPantographsList - 100
                                                         myBrakeList[0] = itemBrakesList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -22044,7 +22061,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myBrakeList[0] = itemBrakesList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -22083,7 +22099,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
                                                         myBrakeList[0] = itemBrakesList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -22119,7 +22134,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
                                                         myBrakeList[0] = itemBrakesList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -22195,7 +22209,6 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myBrakeList[0] = itemBrakesList - 100
-                                                    isNeutralInsert600 = true
                                                 }
                                             }
                                         }
@@ -22303,7 +22316,6 @@ class MyLocationService : Service() {
                                                             brake500List[0] = itemBrake500 - 100
                                                             pantograph800List[0] = itemPantograph800 - 100
                                                             myPantographList[0] = itemPantographsList - 100
-                                                            isNeutralInsert600 = true
                                                         }
                                                     }
                                                 }
@@ -22342,7 +22354,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
                                                         myPantographList[0] = itemPantographsList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -22378,7 +22389,6 @@ class MyLocationService : Service() {
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
                                                         myPantographList[0] = itemPantographsList - 100
-                                                        isNeutralInsert600 = true
                                                     }
                                                 }
                                             }
@@ -22454,7 +22464,6 @@ class MyLocationService : Service() {
 
                                                     customField700List.removeAt(0)
                                                     myPantographList[0] = itemPantographsList - 100
-                                                    isNeutralInsert600 = true
                                                 }
                                             }
                                         }
@@ -22565,6 +22574,7 @@ class MyLocationService : Service() {
                                                                 myLimitationList[0] = itemLimitationsList - 100
                                                                 myPantographList[0] = itemPantographsList - 100
                                                                 myBrakeList[0] = itemBrakesList - 100
+                                                                speedLimit = true
                                                             }
                                                         }
                                                     }
@@ -22604,6 +22614,7 @@ class MyLocationService : Service() {
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -22643,6 +22654,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myBrakeList[0] = itemBrakesList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -22682,6 +22694,7 @@ class MyLocationService : Service() {
                                                             myPrev400List[0] = itemMyPrev400List - 100
                                                             myLimitationList[0] = itemLimitationsList - 100
                                                             myPantographList[0] = itemPantographsList - 100
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -22759,6 +22772,7 @@ class MyLocationService : Service() {
                                                         myOgranichenieList.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
                                                         myLimitationList[0] = itemLimitationsList - 100
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -22894,6 +22908,7 @@ class MyLocationService : Service() {
 
                                                     myOgranichenieList.removeAt(0)
                                                     myLimitationList[0] = itemLimitationsList - 100
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -23022,9 +23037,9 @@ class MyLocationService : Service() {
                                                             playSound(voiceprev)
 
                                                             myPrev400List.removeAt(0)
-                                                            myLimitationList[0] = itemLimitationsList - 200
-                                                            myPantographList[0] = itemPantographsList - 200
-                                                            myBrakeList[0] = itemBrakesList - 200
+                                                            myLimitationList[0] = itemLimitationsList - 100
+                                                            myPantographList[0] = itemPantographsList - 100
+                                                            myBrakeList[0] = itemBrakesList - 100
                                                             isLimitations400m15 = true
                                                             isLimitations400m25 = true
                                                             isLimitations400m40 = true
@@ -23034,6 +23049,8 @@ class MyLocationService : Service() {
                                                             isLimitations400m65 = true
                                                             isLimitations400m70 = true
                                                             isLimitations400m75 = true
+
+                                                            speedLimit = true
                                                         }
                                                     }
                                                 }
@@ -23070,8 +23087,8 @@ class MyLocationService : Service() {
                                                         playSound(voiceprev)
 
                                                         myPrev400List.removeAt(0)
-                                                        myLimitationList[0] = itemLimitationsList - 200
-                                                        myBrakeList[0] = itemBrakesList - 200
+                                                        myLimitationList[0] = itemLimitationsList - 100
+                                                        myBrakeList[0] = itemBrakesList - 100
                                                         isLimitations400m15 = true
                                                         isLimitations400m25 = true
                                                         isLimitations400m40 = true
@@ -23081,6 +23098,8 @@ class MyLocationService : Service() {
                                                         isLimitations400m65 = true
                                                         isLimitations400m70 = true
                                                         isLimitations400m75 = true
+
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -23114,8 +23133,8 @@ class MyLocationService : Service() {
                                                         playSound(voiceprev)
 
                                                         myPrev400List.removeAt(0)
-                                                        myLimitationList[0] = itemLimitationsList - 200
-                                                        myPantographList[0] = itemPantographsList - 200
+                                                        myLimitationList[0] = itemLimitationsList - 100
+                                                        myPantographList[0] = itemPantographsList - 100
                                                         isLimitations400m15 = true
                                                         isLimitations400m25 = true
                                                         isLimitations400m40 = true
@@ -23125,6 +23144,8 @@ class MyLocationService : Service() {
                                                         isLimitations400m65 = true
                                                         isLimitations400m70 = true
                                                         isLimitations400m75 = true
+
+                                                        speedLimit = true
                                                     }
                                                 }
                                             }
@@ -23158,8 +23179,8 @@ class MyLocationService : Service() {
                                                         playSound(voiceprev)
 
                                                         myPrev400List.removeAt(0)
-                                                        myPantographList[0] = itemPantographsList - 200
-                                                        myBrakeList[0] = itemBrakesList - 200
+                                                        myPantographList[0] = itemPantographsList - 100
+                                                        myBrakeList[0] = itemBrakesList - 100
                                                         isLimitations400m15 = true
                                                         isLimitations400m25 = true
                                                         isLimitations400m40 = true
@@ -23202,7 +23223,7 @@ class MyLocationService : Service() {
                                                     playSound(voiceprev)
 
                                                     myPrev400List.removeAt(0)
-                                                    myLimitationList[0] = itemLimitationsList - 200
+                                                    myLimitationList[0] = itemLimitationsList - 100
                                                     isLimitations400m15 = true
                                                     isLimitations400m25 = true
                                                     isLimitations400m40 = true
@@ -23212,6 +23233,8 @@ class MyLocationService : Service() {
                                                     isLimitations400m65 = true
                                                     isLimitations400m70 = true
                                                     isLimitations400m75 = true
+
+                                                    speedLimit = true
                                                 }
                                             }
                                         }
@@ -23242,7 +23265,7 @@ class MyLocationService : Service() {
                                                     playSound(voiceprev)
 
                                                     myPrev400List.removeAt(0)
-                                                    myBrakeList[0] = itemBrakesList - 200
+                                                    myBrakeList[0] = itemBrakesList - 100
                                                     isLimitations400m15 = true
                                                     isLimitations400m25 = true
                                                     isLimitations400m40 = true
@@ -23282,7 +23305,7 @@ class MyLocationService : Service() {
                                                     playSound(voiceprev)
 
                                                     myPrev400List.removeAt(0)
-                                                    myPantographList[0] = itemPantographsList - 200
+                                                    myPantographList[0] = itemPantographsList - 100
                                                     isLimitations400m15 = true
                                                     isLimitations400m25 = true
                                                     isLimitations400m40 = true
@@ -23355,16 +23378,16 @@ class MyLocationService : Service() {
                                         for (itemLimitationsList in myLimitationList){
                                             for (itemBrakesList in myBrakeList) {
                                                 for (itemPantographsList in myPantographList) {
+                                                    if (faktStartKmNechet - 2000 == itemLimitationsList &&
+                                                        faktStartKmNechet - 4000 == itemBrakesList &&
+                                                        faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                    Log.d("MyLog2", "Ограничение!")
+                                                        if (mySpeed.size > 1) {
+                                                            val limit = itemLimitationsList - 100
+                                                            myLimitationList.add(limit)
+                                                        }
 
-                                                    if (itemLimitationsList == itemBrakesList + 2100 &&  itemLimitationsList == itemPantographsList + 1100) {
-                                                        myLimitationList[0] = itemLimitationsList - 100
-                                                        Log.d("MyLog2", "Ограничение но не надо тут ни чего делать сейчас!")
-                                                    }
-
-                                                    if (faktStartKmNechet - 2000 == itemLimitationsList && faktStartKmNechet - 4000 == itemBrakesList && faktStartKmNechet - 3000 == itemPantographsList) {
-                                                        Log.d("MyLog", "Озвучиваем Ограничение скорости! 111112")
+                                                        Log.d("MyLog2", "Ограничение!")
 
                                                         soundVoice2000()
 
@@ -23375,6 +23398,20 @@ class MyLocationService : Service() {
                                                         myPantographList[0] = itemPantographsList - 100
                                                         myBrakeList[0] = itemBrakesList - 100
                                                         speedLimit = true
+                                                    }
+
+                                                    if (mySpeed.isEmpty()) {
+                                                        if (myLimitationList.isNotEmpty()) {
+                                                            myLimitationList.removeAt(0)
+                                                        }
+                                                    }
+
+                                                    if (itemLimitationsList == itemBrakesList + 2100 &&
+                                                        itemLimitationsList == itemPantographsList + 1100) {
+                                                        if (myLimitationList.isNotEmpty()) {
+                                                            myLimitationList[0] = itemLimitationsList - 100
+                                                        }
+                                                        Log.d("MyLog2", "Ограничение но не надо тут ни чего делать сейчас!")
                                                     }
                                                 }
                                             }
@@ -23398,6 +23435,10 @@ class MyLocationService : Service() {
                                     if (myLimitationList.isNotEmpty()){
                                         for (itemLimitationsList in myLimitationList){
                                             if (faktStartKmNechet - 2000 == itemLimitationsList){
+                                                if (mySpeed.size > 1) {
+                                                    val limit = itemLimitationsList - 100
+                                                    myLimitationList.add(limit)
+                                                }
 
                                                 Log.d("MyLog", "Озвучиваем Ограничение скорости! 4")
                                                 Log.d("MyLog", "speedChetMin => => => $speedNechetMin")
@@ -23497,10 +23538,10 @@ class MyLocationService : Service() {
                                         for (itemBrakesList in myBrakeList){
                                             for (itemPantographsList in myPantographList){
                                                 Log.d("MyLog2", "Опускание и Торможение!")
-//                                                if (mySpeed.isNotEmpty()) {
-//                                                    var limit = itemPantographsList + 1000
-//                                                    myLimitationList.add(limit)
-//                                                }
+                                                if (mySpeed.isNotEmpty()) {
+                                                    val limit = itemPantographsList + 1000
+                                                    myLimitationList.add(limit)
+                                                }
                                                 if (mySpeed.isEmpty() && faktStartKmNechet - 3000 == itemPantographsList && faktStartKmNechet - 4000 == itemBrakesList){
                                                     Log.d("MyLog", "Совпадение Опускания с Торможением!")
                                                     Log.d("MyLog", "Озвучиваем Опускание! 21")
@@ -23521,6 +23562,7 @@ class MyLocationService : Service() {
                                             if (mySpeed.isNotEmpty()) {
                                                 val limit = itemPantographsList + 1000
                                                 myLimitationList.add(limit)
+//                                                speedLimit = true
                                             }
                                             else if (mySpeed.isEmpty() && faktStartKmNechet - 3000 == itemPantographsList){
                                                 Log.d("MyLog", "Озвучиваем Опускание! 2121")
@@ -23552,6 +23594,7 @@ class MyLocationService : Service() {
                                             if (mySpeed.isNotEmpty()) {
                                                 val limit = itemBrakesList + 2000
                                                 myLimitationList.add(limit)
+//                                                speedLimit = true
                                             }
                                             else if (mySpeed.isEmpty() && faktStartKmNechet - 4000 == itemBrakesList) {
                                                 Log.d("MyLog", "Озвучиваем Торможение!22")
@@ -23577,8 +23620,6 @@ class MyLocationService : Service() {
         super.onDestroy()
         isRunning = false
         locProvider.removeLocationUpdates(locCallback)
-//        LocalBroadcastManager.getInstance(applicationContext as AppCompatActivity)
-//            .unregisterReceiver(receiverLatLongKmToService)
     }
 
     companion object{
