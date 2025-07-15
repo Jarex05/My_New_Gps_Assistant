@@ -1142,6 +1142,7 @@ class MyLocationService : Service() {
                                 piketStartNechet = item.picketStartNechet
                                 titleFinishNechet = item.finishNechet
                                 piketFinishNechet = item.picketFinishNechet
+                                speedNechet = item.speedNechet
 
                                 // Расчёт начала ограничения по киллометро
 
@@ -1436,8 +1437,6 @@ class MyLocationService : Service() {
                                 // Начало оповещения ограничения скорости за 2 км/ч
 
                                 if (distance <= faktNachKmNechet + 2200 && distance >= faktNachKmNechet + 2102){
-
-                                    speedNechet = item.speedNechet
 
                                     val arrayListSpeed = mutableListOf<Int>()
 
@@ -2868,6 +2867,7 @@ class MyLocationService : Service() {
                                 piketStartChet = item.picketStartChet
                                 titleFinishChet = item.finishChet
                                 piketFinishChet = item.picketFinishChet
+                                speedChet = item.speedChet
 
 
                                 // Расчёт начала ограничения по киллометро
@@ -3165,8 +3165,6 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 if (distance >= faktNachKmChet - 2200 && distance <= faktNachKmChet - 2102) {
-
-                                    speedChet = item.speedChet
 
                                     val arrayListSpeed = mutableListOf<Int>()
 
