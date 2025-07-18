@@ -110,5 +110,18 @@ class SharedPref {
             val shredPrefRecording: SharedPreferences = context.getSharedPreferences("startNechet", Context.MODE_PRIVATE)
             return shredPrefRecording.getInt("startNechet", 0)
         }
+
+        @SuppressLint("UseKtx")
+        fun setValueNotification(context: Context, value: String) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("notification", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putString("notification", value).toString()
+            editor.apply()
+        }
+
+        fun getValueNotification(context: Context): String {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("notification", Context.MODE_PRIVATE)
+            return shredPrefRecording.getString("notification", 0.toString()).toString()
+        }
     }
 }

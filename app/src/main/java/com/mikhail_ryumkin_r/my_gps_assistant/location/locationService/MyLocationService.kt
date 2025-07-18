@@ -560,6 +560,10 @@ class MyLocationService : Service() {
                         Log.d("MyLog", "distance: $distance")
                     }
 
+                    startNotification()
+                    val s = "км: $kmDistance пк: $pkDistance"
+                    SharedPref.Companion.setValueNotification(baseContext, s)
+
                     val v = SharedPref.Companion.getValue(baseContext)
 
                     if (v != 0) {
@@ -1789,7 +1793,11 @@ class MyLocationService : Service() {
                                             tvKmPk15 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr15 = ""
+                                    tvKmPk15 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 15){
                                     myOgranichenie.clear()
                                     tvOgr15 = ""
@@ -1824,7 +1832,11 @@ class MyLocationService : Service() {
                                             tvKmPk25 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr25 = ""
+                                    tvKmPk25 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 25){
                                     myOgranichenie.clear()
                                     tvOgr25 = ""
@@ -1859,7 +1871,11 @@ class MyLocationService : Service() {
                                             tvKmPk40 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr40 = ""
+                                    tvKmPk40 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 40){
                                     myOgranichenie.clear()
                                     tvOgr40 = ""
@@ -1894,7 +1910,11 @@ class MyLocationService : Service() {
                                             tvKmPk50 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr50 = ""
+                                    tvKmPk50 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 50){
                                     myOgranichenie.clear()
                                     tvOgr50 = ""
@@ -1929,7 +1949,11 @@ class MyLocationService : Service() {
                                             tvKmPk55 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr55 = ""
+                                    tvKmPk55 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 55){
                                     myOgranichenie.clear()
                                     tvOgr55 = ""
@@ -1964,7 +1988,11 @@ class MyLocationService : Service() {
                                             tvKmPk60 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr60 = ""
+                                    tvKmPk60 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 60){
                                     myOgranichenie.clear()
                                     tvOgr60 = ""
@@ -1999,7 +2027,11 @@ class MyLocationService : Service() {
                                             tvKmPk65 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr65 = ""
+                                    tvKmPk65 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 65){
                                     myOgranichenie.clear()
                                     tvOgr65 = ""
@@ -2034,7 +2066,11 @@ class MyLocationService : Service() {
                                             tvKmPk70 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr70 = ""
+                                    tvKmPk70 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 70){
                                     myOgranichenie.clear()
                                     tvOgr70 = ""
@@ -2069,7 +2105,11 @@ class MyLocationService : Service() {
                                             tvKmPk75 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr75 = ""
+                                    tvKmPk75 = ""
                                 }
+
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 75){
                                     myOgranichenie.clear()
                                     tvOgr75 = ""
@@ -3525,7 +3565,11 @@ class MyLocationService : Service() {
                                             tvKmPk15 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr15 = ""
+                                    tvKmPk15 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 15){
                                     myOgranichenie.clear()
                                     tvOgr15 = ""
@@ -3560,7 +3604,11 @@ class MyLocationService : Service() {
                                             tvKmPk25 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr25 = ""
+                                    tvKmPk25 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 25){
                                     myOgranichenie.clear()
                                     tvOgr25 = ""
@@ -3595,7 +3643,11 @@ class MyLocationService : Service() {
                                             tvKmPk40 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr40 = ""
+                                    tvKmPk40 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 40){
                                     myOgranichenie.clear()
                                     tvOgr40 = ""
@@ -3630,7 +3682,11 @@ class MyLocationService : Service() {
                                             tvKmPk50 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr50 = ""
+                                    tvKmPk50 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 50){
                                     myOgranichenie.clear()
                                     tvOgr50 = ""
@@ -3665,7 +3721,11 @@ class MyLocationService : Service() {
                                             tvKmPk55 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr55 = ""
+                                    tvKmPk55 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 55){
                                     myOgranichenie.clear()
                                     tvOgr55 = ""
@@ -3700,7 +3760,11 @@ class MyLocationService : Service() {
                                             tvKmPk60 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr60 = ""
+                                    tvKmPk60 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 60){
                                     myOgranichenie.clear()
                                     tvOgr60 = ""
@@ -3735,7 +3799,11 @@ class MyLocationService : Service() {
                                             tvKmPk65 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr65 = ""
+                                    tvKmPk65 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 65){
                                     myOgranichenie.clear()
                                     tvOgr65 = ""
@@ -3770,7 +3838,11 @@ class MyLocationService : Service() {
                                             tvKmPk70 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr70 = ""
+                                    tvKmPk70 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 70){
                                     myOgranichenie.clear()
                                     tvOgr70 = ""
@@ -3805,7 +3877,11 @@ class MyLocationService : Service() {
                                             tvKmPk75 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
+                                } else {
+                                    tvOgr75 = ""
+                                    tvKmPk75 = ""
                                 }
+
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 75){
                                     myOgranichenie.clear()
                                     tvOgr75 = ""
@@ -4062,32 +4138,71 @@ class MyLocationService : Service() {
 
     @SuppressLint("ObsoleteSdkInt")
     private fun startNotification(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val nChanel = NotificationChannel(
-                CHANNEL_ID,
-                "Location Service",
-                NotificationManager.IMPORTANCE_DEFAULT
+
+        val s = SharedPref.Companion.getValueNotification(baseContext)
+
+        val v = SharedPref.Companion.getValue(baseContext)
+
+        if (v != 0) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val nChanel = NotificationChannel(
+                    CHANNEL_ID_NECHET,
+                    "Location Service",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+                val nManager = getSystemService(NotificationManager::class.java) as NotificationManager
+                nManager.createNotificationChannel(nChanel)
+            }
+            val nIntent = Intent(this, MainActivity::class.java)
+            val pIntent = PendingIntent.getActivity(
+                this,
+                56,
+                nIntent,
+                PendingIntent.FLAG_MUTABLE
             )
-            val nManager = getSystemService(NotificationManager::class.java) as NotificationManager
-            nManager.createNotificationChannel(nChanel)
-        }
-        val nIntent = Intent(this, MainActivity::class.java)
-        val pIntent = PendingIntent.getActivity(
-            this,
-            55,
-            nIntent,
-            PendingIntent.FLAG_MUTABLE
-        )
-        val notification = NotificationCompat.Builder(
-            this,
-            CHANNEL_ID
-        ).setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Следуем с чётным")
-            .setContentIntent(pIntent).build()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(105, notification, FOREGROUND_SERVICE_TYPE_LOCATION)
+            val notification = NotificationCompat.Builder(
+                this,
+                CHANNEL_ID_NECHET
+            ).setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Следуем с нечётным")
+                .setContentText(s)
+                .setSilent(true)
+                .setContentIntent(pIntent).build()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(106, notification, FOREGROUND_SERVICE_TYPE_LOCATION)
+            } else {
+                startForeground(106, notification)
+            }
         } else {
-            startForeground(105, notification)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val nChanel = NotificationChannel(
+                    CHANNEL_ID_CHET,
+                    "Location Service",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+                val nManager = getSystemService(NotificationManager::class.java) as NotificationManager
+                nManager.createNotificationChannel(nChanel)
+            }
+            val nIntent = Intent(this, MainActivity::class.java)
+            val pIntent = PendingIntent.getActivity(
+                this,
+                55,
+                nIntent,
+                PendingIntent.FLAG_MUTABLE
+            )
+            val notification = NotificationCompat.Builder(
+                this,
+                CHANNEL_ID_CHET
+            ).setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Следуем с чётным")
+                .setContentText(s)
+                .setSilent(true)
+                .setContentIntent(pIntent).build()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(105, notification, FOREGROUND_SERVICE_TYPE_LOCATION)
+            } else {
+                startForeground(105, notification)
+            }
         }
     }
 
@@ -23665,7 +23780,8 @@ class MyLocationService : Service() {
     companion object{
 
         const val LOC_MODEL_INTENT = "loc_model_intent"
-        const val CHANNEL_ID = "channel_1"
+        const val CHANNEL_ID_CHET = "channel_1_chet"
+        const val CHANNEL_ID_NECHET = "channel_1_nechet"
         var isRunning = false
     }
 }

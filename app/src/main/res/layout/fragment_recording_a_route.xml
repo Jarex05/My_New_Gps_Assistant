@@ -8,6 +8,23 @@
     android:background="@color/white"
     tools:context=".fragments.RecordingARouteFragment">
 
+    <Button
+        android:id="@+id/savePlus"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:backgroundTint="#403D3D"
+        android:visibility="gone"
+        android:text="+"
+        android:textColorLink="#FBF7F7"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.175"
+        app:layout_constraintStart_toEndOf="@+id/tvDistanceRecording"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.229"
+        tools:ignore="HardcodedText" />
+
     <org.osmdroid.views.MapView
         android:id="@+id/mapRecording"
         android:layout_width="0dp"
@@ -82,8 +99,8 @@
         android:id="@+id/tvDistanceRecording"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:layout_marginEnd="200dp"
+        android:layout_marginTop="170dp"
+        android:layout_marginEnd="120dp"
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="italic"
@@ -96,7 +113,7 @@
         android:id="@+id/tvKmPkRecording"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="50dp"
         android:textColor="#000000"
         android:textSize="25sp"
         android:textStyle="bold|italic"
@@ -117,5 +134,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/saveMinus"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:backgroundTint="#403D3D"
+        android:visibility="gone"
+        android:text="-"
+        android:textColorLink="#FBF7F7"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvDistanceRecording"
+        app:layout_constraintHorizontal_bias="0.541"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.229"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/bRedacktor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#C74545"
+        android:text="Авторедактор км"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.924"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.471"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

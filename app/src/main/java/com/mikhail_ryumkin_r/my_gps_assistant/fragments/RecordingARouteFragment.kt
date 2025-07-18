@@ -41,9 +41,14 @@ import com.mikhail_ryumkin_r.my_gps_assistant.utils.SharedPref
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.checkPermission
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.showToast
 import com.mikhail_ryumkin_r.my_gps_assistant.BuildConfig
+import com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.customField.CustomFieldNechetFragment
+import com.mikhail_ryumkin_r.my_gps_assistant.location.locationModel.FragmentModelMinus
+import com.mikhail_ryumkin_r.my_gps_assistant.location.locationModel.FragmentModelPlus
+import com.mikhail_ryumkin_r.my_gps_assistant.utils.openFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
 //import org.osmdroid.library.BuildConfig
 import org.osmdroid.util.GeoPoint
@@ -56,6 +61,9 @@ import kotlin.getValue
 class RecordingARouteFragment : Fragment() {
     private var pl: Polyline? = null
     private var sbL = StringBuilder("")
+
+    private var savePlus50 = 0.0f
+    private var saveMinus50 = 0.0f
 
     private var isServiceRunningRecording = false
     private lateinit var pLauncherRecording: ActivityResultLauncher<Array<String>>
@@ -207,6 +215,9 @@ class RecordingARouteFragment : Fragment() {
         val listenerRecording = onClicksRecording()
         fStartStopRecording.setOnClickListener(listenerRecording)
         fCenterRecording.setOnClickListener(listenerRecording)
+        savePlus.setOnClickListener(listenerRecording)
+        saveMinus.setOnClickListener(listenerRecording)
+        bRedacktor.setOnClickListener(listenerRecording)
     }
 
     private fun onClicksRecording(): OnClickListener {
@@ -214,7 +225,44 @@ class RecordingARouteFragment : Fragment() {
             when(it.id) {
                 R.id.fStartStopRecording -> startStopServiceRecording()
                 R.id.fCenterRecording -> centerLocationRecording()
+                R.id.savePlus -> CoroutineScope(Dispatchers.IO).launch { savePlus() }
+                R.id.saveMinus -> CoroutineScope(Dispatchers.IO).launch { saveMinus() }
+                R.id.bRedacktor -> redacktor()
             }
+        }
+    }
+
+    private suspend fun savePlus() = withContext(Dispatchers.Main) {
+        savePlus50 = 20.0f
+        val fragmentPlus = FragmentModelPlus(
+            savePlus50
+        )
+        sendFragmentPlus(fragmentPlus)
+    }
+
+    private fun sendFragmentPlus(fragmentPlus: FragmentModelPlus){
+        val intent = Intent(LOC_MODEL_INTENT_FRAGMENT_PLUS)
+        intent.putExtra(LOC_MODEL_INTENT_FRAGMENT_PLUS, fragmentPlus)
+        context?.let { LocalBroadcastManager.getInstance(it).sendBroadcast(intent) }
+    }
+
+    private suspend fun saveMinus() = withContext(Dispatchers.Main) {
+        saveMinus50 = 20.0f
+        val fragmentMinus = FragmentModelMinus(
+            saveMinus50
+        )
+        sendFragmentMinusChet(fragmentMinus)
+    }
+
+    private fun sendFragmentMinusChet(fragmentMinus: FragmentModelMinus){
+        val intent = Intent(LOC_MODEL_INTENT_FRAGMENT_MINUS)
+        intent.putExtra(LOC_MODEL_INTENT_FRAGMENT_MINUS, fragmentMinus)
+        context?.let { LocalBroadcastManager.getInstance(it).sendBroadcast(intent) }
+    }
+
+    private fun redacktor() = with(binding) {
+        bRedacktor.setOnClickListener {
+//            openFragment(CustomFieldNechetFragment.newInstance())
         }
     }
 
@@ -273,6 +321,8 @@ class RecordingARouteFragment : Fragment() {
             binding.mapRecording.isVisible = binding.mapRecording.isGone
             binding.fCenterRecording.isVisible = binding.fCenterRecording.isGone
             binding.tvDistanceRecording.isVisible = binding.tvDistanceRecording.isGone
+            binding.savePlus.isVisible = binding.savePlus.isGone
+            binding.saveMinus.isVisible = binding.saveMinus.isGone
             binding.tvSpeedRecording.isVisible = binding.tvSpeedRecording.isGone
             binding.tvKmPkRecording.isVisible = binding.tvKmPkRecording.isGone
             val track = getTrackItem()
@@ -315,6 +365,8 @@ class RecordingARouteFragment : Fragment() {
             binding.mapRecording.isGone = binding.mapRecording.isVisible
             binding.fCenterRecording.isGone = binding.fCenterRecording.isVisible
             binding.tvDistanceRecording.isGone = binding.tvDistanceRecording.isVisible
+            binding.savePlus.isGone = binding.savePlus.isVisible
+            binding.saveMinus.isGone = binding.saveMinus.isVisible
             binding.tvSpeedRecording.isGone = binding.tvSpeedRecording.isVisible
             binding.tvKmPkRecording.isGone = binding.tvKmPkRecording.isVisible
         }
@@ -332,6 +384,8 @@ class RecordingARouteFragment : Fragment() {
         binding.mapRecording.isGone = binding.mapRecording.isVisible
         binding.fCenterRecording.isGone = binding.fCenterRecording.isVisible
         binding.tvDistanceRecording.isGone = binding.tvDistanceRecording.isVisible
+        binding.savePlus.isGone = binding.savePlus.isVisible
+        binding.saveMinus.isGone = binding.saveMinus.isVisible
         binding.tvSpeedRecording.isGone = binding.tvSpeedRecording.isVisible
         binding.tvKmPkRecording.isGone = binding.tvKmPkRecording.isVisible
     }
@@ -411,5 +465,8 @@ class RecordingARouteFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = RecordingARouteFragment()
+
+        const val LOC_MODEL_INTENT_FRAGMENT_PLUS = "fragment_intent_plus"
+        const val LOC_MODEL_INTENT_FRAGMENT_MINUS = "fragment_intent_minus"
     }
 }
