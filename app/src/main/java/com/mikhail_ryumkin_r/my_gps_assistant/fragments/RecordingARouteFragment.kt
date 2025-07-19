@@ -41,7 +41,9 @@ import com.mikhail_ryumkin_r.my_gps_assistant.utils.SharedPref
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.checkPermission
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.showToast
 import com.mikhail_ryumkin_r.my_gps_assistant.BuildConfig
+import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.redacktor.RedacktorFragmentChet
 import com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.customField.CustomFieldNechetFragment
+import com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.redacktor.RedacktorFragmentNechet
 import com.mikhail_ryumkin_r.my_gps_assistant.location.locationModel.FragmentModelMinus
 import com.mikhail_ryumkin_r.my_gps_assistant.location.locationModel.FragmentModelPlus
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.openFragment
@@ -204,8 +206,10 @@ class RecordingARouteFragment : Fragment() {
 
         if (v != 0) {
             switchRecording.isChecked = true
+            binding.bRedacktorNechet.isGone = binding.bRedacktorNechet.isVisible
         } else {
             switchRecording.isChecked = false
+            binding.bRedacktorChet.isGone = binding.bRedacktorChet.isVisible
         }
 
         switchMainRecording()
@@ -217,7 +221,8 @@ class RecordingARouteFragment : Fragment() {
         fCenterRecording.setOnClickListener(listenerRecording)
         savePlus.setOnClickListener(listenerRecording)
         saveMinus.setOnClickListener(listenerRecording)
-        bRedacktor.setOnClickListener(listenerRecording)
+        bRedacktorChet.setOnClickListener(listenerRecording)
+        bRedacktorNechet.setOnClickListener(listenerRecording)
     }
 
     private fun onClicksRecording(): OnClickListener {
@@ -227,7 +232,8 @@ class RecordingARouteFragment : Fragment() {
                 R.id.fCenterRecording -> centerLocationRecording()
                 R.id.savePlus -> CoroutineScope(Dispatchers.IO).launch { savePlus() }
                 R.id.saveMinus -> CoroutineScope(Dispatchers.IO).launch { saveMinus() }
-                R.id.bRedacktor -> redacktor()
+                R.id.bRedacktorChet -> redacktorChet()
+                R.id.bRedacktorNechet -> redacktorNechet()
             }
         }
     }
@@ -260,10 +266,12 @@ class RecordingARouteFragment : Fragment() {
         context?.let { LocalBroadcastManager.getInstance(it).sendBroadcast(intent) }
     }
 
-    private fun redacktor() = with(binding) {
-        bRedacktor.setOnClickListener {
-//            openFragment(CustomFieldNechetFragment.newInstance())
-        }
+    private fun redacktorChet() = with(binding) {
+        openFragment(RedacktorFragmentChet.newInstance())
+    }
+
+    private fun redacktorNechet() = with(binding) {
+        openFragment(RedacktorFragmentNechet.newInstance())
     }
 
     private fun centerLocationRecording(){
@@ -405,8 +413,10 @@ class RecordingARouteFragment : Fragment() {
 
         if (v != 0) {
             switchRecording.isChecked = true
+            binding.bRedacktorNechet.isGone = binding.bRedacktorNechet.isVisible
         } else {
             switchRecording.isChecked = false
+            binding.bRedacktorChet.isGone = binding.bRedacktorChet.isVisible
         }
     }
 
@@ -416,8 +426,12 @@ class RecordingARouteFragment : Fragment() {
         switchRecording.setOnClickListener {
             if (switchRecording.isChecked) {
                 SharedPref.Companion.setValueRecording(requireActivity(), 1)
+                binding.bRedacktorChet.isVisible = binding.bRedacktorChet.isGone
+                binding.bRedacktorNechet.isGone = binding.bRedacktorNechet.isVisible
             } else {
                 SharedPref.Companion.setValueRecording(requireActivity(), 0)
+                binding.bRedacktorNechet.isVisible = binding.bRedacktorNechet.isGone
+                binding.bRedacktorChet.isGone = binding.bRedacktorChet.isVisible
             }
         }
     }

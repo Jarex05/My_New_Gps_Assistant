@@ -117,4 +117,28 @@
     <string name="km_65">65</string>
     <string name="km_70">70</string>
     <string name="km_75">75</string>
+
+    <!--    Фрагмент Redacktor ADD для четного-->
+    <string name="fragment_add_km_start_redacktor_chet">Км. начало</string>
+    <string name="fragment_add_pk_start_redacktor_chet">Пк. начало</string>
+    <string name="fragment_add_minus_redacktor_chet">Минус</string>
+    <string name="fragment_add_plus_redacktor_chet">Плюс</string>
+
+    <!--    Фрагмент Redacktor ADD для нечетного-->
+    <string name="fragment_add_km_start_redacktor_nechet">Км. начало</string>
+    <string name="fragment_add_pk_start_redacktor_nechet">Пк. начало</string>
+    <string name="fragment_add_minus_redacktor_nechet">Минус</string>
+    <string name="fragment_add_plus_redacktor_nechet">Плюс</string>
+
+    <!--    Фрагмент Redacktor Update для четного-->
+    <string name="fragment_update_km_start_redacktor_chet">Км. начало</string>
+    <string name="fragment_update_pk_start_redacktor_chet">Пк. начало</string>
+    <string name="fragment_update_minus_redacktor_chet">Минус</string>
+    <string name="fragment_update_plus_redacktor_chet">Плюс</string>
+
+    <!--    Фрагмент Redacktor Update для нечетного-->
+    <string name="fragment_update_km_start_redacktor_nechet">Км. начало</string>
+    <string name="fragment_update_pk_start_redacktor_nechet">Пк. начало</string>
+    <string name="fragment_update_minus_redacktor_nechet">Минус</string>
+    <string name="fragment_update_plus_redacktor_nechet">Плюс</string>
 </resources>

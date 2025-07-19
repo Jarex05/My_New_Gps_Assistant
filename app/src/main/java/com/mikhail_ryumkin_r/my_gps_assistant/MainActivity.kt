@@ -34,8 +34,6 @@ import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.limitation.Limitati
 import com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.limitation.LimitationsNechetFragment
 import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.pantograph.LoweringChetFragment
 import com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.pantograph.LoweringNechetFragment
-import com.mikhail_ryumkin_r.my_gps_assistant.fragments.MainCustomChetFragment
-import com.mikhail_ryumkin_r.my_gps_assistant.fragments.MainCustomNechetFragment
 import com.mikhail_ryumkin_r.my_gps_assistant.fragments.SetFragment
 import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.customField.CustomFieldChetFragment
 import com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.customField.CustomFieldNechetFragment
@@ -123,7 +121,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @SuppressLint("UseKtx")
     private fun showBottomDialog() {
-        var dialog = Dialog(this)
+        val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.bottomsheetlayout)
 
@@ -132,8 +130,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (v != 0) {
             //***************************************************************
 
-            var limitationNechetLayout : TextView = dialog.findViewById(R.id.layoutLimitationNechet)
-            var linearLayoutLimitationNechetLayout : LinearLayout = dialog.findViewById(R.id.linearLayoutLimitationNechet)
+            val limitationNechetLayout : TextView = dialog.findViewById(R.id.layoutLimitationNechet)
+            val linearLayoutLimitationNechetLayout : LinearLayout = dialog.findViewById(R.id.linearLayoutLimitationNechet)
             linearLayoutLimitationNechetLayout.isGone = linearLayoutLimitationNechetLayout.isVisible
 
             limitationNechetLayout.setOnClickListener {
@@ -143,8 +141,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             //***************************************************************
 
-            var loweringNechetLayout : TextView = dialog.findViewById(R.id.layoutLoweringNechet)
-            var linearLayoutLoweringNechetLayout : LinearLayout = dialog.findViewById(R.id.linearLayoutLoweringNechet)
+            val loweringNechetLayout : TextView = dialog.findViewById(R.id.layoutLoweringNechet)
+            val linearLayoutLoweringNechetLayout : LinearLayout = dialog.findViewById(R.id.linearLayoutLoweringNechet)
             linearLayoutLoweringNechetLayout.isGone = linearLayoutLoweringNechetLayout.isVisible
 
             loweringNechetLayout.setOnClickListener {
@@ -154,8 +152,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             //***************************************************************
 
-            var brakingNechetLayout : TextView = dialog.findViewById(R.id.layoutBrakingNechet)
-            var linearLayoutBrakingNechetLayout : LinearLayout = dialog.findViewById(R.id.linearLayoutBrakingNechet)
+            val brakingNechetLayout : TextView = dialog.findViewById(R.id.layoutBrakingNechet)
+            val linearLayoutBrakingNechetLayout : LinearLayout = dialog.findViewById(R.id.linearLayoutBrakingNechet)
             linearLayoutBrakingNechetLayout.isGone = linearLayoutBrakingNechetLayout.isVisible
 
             brakingNechetLayout.setOnClickListener {
@@ -176,8 +174,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             //***************************************************************
 
-            var customFieldNechetLayout : TextView = dialog.findViewById(R.id.layoutCustom_FieldNechet)
-            var linearLayoutCustomFieldNechetLayout : LinearLayout = dialog.findViewById(R.id.linearLayoutCustom_FieldNechet)
+            val customFieldNechetLayout : TextView = dialog.findViewById(R.id.layoutCustom_FieldNechet)
+            val linearLayoutCustomFieldNechetLayout : LinearLayout = dialog.findViewById(R.id.linearLayoutCustom_FieldNechet)
             linearLayoutCustomFieldNechetLayout.isGone = linearLayoutCustomFieldNechetLayout.isVisible
 
             customFieldNechetLayout.setOnClickListener {
@@ -189,8 +187,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             //***************************************************************
 
-            var limitationChetLayout: TextView = dialog.findViewById(R.id.layoutLimitationChet)
-            var linearLayoutLimitationChetLayout: LinearLayout =
+            val limitationChetLayout: TextView = dialog.findViewById(R.id.layoutLimitationChet)
+            val linearLayoutLimitationChetLayout: LinearLayout =
                 dialog.findViewById(R.id.linearLayoutLimitationChet)
             linearLayoutLimitationChetLayout.isGone = linearLayoutLimitationChetLayout.isVisible
 
@@ -201,8 +199,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             //***************************************************************
 
-            var loweringChetLayout: TextView = dialog.findViewById(R.id.layoutLoweringChet)
-            var linearLayoutLoweringChetLayout: LinearLayout =
+            val loweringChetLayout: TextView = dialog.findViewById(R.id.layoutLoweringChet)
+            val linearLayoutLoweringChetLayout: LinearLayout =
                 dialog.findViewById(R.id.linearLayoutLoweringChet)
             linearLayoutLoweringChetLayout.isGone = linearLayoutLoweringChetLayout.isVisible
 
@@ -213,8 +211,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             //***************************************************************
 
-            var brakingChetLayout: TextView = dialog.findViewById(R.id.layoutBrakingChet)
-            var linearLayoutBrakingChetLayout: LinearLayout =
+            val brakingChetLayout: TextView = dialog.findViewById(R.id.layoutBrakingChet)
+            val linearLayoutBrakingChetLayout: LinearLayout =
                 dialog.findViewById(R.id.linearLayoutBrakingChet)
             linearLayoutBrakingChetLayout.isGone = linearLayoutBrakingChetLayout.isVisible
 
@@ -239,8 +237,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             //***************************************************************
 
-            var customFieldChetLayout: TextView = dialog.findViewById(R.id.layoutCustom_FieldChet)
-            var linearLayoutCustomFieldChetLayout: LinearLayout =
+            val customFieldChetLayout: TextView = dialog.findViewById(R.id.layoutCustom_FieldChet)
+            val linearLayoutCustomFieldChetLayout: LinearLayout =
                 dialog.findViewById(R.id.linearLayoutCustom_FieldChet)
             linearLayoutCustomFieldChetLayout.isGone = linearLayoutCustomFieldChetLayout.isVisible
 
@@ -254,7 +252,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             //***************************************************************
 
-        var cancelButton : ImageView = dialog.findViewById(R.id.cancelButton)
+        val cancelButton : ImageView = dialog.findViewById(R.id.cancelButton)
 
         cancelButton.setOnClickListener {
             dialog.dismiss()
