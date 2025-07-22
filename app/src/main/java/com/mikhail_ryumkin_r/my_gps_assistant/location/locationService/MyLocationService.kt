@@ -1436,11 +1436,30 @@ class MyLocationService : Service() {
 
                                 myLimitation.add(faktNachKmNechet)
 
+                                tvOgr15 = ""
+                                tvOgr25 = ""
+                                tvOgr40 = ""
+                                tvOgr50 = ""
+                                tvOgr55 = ""
+                                tvOgr60 = ""
+                                tvOgr65 = ""
+                                tvOgr70 = ""
+                                tvOgr75 = ""
+                                tvKmPk15 = ""
+                                tvKmPk25 = ""
+                                tvKmPk40 = ""
+                                tvKmPk50 = ""
+                                tvKmPk55 = ""
+                                tvKmPk60 = ""
+                                tvKmPk65 = ""
+                                tvKmPk70 = ""
+                                tvKmPk75 = ""
+
                                 // Конец расчёта конца ограничения по киллометро
 
                                 // Начало оповещения ограничения скорости за 2 км/ч
 
-                                if (distance <= faktNachKmNechet + 2200 && distance >= faktNachKmNechet + 2102){
+                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002){
 
                                     val arrayListSpeed = mutableListOf<Int>()
 
@@ -3198,59 +3217,69 @@ class MyLocationService : Service() {
 
                                 myLimitation.add(faktNachKmChet)
 
+                                tvOgr15 = ""
+                                tvOgr25 = ""
+                                tvOgr40 = ""
+                                tvOgr50 = ""
+                                tvOgr55 = ""
+                                tvOgr60 = ""
+                                tvOgr65 = ""
+                                tvOgr70 = ""
+                                tvOgr75 = ""
+                                tvKmPk15 = ""
+                                tvKmPk25 = ""
+                                tvKmPk40 = ""
+                                tvKmPk50 = ""
+                                tvKmPk55 = ""
+                                tvKmPk60 = ""
+                                tvKmPk65 = ""
+                                tvKmPk70 = ""
+                                tvKmPk75 = ""
+
                                 // Конец расчёта конца ограничения по киллометро
 
                                 // Начало оповещения ограничения скорости за 2 км/ч
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (distance >= faktNachKmChet - 2200 && distance <= faktNachKmChet - 2102) {
+                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002) {
 
                                     val arrayListSpeed = mutableListOf<Int>()
 
                                     when (speedChet) {
                                         15 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 15!")
                                             val int15 = 15
                                             arrayListSpeed.add(15)
                                         }
                                         25 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 25!")
                                             val int25 = 25
                                             arrayListSpeed.add(25)
                                         }
                                         40 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 40!")
                                             val int40 = 40
                                             arrayListSpeed.add(40)
                                         }
                                         50 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 50!")
                                             val int50 = 50
                                             arrayListSpeed.add(50)
                                         }
                                         55 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 55!")
                                             val int55 = 55
                                             arrayListSpeed.add(55)
                                         }
                                         60 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 60!")
                                             val int60 = 60
                                             arrayListSpeed.add(60)
                                         }
                                         65 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 65!")
                                             val int65 = 65
                                             arrayListSpeed.add(65)
                                         }
                                         70 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 70!")
                                             val int70 = 70
                                             arrayListSpeed.add(70)
                                         }
                                         75 -> {
-                                            Log.d("MyLog28", "Зашли и расчитали 75!")
                                             val int75 = 75
                                             arrayListSpeed.add(75)
                                         }
@@ -3565,9 +3594,6 @@ class MyLocationService : Service() {
                                             tvKmPk15 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr15 = ""
-//                                    tvKmPk15 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 15){
