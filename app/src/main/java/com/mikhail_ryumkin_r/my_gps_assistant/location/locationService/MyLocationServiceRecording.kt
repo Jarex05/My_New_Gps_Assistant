@@ -109,6 +109,7 @@ class MyLocationServiceRecording : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         myDbManagerRedacktor = MyDbManagerRedacktor(applicationContext)
         distance1Recording = SharedPref.Companion.getValueKmAddd(baseContext).toFloat()
+        distance2Recording = SharedPref.Companion.getValueKmAddd(baseContext).toFloat()
         registerLocReceiverPlus()
         registerLocReceiverMinus()
         startNotificationRecording()
@@ -141,6 +142,7 @@ class MyLocationServiceRecording : Service() {
 
                     if (v != 0) {
                         distance1Recording -= lastLocationRecording?.distanceTo(currentLocationRecording)!!
+                        distance2Recording -= lastLocationRecording?.distanceTo(currentLocationRecording)!!
 
                         CoroutineScope(Dispatchers.IO).launch {
                             calculationKmNechet()
@@ -578,6 +580,7 @@ class MyLocationServiceRecording : Service() {
 
                     } else {
                         distance1Recording += lastLocationRecording?.distanceTo(currentLocationRecording)!!
+                        distance2Recording += lastLocationRecording?.distanceTo(currentLocationRecording)!!
 
                         CoroutineScope(Dispatchers.IO).launch {
                             calculationKmChet()

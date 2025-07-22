@@ -1794,8 +1794,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr15 = ""
-                                    tvKmPk15 = ""
+//                                    tvOgr15 = ""
+//                                    tvKmPk15 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 15){
@@ -1833,8 +1833,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr25 = ""
-                                    tvKmPk25 = ""
+//                                    tvOgr25 = ""
+//                                    tvKmPk25 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 25){
@@ -1872,8 +1872,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr40 = ""
-                                    tvKmPk40 = ""
+//                                    tvOgr40 = ""
+//                                    tvKmPk40 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 40){
@@ -1911,8 +1911,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr50 = ""
-                                    tvKmPk50 = ""
+//                                    tvOgr50 = ""
+//                                    tvKmPk50 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 50){
@@ -1950,8 +1950,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr55 = ""
-                                    tvKmPk55 = ""
+//                                    tvOgr55 = ""
+//                                    tvKmPk55 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 55){
@@ -1989,8 +1989,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr60 = ""
-                                    tvKmPk60 = ""
+//                                    tvOgr60 = ""
+//                                    tvKmPk60 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 60){
@@ -2028,8 +2028,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr65 = ""
-                                    tvKmPk65 = ""
+//                                    tvOgr65 = ""
+//                                    tvKmPk65 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 65){
@@ -2067,8 +2067,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr70 = ""
-                                    tvKmPk70 = ""
+//                                    tvOgr70 = ""
+//                                    tvKmPk70 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 70){
@@ -2106,8 +2106,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr75 = ""
-                                    tvKmPk75 = ""
+//                                    tvOgr75 = ""
+//                                    tvKmPk75 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 75){
@@ -3566,8 +3566,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr15 = ""
-                                    tvKmPk15 = ""
+//                                    tvOgr15 = ""
+//                                    tvKmPk15 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 15){
@@ -3605,8 +3605,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr25 = ""
-                                    tvKmPk25 = ""
+//                                    tvOgr25 = ""
+//                                    tvKmPk25 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 25){
@@ -3644,8 +3644,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr40 = ""
-                                    tvKmPk40 = ""
+//                                    tvOgr40 = ""
+//                                    tvKmPk40 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 40){
@@ -3683,8 +3683,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr50 = ""
-                                    tvKmPk50 = ""
+//                                    tvOgr50 = ""
+//                                    tvKmPk50 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 50){
@@ -3722,8 +3722,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr55 = ""
-                                    tvKmPk55 = ""
+//                                    tvOgr55 = ""
+//                                    tvKmPk55 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 55){
@@ -3761,8 +3761,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr60 = ""
-                                    tvKmPk60 = ""
+//                                    tvOgr60 = ""
+//                                    tvKmPk60 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 60){
@@ -3800,8 +3800,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr65 = ""
-                                    tvKmPk65 = ""
+//                                    tvOgr65 = ""
+//                                    tvKmPk65 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 65){
@@ -3839,8 +3839,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr70 = ""
-                                    tvKmPk70 = ""
+//                                    tvOgr70 = ""
+//                                    tvKmPk70 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 70){
@@ -3878,8 +3878,8 @@ class MyLocationService : Service() {
                                         }
                                     }
                                 } else {
-                                    tvOgr75 = ""
-                                    tvKmPk75 = ""
+//                                    tvOgr75 = ""
+//                                    tvKmPk75 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 75){
@@ -4156,7 +4156,7 @@ class MyLocationService : Service() {
             val nIntent = Intent(this, MainActivity::class.java)
             val pIntent = PendingIntent.getActivity(
                 this,
-                56,
+                59,
                 nIntent,
                 PendingIntent.FLAG_MUTABLE
             )
@@ -4169,9 +4169,9 @@ class MyLocationService : Service() {
                 .setSilent(true)
                 .setContentIntent(pIntent).build()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(106, notification, FOREGROUND_SERVICE_TYPE_LOCATION)
+                startForeground(109, notification, FOREGROUND_SERVICE_TYPE_LOCATION)
             } else {
-                startForeground(106, notification)
+                startForeground(109, notification)
             }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

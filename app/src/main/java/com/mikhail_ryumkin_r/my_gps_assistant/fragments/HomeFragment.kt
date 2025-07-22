@@ -223,9 +223,7 @@ class HomeFragment : Fragment() {
             tvDistance.text = distance
             tvKmPk.text = kmPk
             tvSpeed.text = speed
-            CoroutineScope(Dispatchers.IO).launch {
-                updatePolyline(it.geoPointsTrack)
-            }
+            updatePolyline(it.geoPointsTrack)
             val tvOgr15text = it.tvOgr15
             val tvOgr25text = it.tvOgr25
             val tvOgr40text = it.tvOgr40
@@ -363,6 +361,7 @@ class HomeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        mLocOverlay.disableMyLocation()
 
         switch = binding.switch1
 
@@ -453,17 +452,15 @@ class HomeFragment : Fragment() {
         context?.let { LocalBroadcastManager.getInstance(it).sendBroadcast(intentLatLongKmToService) }
     }
 
-    private suspend fun fillPolyline(list: ArrayList<GeoPoint>) = withContext(Dispatchers.IO){
+    private fun fillPolyline(list: ArrayList<GeoPoint>) {
         list.forEach {
             polyline.addPoint(it)
         }
     }
 
-    private suspend fun updatePolyline(list: ArrayList<GeoPoint>) = withContext(Dispatchers.IO){
+    private fun updatePolyline(list: ArrayList<GeoPoint>) {
         if (list.size > 1 && firstStart){
-            CoroutineScope(Dispatchers.IO).launch {
-                fillPolyline(list)
-            }
+            fillPolyline(list)
             firstStart = false
         }
     }
