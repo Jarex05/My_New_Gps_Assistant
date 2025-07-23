@@ -1130,6 +1130,25 @@ class MyLocationService : Service() {
                                 myBrake.add(faktNachKmBrakeNechet)
                                 brake500.add(faktNachKmBrakeNechet + 500)
 
+                                tvOgr15 = ""
+                                tvOgr25 = ""
+                                tvOgr40 = ""
+                                tvOgr50 = ""
+                                tvOgr55 = ""
+                                tvOgr60 = ""
+                                tvOgr65 = ""
+                                tvOgr70 = ""
+                                tvOgr75 = ""
+                                tvKmPk15 = ""
+                                tvKmPk25 = ""
+                                tvKmPk40 = ""
+                                tvKmPk50 = ""
+                                tvKmPk55 = ""
+                                tvKmPk60 = ""
+                                tvKmPk65 = ""
+                                tvKmPk70 = ""
+                                tvKmPk75 = ""
+
                                 // Конец расчёта начала Торможения по киллометро
                             }
                         }
@@ -1435,25 +1454,6 @@ class MyLocationService : Service() {
                                 }
 
                                 myLimitation.add(faktNachKmNechet)
-
-                                tvOgr15 = ""
-                                tvOgr25 = ""
-                                tvOgr40 = ""
-                                tvOgr50 = ""
-                                tvOgr55 = ""
-                                tvOgr60 = ""
-                                tvOgr65 = ""
-                                tvOgr70 = ""
-                                tvOgr75 = ""
-                                tvKmPk15 = ""
-                                tvKmPk25 = ""
-                                tvKmPk40 = ""
-                                tvKmPk50 = ""
-                                tvKmPk55 = ""
-                                tvKmPk60 = ""
-                                tvKmPk65 = ""
-                                tvKmPk70 = ""
-                                tvKmPk75 = ""
 
                                 // Конец расчёта конца ограничения по киллометро
 
@@ -2910,6 +2910,25 @@ class MyLocationService : Service() {
                                 myBrake.add(faktNachKmBrakeChet)
                                 brake500.add(faktNachKmBrakeChet - 500)
 
+                                tvOgr15 = ""
+                                tvOgr25 = ""
+                                tvOgr40 = ""
+                                tvOgr50 = ""
+                                tvOgr55 = ""
+                                tvOgr60 = ""
+                                tvOgr65 = ""
+                                tvOgr70 = ""
+                                tvOgr75 = ""
+                                tvKmPk15 = ""
+                                tvKmPk25 = ""
+                                tvKmPk40 = ""
+                                tvKmPk50 = ""
+                                tvKmPk55 = ""
+                                tvKmPk60 = ""
+                                tvKmPk65 = ""
+                                tvKmPk70 = ""
+                                tvKmPk75 = ""
+
                                 // Конец расчёта начала Торможения по киллометро
                             }
                         }
@@ -3216,25 +3235,6 @@ class MyLocationService : Service() {
                                 }
 
                                 myLimitation.add(faktNachKmChet)
-
-                                tvOgr15 = ""
-                                tvOgr25 = ""
-                                tvOgr40 = ""
-                                tvOgr50 = ""
-                                tvOgr55 = ""
-                                tvOgr60 = ""
-                                tvOgr65 = ""
-                                tvOgr70 = ""
-                                tvOgr75 = ""
-                                tvKmPk15 = ""
-                                tvKmPk25 = ""
-                                tvKmPk40 = ""
-                                tvKmPk50 = ""
-                                tvKmPk55 = ""
-                                tvKmPk60 = ""
-                                tvKmPk65 = ""
-                                tvKmPk70 = ""
-                                tvKmPk75 = ""
 
                                 // Конец расчёта конца ограничения по киллометро
 
