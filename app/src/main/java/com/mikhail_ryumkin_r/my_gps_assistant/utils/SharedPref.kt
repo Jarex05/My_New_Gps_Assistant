@@ -123,5 +123,70 @@ class SharedPref {
             val shredPrefRecording: SharedPreferences = context.getSharedPreferences("notification", Context.MODE_PRIVATE)
             return shredPrefRecording.getString("notification", 0.toString()).toString()
         }
+
+        @SuppressLint("UseKtx")
+        fun setValueDeleteKmStart(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("deleteKmStart", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("deleteKmStart", value)
+            editor.apply()
+        }
+
+        fun getValueDeleteKmStart(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("deleteKmStart", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("deleteKmStart", 0)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueDeletePkStart(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("deletePkStart", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("deletePkStart", value)
+            editor.apply()
+        }
+
+        fun getValueDeletePkStart(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("deletePkStart", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("deletePkStart", 0)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueDeleteKmFinish(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("deleteKmFinish", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("deleteKmFinish", value)
+            editor.apply()
+        }
+
+        fun getValueDeleteKmFinish(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("deleteKmFinish", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("deleteKmFinish", 0)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueDeletePkFinish(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("deletePkFinish", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("deletePkFinish", value)
+            editor.apply()
+        }
+
+        fun getValueDeletePkFinish(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("deletePkFinish", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("deletePkFinish", 0)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueDeleteSpeed(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("deleteSpeed", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("deleteSpeed", value)
+            editor.apply()
+        }
+
+        fun getValueDeleteSpeed(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("deleteSpeed", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("deleteSpeed", 0)
+        }
     }
 }

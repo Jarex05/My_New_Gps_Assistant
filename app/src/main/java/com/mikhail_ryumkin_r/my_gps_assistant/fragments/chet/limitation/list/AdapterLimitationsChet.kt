@@ -2,6 +2,7 @@ package com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.limitation.list
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.mikhail_ryumkin_r.my_gps_assistant.R
 import com.mikhail_ryumkin_r.my_gps_assistant.databinding.ItemLimitationsChetBinding
 import com.mikhail_ryumkin_r.my_gps_assistant.db.limitation.ListItemLimitationsChet
 import com.mikhail_ryumkin_r.my_gps_assistant.db.limitation.MyDbManagerLimitations
+import com.mikhail_ryumkin_r.my_gps_assistant.utils.SharedPref
 import kotlin.collections.ArrayList
 
 class AdapterLimitationsChet(listMain: ArrayList<ListItemLimitationsChet>, private var listLimitationsFragmentChet: ListLimitationsFragmentChet) : RecyclerView.Adapter<AdapterLimitationsChet.MyViewHolder>() {
@@ -93,6 +95,21 @@ class AdapterLimitationsChet(listMain: ArrayList<ListItemLimitationsChet>, priva
 
     fun removeItemLimitationsChet(pos: Int, dbManagerLimitations: MyDbManagerLimitations){
         dbManagerLimitations.deleteDbDataLimitationsChet(listArray[pos].idChet)
+        var a = 0
+        var b = 0
+        var c = 0
+        var d = 0
+        var e = 0
+        a = listArray[pos].speedChet
+        b = listArray[pos].startChet
+        c = listArray[pos].picketStartChet
+        d = listArray[pos].finishChet
+        e = listArray[pos].picketFinishChet
+        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeleteSpeed(it.context, a) }
+        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeleteKmStart(it.context, b) }
+        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeleteKmFinish(it.context, d) }
+        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeletePkStart(it.context, c) }
+        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeletePkFinish(it.context, e) }
         listArray.removeAt(pos)
         notifyItemRangeChanged(0, listArray.size)
         notifyItemRemoved(pos)

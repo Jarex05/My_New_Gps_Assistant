@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
 import java.io.IOException
+import kotlin.collections.mutableListOf
 
 
 @Suppress("DEPRECATION")
@@ -53,41 +54,40 @@ class MyLocationService : Service() {
     private var isOgranichenie: Int = 0
     private var speedLimit = true
 
-//    val arrayListSpeed = mutableListOf<Int>()
+    val myLimitationsList2 = mutableListOf<Int>()
 
     //**********************************************
 
-    var mySpeed = mutableListOf<Int>()
-
-    //**********************************************
+    val customField700 = mutableListOf<Int>()
+    val brake500 = mutableListOf<Int>()
+    val pantograph800 = mutableListOf<Int>()
 
     val myOgranichenie = mutableListOf<Int>()
     val myPrev400 = mutableListOf<Int>()
 
-    val pantograph800 = mutableListOf<Int>()
-    val brake500 = mutableListOf<Int>()
-    val customField700 = mutableListOf<Int>()
 
+    val myList = mutableListOf<Int>()
+    val mySpeed1 = mutableListOf<Int>()
+
+    var mySpeed = mutableListOf<Int>()
     val myLimitation = mutableListOf<Int>()
     val myPantograph = mutableListOf<Int>()
     val myBrake = mutableListOf<Int>()
 
     //**********************************************
 
+    val customField700List = mutableListOf<Int>()
+    val brake500List = mutableListOf<Int>()
+    val pantograph800List = mutableListOf<Int>()
+
     val myOgranichenieList = mutableListOf<Int>()
     val myPrev400List = mutableListOf<Int>()
-
-    val pantograph800List = mutableListOf<Int>()
-    val brake500List = mutableListOf<Int>()
-    val customField700List = mutableListOf<Int>()
 
     val myLimitationList = mutableListOf<Int>()
     val myPantographList = mutableListOf<Int>()
     val myBrakeList = mutableListOf<Int>()
 
     //**********************************************
-
-    val customField1200 = mutableListOf<Int>()
 
     private var isOgr15 = true
     private var isOgr25 = true
@@ -212,6 +212,9 @@ class MyLocationService : Service() {
     private val distanceKmList = ArrayList<ListLatLongKm>()
     private lateinit var geoPointsTrack: ArrayList<GeoPoint>
 
+    private var dataListArray = mutableListOf<ListKm>()
+    private var dataCustomField = mutableListOf<ListCustomField>()
+
     private var lastLocation: Location? = null
     private lateinit var locProvider: FusedLocationProviderClient
     private lateinit var locRequest: LocationRequest
@@ -317,6 +320,18 @@ class MyLocationService : Service() {
         }
     }
 
+    data class ListKm(var kmStart: Int, var pkStart: Int, var kmFinish: Int, var pkFinish: Int, var speed: Int){
+        override fun toString(): String {
+            return super.toString()
+        }
+    }
+
+    data class ListCustomField(var kmStart: Int, var customField: String){
+        override fun toString(): String {
+            return super.toString()
+        }
+    }
+
     data class ListTv(val startKm: Int, val pkStart: Int, val startFinish: Int, val pkFinish: Int){
         override fun toString(): String {
             return super.toString()
@@ -324,6 +339,7 @@ class MyLocationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        SharedPref.Companion.setValueDeleteSpeed(baseContext, 0)
         myDbManagerPantograph = MyDbManagerPantograph(applicationContext)
         myDbManagerBrake = MyDbManagerBrake(applicationContext)
         myDbManagerLimitations = MyDbManagerLimitations(applicationContext)
@@ -404,47 +420,63 @@ class MyLocationService : Service() {
     }
 
     private fun soundSpinner() {
+
+//        dataCustomField[0].customField
         when (customField2) {
             "Нейтральная вставка" -> {
 
                 playSound(neutralInsert)
                 Log.d("MyLog24", "playSound = Нейтральная вставка")
+//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
+//                dataCustomField.remove(listKmToRemove)
 
             }
             "Посадка бригады" -> {
 
                 playSound(posadkaBrigady)
                 Log.d("MyLog24", "playSound = Посадка бригады")
+//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
+//                dataCustomField.remove(listKmToRemove)
 
             }
             "Высадка бригады" -> {
 
                 playSound(vysadkaBrigady)
                 Log.d("MyLog24", "playSound = Высадка бригады")
+//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
+//                dataCustomField.remove(listKmToRemove)
 
             }
             "Включите саут" -> {
 
                 playSound(saut)
                 Log.d("MyLog24", "playSound = Включите саут")
+//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
+//                dataCustomField.remove(listKmToRemove)
 
             }
             "Выключите саут" -> {
 
                 playSound(sautout)
                 Log.d("MyLog24", "playSound = Выключите саут")
+//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
+//                dataCustomField.remove(listKmToRemove)
 
             }
             "Впереди блокпост" -> {
 
                 playSound(blokPost)
                 Log.d("MyLog24", "playSound = Впереди блокпост")
+//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
+//                dataCustomField.remove(listKmToRemove)
 
             }
             "Правильность пути" -> {
 
                 playSound(pravelnostyPuti)
                 Log.d("MyLog24", "playSound = Правильность пути")
+//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
+//                dataCustomField.remove(listKmToRemove)
             }
         }
     }
@@ -491,32 +523,32 @@ class MyLocationService : Service() {
     }
 
     private fun soundVoice2000() {
-        if (mySpeed.isNotEmpty()) {
-            if (mySpeed[0] == 15) {
+        if (dataListArray.isNotEmpty()) {
+            if (dataListArray[0].speed == 15) {
                 playSound(voice15)
             }
-            else if (mySpeed[0] == 25) {
+            else if (dataListArray[0].speed == 25) {
                 playSound(voice25)
             }
-            else if (mySpeed[0] == 40) {
+            else if (dataListArray[0].speed == 40) {
                 playSound(voice40)
             }
-            else if (mySpeed[0] == 50) {
+            else if (dataListArray[0].speed == 50) {
                 playSound(voice50)
             }
-            else if (mySpeed[0] == 55) {
+            else if (dataListArray[0].speed == 55) {
                 playSound(voice55)
             }
-            else if (mySpeed[0] == 60) {
+            else if (dataListArray[0].speed == 60) {
                 playSound(voice60)
             }
-            else if (mySpeed[0] == 65) {
+            else if (dataListArray[0].speed == 65) {
                 playSound(voice65)
             }
-            else if (mySpeed[0] == 70) {
+            else if (dataListArray[0].speed == 70) {
                 playSound(voice70)
             }
-            else if (mySpeed[0] == 75) {
+            else if (dataListArray[0].speed == 75) {
                 playSound(voice75)
             }
         }
@@ -572,16 +604,49 @@ class MyLocationService : Service() {
                             calculationKmNechet()
                         }
 
-                        val myOgranichenie1 = myOgranichenie.toMutableSet().sorted()
-                        val myPrev4001 = myPrev400.toMutableSet().sorted()
-                        val pantograph8001 = pantograph800.toMutableSet().sorted()
-                        val brake5001 = brake500.toMutableSet().sorted()
-                        val neutralInsert6001 = customField700.toMutableSet().sorted()
-                        val myLimitation1 = myLimitation.toMutableSet().sorted()
-                        val myBrake1 = myBrake.toMutableSet().sorted()
-                        val myPantograph1 = myPantograph.toMutableSet().sorted()
+                        val myOgranichenie1 = myOgranichenie.toMutableSet()
+                        val myPrev4001 = myPrev400.toMutableSet()
+                        val pantograph8001 = pantograph800.toMutableSet()
+                        val brake5001 = brake500.toMutableSet()
+                        val neutralInsert6001 = customField700.toMutableSet()
+//                        Log.d("MyLog47", "neutralInsert6001 => $neutralInsert6001")
+                        val myLimitation1 = myLimitation.toMutableSet()
+                        val myLimitationList2 = myLimitationsList2.toMutableSet()
+                        val myBrake1 = myBrake.toMutableSet()
+                        val myPantograph1 = myPantograph.toMutableSet()
 
-                        Log.d("MyLog16", "mySpeed16 => $mySpeed")
+                        if (dataListArray.isNotEmpty()) {
+                            val a = SharedPref.Companion.getValueDeleteSpeed(baseContext)
+                            val b = SharedPref.Companion.getValueDeleteKmStart(baseContext)
+                            val c = SharedPref.Companion.getValueDeletePkStart(baseContext)
+                            val d = SharedPref.Companion.getValueDeleteKmFinish(baseContext)
+                            val e = SharedPref.Companion.getValueDeletePkFinish(baseContext)
+                            var indexToRemove: Int? = null
+                            for ((index, number) in dataListArray.withIndex()) {
+                                if (number.speed == a && number.kmStart == b &&
+                                    number.pkStart == c && number.kmFinish == d &&
+                                    number.pkFinish == e) {
+                                    Log.d("MyLog35", "number.kmStart => ${number.kmStart}, " +
+                                            "number.pkStart => ${number.pkStart}, " +
+                                            "number.kmFinish => ${number.kmFinish}, " +
+                                            "number.pkFinish => ${number.pkFinish} " +
+                                            "number.speed ${number.speed}")
+                                    indexToRemove = index
+                                    break
+                                }
+                            }
+
+                            if (indexToRemove != null) {
+                                dataListArray.removeAt(indexToRemove)
+                            }
+                            SharedPref.Companion.setValueDeleteSpeed(baseContext, 0)
+                            SharedPref.Companion.setValueDeleteKmStart(baseContext, 0)
+                            SharedPref.Companion.setValueDeletePkStart(baseContext, 0)
+                            SharedPref.Companion.setValueDeleteKmFinish(baseContext, 0)
+                            SharedPref.Companion.setValueDeletePkFinish(baseContext, 0)
+                            Log.d("MyLog", "mySpeed => ${dataListArray[0].speed}")
+                        }
+//                        Log.d("MyLog16", "mySpeed16 => $mySpeed")
                         Log.d("MyLog", "myOgranichenieList => $myOgranichenieList")
                         Log.d("MyLog", "myPrev400List => $myPrev400List")
                         Log.d("MyLog", "pantograph800List => $pantograph800List")
@@ -590,6 +655,53 @@ class MyLocationService : Service() {
                         Log.d("MyLog", "myLimitationList => $myLimitationList")
                         Log.d("MyLog", "myBrakeList => $myBrakeList")
                         Log.d("MyLog", "myPantographList => $myPantographList")
+                        Log.d("MyLog48", "myLimitationsList2 => $myLimitationsList2")
+
+                        if (customField700.isNotEmpty()) {
+                            for (itemNeutralInsert700 in neutralInsert6001) {
+                                if (faktStartKmNechet != 0) {
+                                    if (faktStartKmNechet == itemNeutralInsert700) {
+                                        if (customField700List.isEmpty() && isCustomField7001 != itemNeutralInsert700) {
+                                            customField700List.add(itemNeutralInsert700)
+//                                            Log.d("MyLog47", "faktStartKmNechet => $faktStartKmNechet")
+                                            isCustomField7001 = itemNeutralInsert700
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d("MyLog", "Список 'neutralInsert6001' пуст!")
+                        }
+
+                        if (brake500.isNotEmpty()) {
+                            for (itemBrake500 in brake5001) {
+                                if (faktStartKmNechet != 0) {
+                                    if (faktStartKmNechet == itemBrake500) {
+                                        if (brake500List.isEmpty() && isBrake5001 != itemBrake500) {
+                                            brake500List.add(itemBrake500)
+                                            isBrake5001 = itemBrake500
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d("MyLog", "Список 'brake5001' пуст!")
+                        }
+
+                        if (pantograph800.isNotEmpty()) {
+                            for (itemPantograph800 in pantograph8001) {
+                                if (faktStartKmNechet != 0) {
+                                    if (faktStartKmNechet == itemPantograph800) {
+                                        if (pantograph800List.isEmpty() && isPantograph8001 != itemPantograph800) {
+                                            pantograph800List.add(itemPantograph800)
+                                            isPantograph8001 = itemPantograph800
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d("MyLog", "Список 'pantograph8001' пуст!")
+                        }
 
                         if (myOgranichenie.isNotEmpty()){
                             for (itemOgranichenie in myOgranichenie1){
@@ -621,51 +733,6 @@ class MyLocationService : Service() {
                             Log.d("MyLog", "Список 'myPrev4001' пуст!")
                         }
 
-                        if (pantograph800.isNotEmpty()) {
-                            for (itemPantograph800 in pantograph8001) {
-                                if (faktStartKmNechet != 0) {
-                                    if (faktStartKmNechet == itemPantograph800) {
-                                        if (pantograph800List.isEmpty() && isPantograph8001 != itemPantograph800) {
-                                            pantograph800List.add(itemPantograph800)
-                                            isPantograph8001 = itemPantograph800
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.d("MyLog", "Список 'pantograph8001' пуст!")
-                        }
-
-                        if (brake500.isNotEmpty()) {
-                            for (itemBrake500 in brake5001) {
-                                if (faktStartKmNechet != 0) {
-                                    if (faktStartKmNechet == itemBrake500) {
-                                        if (brake500List.isEmpty() && isBrake5001 != itemBrake500) {
-                                            brake500List.add(itemBrake500)
-                                            isBrake5001 = itemBrake500
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.d("MyLog", "Список 'brake5001' пуст!")
-                        }
-
-                        if (customField700.isNotEmpty()) {
-                            for (itemNeutralInsert700 in neutralInsert6001) {
-                                if (faktStartKmNechet != 0) {
-                                    if (faktStartKmNechet == itemNeutralInsert700) {
-                                        if (customField700List.isEmpty() && isCustomField7001 != itemNeutralInsert700) {
-                                            customField700List.add(itemNeutralInsert700)
-                                            isCustomField7001 = itemNeutralInsert700
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.d("MyLog", "Список 'neutralInsert6001' пуст!")
-                        }
-
                         if (myLimitation.isNotEmpty()){
                             for (itemLimitation in myLimitation1){
                                 if (faktStartKmNechet != 0){
@@ -673,6 +740,16 @@ class MyLocationService : Service() {
                                         if (myLimitationList.isEmpty() && limitation1 != itemLimitation){
                                             myLimitationList.add(itemLimitation)
                                             limitation1 = itemLimitation
+                                        }
+                                    }
+                                }
+                                if (myLimitationsList2.isNotEmpty()) {
+                                    for (itemMyLimitationsList2 in myLimitationList2) {
+                                        if (faktStartKmNechet - 2000 == itemMyLimitationsList2){
+                                            if (myLimitationList.isEmpty() && limitation1 != itemMyLimitationsList2){
+                                                myLimitationList.add(itemMyLimitationsList2)
+                                                limitation1 = itemMyLimitationsList2
+                                            }
                                         }
                                     }
                                 }
@@ -710,6 +787,9 @@ class MyLocationService : Service() {
                         } else {
                             Log.d("MyLog", "Список 'myPantograph' пуст!")
                         }
+
+                        // Совпадает только Произвольное поле, Торможение ближе к цели, Опускание ближе к цели
+                        iteration0311()
 
                         // Совпадает только Произвольное поле
                         iteration031()
@@ -817,161 +897,213 @@ class MyLocationService : Service() {
                         //***********************************************************************
 
                         CoroutineScope(Dispatchers.Main).launch {
-                            myPantograph.clear()
-                            pantograph800.clear()
-                            myDbManagerPantograph.openDb()
-                            val dataListPantographs = myDbManagerPantograph.readDbDataPantographNechet()
-                            for (item in dataListPantographs){
+                            customField700.clear()
+                            myDbManagerCustomField.openDb()
+                            val dataListCustomField = myDbManagerCustomField.readDbDataCustomFieldNechet()
+                            for (item in dataListCustomField){
 
-                                titleStartPantographNechet = item.startNechet
-                                piketStartPantographNechet = item.picketStartNechet
+                                titleStartCustomFieldNechet = item.startNechetCustom
+                                piketStartCustomFieldNechet = item.picketStartNechetCustom
 
-                                // Начало расчёта начала Опускания токоприемников по киллометро
+                                var z = 9999999
+                                var kms = 10000
+                                val pkc = 10
 
-                                var x = 9999999
-                                var kmx = 10000
-                                val pkx = 10
+                                while (z > 0){
+                                    z -= 1000
+                                    kms -= 1
 
-                                while (x > 0){
-                                    x -= 1000
-                                    kmx -= 1
-
-                                    if (titleStartPantographNechet == kmx && piketStartPantographNechet == pkx){
-                                        faktNachKmPantographNechet = x
-                                        piketNachKmPantographNechet = pkx
+                                    if (titleStartCustomFieldNechet == kms && piketStartCustomFieldNechet == pkc){
+                                        faktNachKmCustomFieldNechet = z
+                                        piketNachKmCustomFieldNechet = pkc
                                     }
                                 }
 
-                                var x1 = 9999899
-                                var kmx1 = 10000
-                                val pkx1 = 9
+                                var z1 = 9999899
+                                var kms1 = 10000
+                                val pkc1 = 9
 
-                                while (x1 > 0){
-                                    x1 -= 1000
-                                    kmx1 -= 1
+                                while (z1 > 0){
+                                    z1 -= 1000
+                                    kms1 -= 1
 
-                                    if (titleStartPantographNechet == kmx1 && piketStartPantographNechet == pkx1){
-                                        faktNachKmPantographNechet = x1
-                                        piketNachKmPantographNechet = pkx1
+                                    if (titleStartCustomFieldNechet == kms1 && piketStartCustomFieldNechet == pkc1){
+                                        faktNachKmCustomFieldNechet = z1
+                                        piketNachKmCustomFieldNechet = pkc1
                                     }
                                 }
 
-                                var x2 = 9999799
-                                var kmx2 = 10000
-                                val pkx2 = 8
+                                var z2 = 9999799
+                                var kms2 = 10000
+                                val pkc2 = 8
 
-                                while (x2 > 0){
-                                    x2 -= 1000
-                                    kmx2 -= 1
+                                while (z2 > 0){
+                                    z2 -= 1000
+                                    kms2 -= 1
 
-                                    if (titleStartPantographNechet == kmx2 && piketStartPantographNechet == pkx2){
-                                        faktNachKmPantographNechet = x2
-                                        piketNachKmPantographNechet = pkx2
+                                    if (titleStartCustomFieldNechet == kms2 && piketStartCustomFieldNechet == pkc2){
+                                        faktNachKmCustomFieldNechet = z2
+                                        piketNachKmCustomFieldNechet = pkc2
                                     }
                                 }
 
-                                var x3 = 9999699
-                                var kmx3 = 10000
-                                val pkx3 = 7
+                                var z3 = 9999699
+                                var kms3 = 10000
+                                val pkc3 = 7
 
-                                while (x3 > 0){
-                                    x3 -= 1000
-                                    kmx3 -= 1
+                                while (z3 > 0){
+                                    z3 -= 1000
+                                    kms3 -= 1
 
-                                    if (titleStartPantographNechet == kmx3 && piketStartPantographNechet == pkx3){
-                                        faktNachKmPantographNechet = x3
-                                        piketNachKmPantographNechet = pkx3
+                                    if (titleStartCustomFieldNechet == kms3 && piketStartCustomFieldNechet == pkc3){
+                                        faktNachKmCustomFieldNechet = z3
+                                        piketNachKmCustomFieldNechet = pkc3
                                     }
                                 }
 
-                                var x4 = 9999599
-                                var kmx4 = 10000
-                                val pkx4 = 6
+                                var z4 = 9999599
+                                var kms4 = 10000
+                                val pkc4 = 6
 
-                                while (x4 > 0){
-                                    x4 -= 1000
-                                    kmx4 -= 1
+                                while (z4 > 0){
+                                    z4 -= 1000
+                                    kms4 -= 1
 
-                                    if (titleStartPantographNechet == kmx4 && piketStartPantographNechet == pkx4){
-                                        faktNachKmPantographNechet = x4
-                                        piketNachKmPantographNechet = pkx4
+                                    if (titleStartCustomFieldNechet == kms4 && piketStartCustomFieldNechet == pkc4){
+                                        faktNachKmCustomFieldNechet = z4
+                                        piketNachKmCustomFieldNechet = pkc4
                                     }
                                 }
 
-                                var x5 = 9999499
-                                var kmx5 = 10000
-                                val pkx5 = 5
+                                var z5 = 9999499
+                                var kms5 = 10000
+                                val pkc5 = 5
 
-                                while (x5 > 0){
-                                    x5 -= 1000
-                                    kmx5 -= 1
+                                while (z5 > 0){
+                                    z5 -= 1000
+                                    kms5 -= 1
 
-                                    if (titleStartPantographNechet == kmx5 && piketStartPantographNechet == pkx5){
-                                        faktNachKmPantographNechet = x5
-                                        piketNachKmPantographNechet = pkx5
+                                    if (titleStartCustomFieldNechet == kms5 && piketStartCustomFieldNechet == pkc5){
+                                        faktNachKmCustomFieldNechet = z5
+                                        piketNachKmCustomFieldNechet = pkc5
                                     }
                                 }
 
-                                var x6 = 9999399
-                                var kmx6 = 10000
-                                val pkx6 = 4
+                                var z6 = 9999399
+                                var kms6 = 10000
+                                val pkc6 = 4
 
-                                while (x6 > 0){
-                                    x6 -= 1000
-                                    kmx6 -= 1
+                                while (z6 > 0){
+                                    z6 -= 1000
+                                    kms6 -= 1
 
-                                    if (titleStartPantographNechet == kmx6 && piketStartPantographNechet == pkx6){
-                                        faktNachKmPantographNechet = x6
-                                        piketNachKmPantographNechet = pkx6
+                                    if (titleStartCustomFieldNechet == kms6 && piketStartCustomFieldNechet == pkc6){
+                                        faktNachKmCustomFieldNechet = z6
+                                        piketNachKmCustomFieldNechet = pkc6
                                     }
                                 }
 
-                                var x7 = 9999299
-                                var kmx7 = 10000
-                                val pkx7 = 3
+                                var z7 = 9999299
+                                var kms7 = 10000
+                                val pkc7 = 3
 
-                                while (x7 > 0){
-                                    x7 -= 1000
-                                    kmx7 -= 1
+                                while (z7 > 0){
+                                    z7 -= 1000
+                                    kms7 -= 1
 
-                                    if (titleStartPantographNechet == kmx7 && piketStartPantographNechet == pkx7){
-                                        faktNachKmPantographNechet = x7
-                                        piketNachKmPantographNechet = pkx7
+                                    if (titleStartCustomFieldNechet == kms7 && piketStartCustomFieldNechet == pkc7){
+                                        faktNachKmCustomFieldNechet = z7
+                                        piketNachKmCustomFieldNechet = pkc7
                                     }
                                 }
 
-                                var x8 = 9999199
-                                var kmx8 = 10000
-                                val pkx8 = 2
+                                var z8 = 9999199
+                                var kms8 = 10000
+                                val pkc8 = 2
 
-                                while (x8 > 0){
-                                    x8 -= 1000
-                                    kmx8 -= 1
+                                while (z8 > 0){
+                                    z8 -= 1000
+                                    kms8 -= 1
 
-                                    if (titleStartPantographNechet == kmx8 && piketStartPantographNechet == pkx8){
-                                        faktNachKmPantographNechet = x8
-                                        piketNachKmPantographNechet = pkx8
+                                    if (titleStartCustomFieldNechet == kms8 && piketStartCustomFieldNechet == pkc8){
+                                        faktNachKmCustomFieldNechet = z8
+                                        piketNachKmCustomFieldNechet = pkc8
                                     }
                                 }
 
-                                var x9 = 9999099
-                                var kmx9 = 10000
-                                val pkx9 = 1
+                                var z9 = 9999099
+                                var kms9 = 10000
+                                val pkc9 = 1
 
-                                while (x9 > 0){
-                                    x9 -= 1000
-                                    kmx9 -= 1
+                                while (z9 > 0){
+                                    z9 -= 1000
+                                    kms9 -= 1
 
-                                    if (titleStartPantographNechet == kmx9 && piketStartPantographNechet == pkx9){
-                                        faktNachKmPantographNechet = x9
-                                        piketNachKmPantographNechet = pkx9
+                                    if (titleStartCustomFieldNechet == kms9 && piketStartCustomFieldNechet == pkc9){
+                                        faktNachKmCustomFieldNechet = z9
+                                        piketNachKmCustomFieldNechet = pkc9
                                     }
                                 }
+//                                customField700.add(faktNachKmCustomFieldNechet)
+//
+//                                dataCustomField.add(ListCustomField(faktNachKmCustomFieldNechet, item.fieldNechetCustom))
+//
+//                                val myList = dataCustomField.toMutableSet().toMutableList()
+//                                dataCustomField = myList
+//
+//                                if (dataCustomField.isNotEmpty()) {
+//                                    for (i in dataCustomField.indices) {
+//                                        if (faktStartKmNechet == dataCustomField[i].kmStart) {
+//                                            customField2 = dataCustomField[i].customField
+//                                            Log.d("MyLog46", "customField2 = $customField2")
+//                                        }
+//                                    }
+//                                }
 
-                                myPantograph.add(faktNachKmPantographNechet)
-                                pantograph800.add(faktNachKmPantographNechet + 800)
+//                                for (i in dataCustomField.indices) {
+//                                    Log.d("MyLog45", "kmStart = ${dataCustomField[i].kmStart}, customField = ${dataCustomField[i].customField}")
+//                                }
 
-                                // Конец расчёта начала Опускания токоприемников по киллометро
+                                if (distance <= faktNachKmCustomFieldNechet && distance >= faktNachKmCustomFieldNechet - 98) {
+                                    customField = item.fieldNechetCustom
+                                    when (customField) {
+                                        "Правильность пути" -> {
+                                            customField2 = "Правильность пути"
+                                            val customFieldNechet = faktStartKmNechet
+                                            customField700.add(customFieldNechet)
+                                        }
+                                        "Включите саут" -> {
+                                            customField2 = "Включите саут"
+                                            val customFieldNechet = faktStartKmNechet
+                                            customField700.add(customFieldNechet)
+                                        }
+                                        "Выключите саут" -> {
+                                            customField2 = "Выключите саут"
+                                            val customFieldNechet = faktStartKmNechet
+                                            customField700.add(customFieldNechet)
+                                        }
+                                        "Нейтральная вставка" -> {
+                                            customField2 = "Нейтральная вставка"
+                                            val customFieldNechet = faktStartKmNechet
+                                            customField700.add(customFieldNechet)
+                                        }
+                                        "Впереди блокпост" -> {
+                                            customField2 = "Впереди блокпост"
+                                            val customFieldNechet = faktStartKmNechet
+                                            customField700.add(customFieldNechet)
+                                        }
+                                        "Посадка бригады" -> {
+                                            customField2 = "Посадка бригады"
+                                            val customFieldNechet = faktStartKmNechet
+                                            customField700.add(customFieldNechet)
+                                        }
+                                        "Высадка бригады" -> {
+                                            customField2 = "Высадка бригады"
+                                            val customFieldNechet = faktStartKmNechet
+                                            customField700.add(customFieldNechet)
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -1130,26 +1262,166 @@ class MyLocationService : Service() {
                                 myBrake.add(faktNachKmBrakeNechet)
                                 brake500.add(faktNachKmBrakeNechet + 500)
 
-                                tvOgr15 = ""
-                                tvOgr25 = ""
-                                tvOgr40 = ""
-                                tvOgr50 = ""
-                                tvOgr55 = ""
-                                tvOgr60 = ""
-                                tvOgr65 = ""
-                                tvOgr70 = ""
-                                tvOgr75 = ""
-                                tvKmPk15 = ""
-                                tvKmPk25 = ""
-                                tvKmPk40 = ""
-                                tvKmPk50 = ""
-                                tvKmPk55 = ""
-                                tvKmPk60 = ""
-                                tvKmPk65 = ""
-                                tvKmPk70 = ""
-                                tvKmPk75 = ""
-
                                 // Конец расчёта начала Торможения по киллометро
+                            }
+                        }
+
+                        CoroutineScope(Dispatchers.Main).launch {
+                            myPantograph.clear()
+                            pantograph800.clear()
+                            myDbManagerPantograph.openDb()
+                            val dataListPantographs = myDbManagerPantograph.readDbDataPantographNechet()
+                            for (item in dataListPantographs){
+
+                                titleStartPantographNechet = item.startNechet
+                                piketStartPantographNechet = item.picketStartNechet
+
+                                // Начало расчёта начала Опускания токоприемников по киллометро
+
+                                var x = 9999999
+                                var kmx = 10000
+                                val pkx = 10
+
+                                while (x > 0){
+                                    x -= 1000
+                                    kmx -= 1
+
+                                    if (titleStartPantographNechet == kmx && piketStartPantographNechet == pkx){
+                                        faktNachKmPantographNechet = x
+                                        piketNachKmPantographNechet = pkx
+                                    }
+                                }
+
+                                var x1 = 9999899
+                                var kmx1 = 10000
+                                val pkx1 = 9
+
+                                while (x1 > 0){
+                                    x1 -= 1000
+                                    kmx1 -= 1
+
+                                    if (titleStartPantographNechet == kmx1 && piketStartPantographNechet == pkx1){
+                                        faktNachKmPantographNechet = x1
+                                        piketNachKmPantographNechet = pkx1
+                                    }
+                                }
+
+                                var x2 = 9999799
+                                var kmx2 = 10000
+                                val pkx2 = 8
+
+                                while (x2 > 0){
+                                    x2 -= 1000
+                                    kmx2 -= 1
+
+                                    if (titleStartPantographNechet == kmx2 && piketStartPantographNechet == pkx2){
+                                        faktNachKmPantographNechet = x2
+                                        piketNachKmPantographNechet = pkx2
+                                    }
+                                }
+
+                                var x3 = 9999699
+                                var kmx3 = 10000
+                                val pkx3 = 7
+
+                                while (x3 > 0){
+                                    x3 -= 1000
+                                    kmx3 -= 1
+
+                                    if (titleStartPantographNechet == kmx3 && piketStartPantographNechet == pkx3){
+                                        faktNachKmPantographNechet = x3
+                                        piketNachKmPantographNechet = pkx3
+                                    }
+                                }
+
+                                var x4 = 9999599
+                                var kmx4 = 10000
+                                val pkx4 = 6
+
+                                while (x4 > 0){
+                                    x4 -= 1000
+                                    kmx4 -= 1
+
+                                    if (titleStartPantographNechet == kmx4 && piketStartPantographNechet == pkx4){
+                                        faktNachKmPantographNechet = x4
+                                        piketNachKmPantographNechet = pkx4
+                                    }
+                                }
+
+                                var x5 = 9999499
+                                var kmx5 = 10000
+                                val pkx5 = 5
+
+                                while (x5 > 0){
+                                    x5 -= 1000
+                                    kmx5 -= 1
+
+                                    if (titleStartPantographNechet == kmx5 && piketStartPantographNechet == pkx5){
+                                        faktNachKmPantographNechet = x5
+                                        piketNachKmPantographNechet = pkx5
+                                    }
+                                }
+
+                                var x6 = 9999399
+                                var kmx6 = 10000
+                                val pkx6 = 4
+
+                                while (x6 > 0){
+                                    x6 -= 1000
+                                    kmx6 -= 1
+
+                                    if (titleStartPantographNechet == kmx6 && piketStartPantographNechet == pkx6){
+                                        faktNachKmPantographNechet = x6
+                                        piketNachKmPantographNechet = pkx6
+                                    }
+                                }
+
+                                var x7 = 9999299
+                                var kmx7 = 10000
+                                val pkx7 = 3
+
+                                while (x7 > 0){
+                                    x7 -= 1000
+                                    kmx7 -= 1
+
+                                    if (titleStartPantographNechet == kmx7 && piketStartPantographNechet == pkx7){
+                                        faktNachKmPantographNechet = x7
+                                        piketNachKmPantographNechet = pkx7
+                                    }
+                                }
+
+                                var x8 = 9999199
+                                var kmx8 = 10000
+                                val pkx8 = 2
+
+                                while (x8 > 0){
+                                    x8 -= 1000
+                                    kmx8 -= 1
+
+                                    if (titleStartPantographNechet == kmx8 && piketStartPantographNechet == pkx8){
+                                        faktNachKmPantographNechet = x8
+                                        piketNachKmPantographNechet = pkx8
+                                    }
+                                }
+
+                                var x9 = 9999099
+                                var kmx9 = 10000
+                                val pkx9 = 1
+
+                                while (x9 > 0){
+                                    x9 -= 1000
+                                    kmx9 -= 1
+
+                                    if (titleStartPantographNechet == kmx9 && piketStartPantographNechet == pkx9){
+                                        faktNachKmPantographNechet = x9
+                                        piketNachKmPantographNechet = pkx9
+                                    }
+                                }
+
+                                myPantograph.add(faktNachKmPantographNechet)
+                                pantograph800.add(faktNachKmPantographNechet + 800)
+
+                                // Конец расчёта начала Опускания токоприемников по киллометро
                             }
                         }
 
@@ -1457,332 +1729,7 @@ class MyLocationService : Service() {
 
                                 // Конец расчёта конца ограничения по киллометро
 
-                                // Начало оповещения ограничения скорости за 2 км/ч
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002){
-
-                                    val arrayListSpeed = mutableListOf<Int>()
-
-                                    when (speedNechet) {
-                                        15 -> {
-                                            int15 = item.speedNechet
-                                            arrayListSpeed.add(15)
-                                        }
-                                        25 -> {
-                                            int25 = item.speedNechet
-                                            arrayListSpeed.add(25)
-                                        }
-                                        40 -> {
-                                            int40 = item.speedNechet
-                                            arrayListSpeed.add(40)
-                                        }
-                                        50 -> {
-                                            int50 = item.speedNechet
-                                            arrayListSpeed.add(50)
-                                        }
-                                        55 -> {
-                                            int55 = item.speedNechet
-                                            arrayListSpeed.add(55)
-                                        }
-                                        60 -> {
-                                            int60 = item.speedNechet
-                                            arrayListSpeed.add(60)
-                                        }
-                                        65 -> {
-                                            int65 = item.speedNechet
-                                            arrayListSpeed.add(65)
-                                        }
-                                        70 -> {
-                                            int70 = item.speedNechet
-                                            arrayListSpeed.add(70)
-                                        }
-                                        75 -> {
-                                            int75 = item.speedNechet
-                                            arrayListSpeed.add(75)
-                                        }
-                                    }
-
-                                    Log.d("MyLog", "minSpeed = ${arrayListSpeed.min()}")
-//                                    speedNechetMin = arrayListSpeed.min()
-
-                                    val i = arrayListSpeed.min()
-                                    if (i == 15 || i == 25 || i == 40 || i == 50 || i == 55 || i == 60 || i == 65 || i == 70 || i == 75) {
-                                        mySpeed.add(i)
-                                        val mySpeed1 = mySpeed.toMutableSet().toMutableList()
-                                        mySpeed = mySpeed1
-                                    }
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 15 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 15")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 25 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 25")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 40 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 40")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 50 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 50")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 55 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 55")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 60 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 60")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 65 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 65")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 70 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 70")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002 && speedNechetMin == 75 && speedLimit){
-                                    Log.d("MyLog18", "Зашли в 75")
-//                                    mySpeed.add(speedNechetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                // Конец оповещения ограничения скорости за 2 км/ч
-
-                                // Предупреждение о превышении за 400 метров до предупреждения
-
-                                if (currentLocationNechet.speed * 3.6 >= 15 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 15 && isLimitations400m15){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m15 = !isLimitations400m15
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 15){
-//                                    isLimitations400m15 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocationNechet.speed * 3.6 >= 25 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 25 && isLimitations400m25){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m25 = !isLimitations400m25
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 25){
-//                                    isLimitations400m25 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocationNechet.speed * 3.6 >= 40 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 40 && isLimitations400m40){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m40 = !isLimitations400m40
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 40){
-//                                    isLimitations400m40 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocationNechet.speed * 3.6 >= 50 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 50 && isLimitations400m50){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m50 = !isLimitations400m50
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 50){
-//                                    isLimitations400m50 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocationNechet.speed * 3.6 >= 55 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 55 && isLimitations400m55){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m55 = !isLimitations400m55
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 55){
-//                                    isLimitations400m55 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocationNechet.speed * 3.6 >= 60 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 60 && isLimitations400m60){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m60 = !isLimitations400m60
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 60){
-//                                    isLimitations400m60 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocationNechet.speed * 3.6 >= 65 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 65 && isLimitations400m65){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m65 = !isLimitations400m65
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 65){
-//                                    isLimitations400m65 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocationNechet.speed * 3.6 >= 70 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 70 && isLimitations400m70){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m70 = !isLimitations400m70
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 70){
-//                                    isLimitations400m70 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocationNechet.speed * 3.6 >= 75 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 75 && isLimitations400m75){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmNechet - 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m75 = !isLimitations400m75
-                                }
-//                                if (distance <= faktNachKmNechet + 499 && distance >= faktNachKmNechet + 451 && item.speedNechet == 75){
-//                                    isLimitations400m75 = true
-//                                }
-
-                                // Конец предупреждения о превышении за 400 метров до предупреждения
-
                                 //*************************************************************************************
-
-                                // Конец оповещения о нейтральных вставках
 
                                 // Предупреждение о превышении ограничения скорости
 
@@ -2135,209 +2082,177 @@ class MyLocationService : Service() {
                                     tvKmPk75 = ""
                                 }
 
+                                // Конец предупреждения о превышении ограничения скорости
+
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                // Конец предупреждения о превышении ограничения скорости
+                                // Предупреждение о превышении за 400 метров до предупреждения
+
+                                if (currentLocationNechet.speed * 3.6 >= 15 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 15 && isLimitations400m15){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m15 = !isLimitations400m15
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocationNechet.speed * 3.6 >= 25 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 25 && isLimitations400m25){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m25 = !isLimitations400m25
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocationNechet.speed * 3.6 >= 40 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 40 && isLimitations400m40){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m40 = !isLimitations400m40
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocationNechet.speed * 3.6 >= 50 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 50 && isLimitations400m50){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m50 = !isLimitations400m50
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocationNechet.speed * 3.6 >= 55 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 55 && isLimitations400m55){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m55 = !isLimitations400m55
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocationNechet.speed * 3.6 >= 60 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 60 && isLimitations400m60){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m60 = !isLimitations400m60
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocationNechet.speed * 3.6 >= 65 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 65 && isLimitations400m65){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m65 = !isLimitations400m65
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocationNechet.speed * 3.6 >= 70 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 70 && isLimitations400m70){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m70 = !isLimitations400m70
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocationNechet.speed * 3.6 >= 75 && distance <= faktNachKmNechet + 600 && distance >= faktNachKmNechet + 502 && item.speedNechet == 75 && isLimitations400m75){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmNechet - 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m75 = !isLimitations400m75
+                                }
+
+                                // Конец предупреждения о превышении за 400 метров до предупреждения
+
+                                // Начало оповещения ограничения скорости за 2 км/ч
+
+                                if (distance <= faktNachKmNechet + 2100 && distance >= faktNachKmNechet + 2002){
+
+                                    val arrayListSpeed = mutableListOf<Int>()
+
+                                    when (speedNechet) {
+                                        15 -> {
+                                            int15 = item.speedNechet
+                                            arrayListSpeed.add(15)
+                                        }
+                                        25 -> {
+                                            int25 = item.speedNechet
+                                            arrayListSpeed.add(25)
+                                        }
+                                        40 -> {
+                                            int40 = item.speedNechet
+                                            arrayListSpeed.add(40)
+                                        }
+                                        50 -> {
+                                            int50 = item.speedNechet
+                                            arrayListSpeed.add(50)
+                                        }
+                                        55 -> {
+                                            int55 = item.speedNechet
+                                            arrayListSpeed.add(55)
+                                        }
+                                        60 -> {
+                                            int60 = item.speedNechet
+                                            arrayListSpeed.add(60)
+                                        }
+                                        65 -> {
+                                            int65 = item.speedNechet
+                                            arrayListSpeed.add(65)
+                                        }
+                                        70 -> {
+                                            int70 = item.speedNechet
+                                            arrayListSpeed.add(70)
+                                        }
+                                        75 -> {
+                                            int75 = item.speedNechet
+                                            arrayListSpeed.add(75)
+                                        }
+                                    }
+
+                                    val newItem2 = speedNechet
+
+                                    if (newItem2 !in mySpeed1) {
+                                        mySpeed1.add(newItem2)
+                                    }
+
+                                    var a = 0
+
+                                    while (a <= mySpeed1.size) {
+                                        dataListArray.add(ListKm(titleStartNechet, piketStartNechet, titleFinishNechet, piketFinishNechet, speedNechet))
+                                        a = a + 1
+                                    }
+
+                                    val myList = dataListArray.toMutableSet().toMutableList()
+                                    dataListArray = myList
+
+                                    for (i in dataListArray.indices) {
+                                        Log.d("MyLog34", "kmStart = ${dataListArray[i].kmStart}, pkStart = ${dataListArray[i].pkStart}, kmFinish = ${dataListArray[i].kmFinish}, pkFinish = ${dataListArray[i].pkFinish}, speed ${dataListArray[i].speed}")
+                                    }
+
+                                    Log.d("MyLog34", "dataListArray.size = ${dataListArray.size}")
+
+                                    Log.d("MyLog", "minSpeed = ${arrayListSpeed.min()}")
+//                                    speedNechetMin = arrayListSpeed.min()
+
+                                    val i = arrayListSpeed.min()
+                                    if (i == 15 || i == 25 || i == 40 || i == 50 || i == 55 || i == 60 || i == 65 || i == 70 || i == 75) {
+                                        mySpeed.add(i)
+                                        val mySpeed1 = mySpeed.toMutableSet().toMutableList()
+                                        mySpeed = mySpeed1
+                                    }
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                // Конец оповещения ограничения скорости за 2 км/ч
                             }
                         }
 
-                        CoroutineScope(Dispatchers.Main).launch {
-                            customField700.clear()
-                            myDbManagerCustomField.openDb()
-                            val dataListCustomField = myDbManagerCustomField.readDbDataCustomFieldNechet()
-                            for (item in dataListCustomField){
-
-                                titleStartCustomFieldNechet = item.startNechetCustom
-                                piketStartCustomFieldNechet = item.picketStartNechetCustom
-
-                                var z = 9999999
-                                var kms = 10000
-                                val pkc = 10
-
-                                while (z > 0){
-                                    z -= 1000
-                                    kms -= 1
-
-                                    if (titleStartCustomFieldNechet == kms && piketStartCustomFieldNechet == pkc){
-                                        faktNachKmCustomFieldNechet = z
-                                        piketNachKmCustomFieldNechet = pkc
-                                    }
-                                }
-
-                                var z1 = 9999899
-                                var kms1 = 10000
-                                val pkc1 = 9
-
-                                while (z1 > 0){
-                                    z1 -= 1000
-                                    kms1 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms1 && piketStartCustomFieldNechet == pkc1){
-                                        faktNachKmCustomFieldNechet = z1
-                                        piketNachKmCustomFieldNechet = pkc1
-                                    }
-                                }
-
-                                var z2 = 9999799
-                                var kms2 = 10000
-                                val pkc2 = 8
-
-                                while (z2 > 0){
-                                    z2 -= 1000
-                                    kms2 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms2 && piketStartCustomFieldNechet == pkc2){
-                                        faktNachKmCustomFieldNechet = z2
-                                        piketNachKmCustomFieldNechet = pkc2
-                                    }
-                                }
-
-                                var z3 = 9999699
-                                var kms3 = 10000
-                                val pkc3 = 7
-
-                                while (z3 > 0){
-                                    z3 -= 1000
-                                    kms3 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms3 && piketStartCustomFieldNechet == pkc3){
-                                        faktNachKmCustomFieldNechet = z3
-                                        piketNachKmCustomFieldNechet = pkc3
-                                    }
-                                }
-
-                                var z4 = 9999599
-                                var kms4 = 10000
-                                val pkc4 = 6
-
-                                while (z4 > 0){
-                                    z4 -= 1000
-                                    kms4 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms4 && piketStartCustomFieldNechet == pkc4){
-                                        faktNachKmCustomFieldNechet = z4
-                                        piketNachKmCustomFieldNechet = pkc4
-                                    }
-                                }
-
-                                var z5 = 9999499
-                                var kms5 = 10000
-                                val pkc5 = 5
-
-                                while (z5 > 0){
-                                    z5 -= 1000
-                                    kms5 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms5 && piketStartCustomFieldNechet == pkc5){
-                                        faktNachKmCustomFieldNechet = z5
-                                        piketNachKmCustomFieldNechet = pkc5
-                                    }
-                                }
-
-                                var z6 = 9999399
-                                var kms6 = 10000
-                                val pkc6 = 4
-
-                                while (z6 > 0){
-                                    z6 -= 1000
-                                    kms6 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms6 && piketStartCustomFieldNechet == pkc6){
-                                        faktNachKmCustomFieldNechet = z6
-                                        piketNachKmCustomFieldNechet = pkc6
-                                    }
-                                }
-
-                                var z7 = 9999299
-                                var kms7 = 10000
-                                val pkc7 = 3
-
-                                while (z7 > 0){
-                                    z7 -= 1000
-                                    kms7 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms7 && piketStartCustomFieldNechet == pkc7){
-                                        faktNachKmCustomFieldNechet = z7
-                                        piketNachKmCustomFieldNechet = pkc7
-                                    }
-                                }
-
-                                var z8 = 9999199
-                                var kms8 = 10000
-                                val pkc8 = 2
-
-                                while (z8 > 0){
-                                    z8 -= 1000
-                                    kms8 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms8 && piketStartCustomFieldNechet == pkc8){
-                                        faktNachKmCustomFieldNechet = z8
-                                        piketNachKmCustomFieldNechet = pkc8
-                                    }
-                                }
-
-                                var z9 = 9999099
-                                var kms9 = 10000
-                                val pkc9 = 1
-
-                                while (z9 > 0){
-                                    z9 -= 1000
-                                    kms9 -= 1
-
-                                    if (titleStartCustomFieldNechet == kms9 && piketStartCustomFieldNechet == pkc9){
-                                        faktNachKmCustomFieldNechet = z9
-                                        piketNachKmCustomFieldNechet = pkc9
-                                    }
-                                }
-
-                                if (distance <= faktNachKmCustomFieldNechet && distance >= faktNachKmCustomFieldNechet - 98) {
-                                    customField = item.fieldNechetCustom
-                                    when (customField) {
-                                        "Правильность пути" -> {
-                                            customField2 = "Правильность пути"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Включите саут" -> {
-                                            customField2 = "Включите саут"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Выключите саут" -> {
-                                            customField2 = "Выключите саут"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Нейтральная вставка" -> {
-                                            customField2 = "Нейтральная вставка"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Впереди блокпост" -> {
-                                            customField2 = "Впереди блокпост"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Посадка бригады" -> {
-                                            customField2 = "Посадка бригады"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Высадка бригады" -> {
-                                            customField2 = "Высадка бригады"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                    }
-                                }
-
-//                                if (distance <= faktNachKmCustomFieldNechet + 799 && distance >= faktNachKmCustomFieldNechet + 701){
-//                                    val customFieldNechet = faktStartKmNechet
-//                                    customField700.add(customFieldNechet)
-//                                    customField = item.fieldNechetCustom
-//                                }
-                            }
-                        }
                         myDbManagerPantograph.closeDb()
                         myDbManagerBrake.closeDb()
                         myDbManagerLimitations.closeDb()
@@ -2355,10 +2270,41 @@ class MyLocationService : Service() {
                         val brake5001 = brake500.toMutableSet().sorted()
                         val neutralInsert6001 = customField700.toMutableSet().sorted()
                         val myLimitation1 = myLimitation.toMutableSet().sorted()
+                        val myLimitationList2 = myLimitationsList2.toMutableSet()
                         val myBrake1 = myBrake.toMutableSet().sorted()
                         val myPantograph1 = myPantograph.toMutableSet().sorted()
 
-                        Log.d("MyLog16", "mySpeed => $mySpeed")
+                        if (dataListArray.isNotEmpty()) {
+                            val a = SharedPref.Companion.getValueDeleteSpeed(baseContext)
+                            val b = SharedPref.Companion.getValueDeleteKmStart(baseContext)
+                            val c = SharedPref.Companion.getValueDeletePkStart(baseContext)
+                            val d = SharedPref.Companion.getValueDeleteKmFinish(baseContext)
+                            val e = SharedPref.Companion.getValueDeletePkFinish(baseContext)
+                            var indexToRemove: Int? = null
+                            for ((index, number) in dataListArray.withIndex()) {
+                                if (number.speed == a && number.kmStart == b &&
+                                    number.pkStart == c && number.kmFinish == d &&
+                                    number.pkFinish == e) {
+                                    Log.d("MyLog35", "number.kmStart => ${number.kmStart}, " +
+                                            "number.pkStart => ${number.pkStart}, " +
+                                            "number.kmFinish => ${number.kmFinish}, " +
+                                            "number.pkFinish => ${number.pkFinish} " +
+                                            "number.speed ${number.speed}")
+                                    indexToRemove = index
+                                    break
+                                }
+                            }
+
+                            if (indexToRemove != null) {
+                                dataListArray.removeAt(indexToRemove)
+                            }
+                            SharedPref.Companion.setValueDeleteSpeed(baseContext, 0)
+                            SharedPref.Companion.setValueDeleteKmStart(baseContext, 0)
+                            SharedPref.Companion.setValueDeletePkStart(baseContext, 0)
+                            SharedPref.Companion.setValueDeleteKmFinish(baseContext, 0)
+                            SharedPref.Companion.setValueDeletePkFinish(baseContext, 0)
+                            Log.d("MyLog", "mySpeed => ${dataListArray[0].speed}")
+                        }
                         Log.d("MyLog", "myOgranichenieList => $myOgranichenieList")
                         Log.d("MyLog", "myPrev400List => $myPrev400List")
                         Log.d("MyLog", "pantograph800List => $pantograph800List")
@@ -2367,6 +2313,51 @@ class MyLocationService : Service() {
                         Log.d("MyLog", "myLimitationList => $myLimitationList")
                         Log.d("MyLog", "myBrakeList => $myBrakeList")
                         Log.d("MyLog", "myPantographList => $myPantographList")
+
+                        if (customField700.isNotEmpty()) {
+                            for (itemNeutralInsert600 in neutralInsert6001) {
+                                if (faktStartKmChet != 0) {
+                                    if (faktStartKmChet == itemNeutralInsert600) {
+                                        if (customField700List.isEmpty() && isCustomField7001 != itemNeutralInsert600) {
+                                            customField700List.add(itemNeutralInsert600)
+                                            isCustomField7001 = itemNeutralInsert600
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d("MyLog", "Список 'neutralInsert6001' пуст!")
+                        }
+
+                        if (brake500.isNotEmpty()) {
+                            for (itemBrake500 in brake5001) {
+                                if (faktStartKmChet != 0) {
+                                    if (faktStartKmChet == itemBrake500) {
+                                        if (brake500List.isEmpty() && isBrake5001 != itemBrake500) {
+                                            brake500List.add(itemBrake500)
+                                            isBrake5001 = itemBrake500
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d("MyLog", "Список 'brake5001' пуст!")
+                        }
+
+                        if (pantograph800.isNotEmpty()) {
+                            for (itemPantograph800 in pantograph8001) {
+                                if (faktStartKmChet != 0) {
+                                    if (faktStartKmChet == itemPantograph800) {
+                                        if (pantograph800List.isEmpty() && isPantograph8001 != itemPantograph800) {
+                                            pantograph800List.add(itemPantograph800)
+                                            isPantograph8001 = itemPantograph800
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d("MyLog", "Список 'pantograph8001' пуст!")
+                        }
 
                         if (myOgranichenie.isNotEmpty()){
                             for (itemOgranichenie in myOgranichenie1){
@@ -2398,51 +2389,6 @@ class MyLocationService : Service() {
                             Log.d("MyLog", "Список 'myPrev4001' пуст!")
                         }
 
-                        if (pantograph800.isNotEmpty()) {
-                            for (itemPantograph800 in pantograph8001) {
-                                if (faktStartKmChet != 0) {
-                                    if (faktStartKmChet == itemPantograph800) {
-                                        if (pantograph800List.isEmpty() && isPantograph8001 != itemPantograph800) {
-                                            pantograph800List.add(itemPantograph800)
-                                            isPantograph8001 = itemPantograph800
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.d("MyLog", "Список 'pantograph8001' пуст!")
-                        }
-
-                        if (brake500.isNotEmpty()) {
-                            for (itemBrake500 in brake5001) {
-                                if (faktStartKmChet != 0) {
-                                    if (faktStartKmChet == itemBrake500) {
-                                        if (brake500List.isEmpty() && isBrake5001 != itemBrake500) {
-                                            brake500List.add(itemBrake500)
-                                            isBrake5001 = itemBrake500
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.d("MyLog", "Список 'brake5001' пуст!")
-                        }
-
-                        if (customField700.isNotEmpty()) {
-                            for (itemNeutralInsert600 in neutralInsert6001) {
-                                if (faktStartKmChet != 0) {
-                                    if (faktStartKmChet == itemNeutralInsert600) {
-                                        if (customField700List.isEmpty() && isCustomField7001 != itemNeutralInsert600) {
-                                            customField700List.add(itemNeutralInsert600)
-                                            isCustomField7001 = itemNeutralInsert600
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.d("MyLog", "Список 'neutralInsert6001' пуст!")
-                        }
-
                         if (myLimitation.isNotEmpty()){
                             for (itemLimitation in myLimitation1){
                                 if (faktStartKmChet != 0){
@@ -2451,6 +2397,16 @@ class MyLocationService : Service() {
                                             myLimitationList.add(itemLimitation)
                                             limitation1 = itemLimitation
                                             Log.d("MyLog5", "km: $itemLimitation")
+                                        }
+                                    }
+                                }
+                            }
+                            if (myLimitationsList2.isNotEmpty()) {
+                                for (itemMyLimitationsList2 in myLimitationList2) {
+                                    if (faktStartKmNechet + 2000 == itemMyLimitationsList2){
+                                        if (myLimitationList.isEmpty() && limitation1 != itemMyLimitationsList2){
+                                            myLimitationList.add(itemMyLimitationsList2)
+                                            limitation1 = itemMyLimitationsList2
                                         }
                                     }
                                 }
@@ -2490,6 +2446,9 @@ class MyLocationService : Service() {
                         } else {
                             Log.d("MyLog", "Список 'myPantograph' пуст!")
                         }
+
+                        // Совпадает только Произвольное поле, Торможение ближе к цели, Опускание ближе к цели
+                        iteration011()
 
                         // Совпадает только Произвольное поле
                         iteration01()
@@ -2597,16 +2556,13 @@ class MyLocationService : Service() {
                         //***********************************************************************
 
                         CoroutineScope(Dispatchers.Main).launch {
-                            myPantograph.clear()
-                            pantograph800.clear()
-                            myDbManagerPantograph.openDb()
-                            val dataListPantographs = myDbManagerPantograph.readDbDataPantographChet()
-                            for (item in dataListPantographs){
+                            customField700.clear()
+                            myDbManagerCustomField.openDb()
+                            val dataListCustomField = myDbManagerCustomField.readDbDataCustomFieldChet()
+                            for (item in dataListCustomField){
 
-                                titleStartPantographChet = item.startChet
-                                piketStartPantographChet = item.picketStartChet
-
-                                // Начало расчёта начала Опускания токоприемников по киллометро
+                                titleStartCustomFieldChet = item.startChetCustom
+                                piketStartCustomFieldChet = item.picketStartChetCustom
 
                                 var z = 1001
                                 var kms = 2
@@ -2616,9 +2572,9 @@ class MyLocationService : Service() {
                                     z += 1000
                                     kms += 1
 
-                                    if (titleStartPantographChet == kms && piketStartPantographChet == pkc){
-                                        faktNachKmPantographChet = z
-                                        piketNachKmPantographChet = pkc
+                                    if (titleStartCustomFieldChet == kms && piketStartCustomFieldChet == pkc){
+                                        faktNachKmCustomFieldChet = z
+                                        piketNachKmCustomFieldChet = pkc
                                     }
                                 }
 
@@ -2630,9 +2586,9 @@ class MyLocationService : Service() {
                                     z1 += 1000
                                     kms1 += 1
 
-                                    if (titleStartPantographChet == kms1 && piketStartPantographChet == pkc1){
-                                        faktNachKmPantographChet = z1
-                                        piketNachKmPantographChet = pkc1
+                                    if (titleStartCustomFieldChet == kms1 && piketStartCustomFieldChet == pkc1){
+                                        faktNachKmCustomFieldChet = z1
+                                        piketNachKmCustomFieldChet = pkc1
                                     }
                                 }
 
@@ -2644,9 +2600,9 @@ class MyLocationService : Service() {
                                     z2 += 1000
                                     kms2 += 1
 
-                                    if (titleStartPantographChet == kms2 && piketStartPantographChet == pkc2){
-                                        faktNachKmPantographChet = z2
-                                        piketNachKmPantographChet = pkc2
+                                    if (titleStartCustomFieldChet == kms2 && piketStartCustomFieldChet == pkc2){
+                                        faktNachKmCustomFieldChet = z2
+                                        piketNachKmCustomFieldChet = pkc2
                                     }
                                 }
 
@@ -2658,9 +2614,9 @@ class MyLocationService : Service() {
                                     z3 += 1000
                                     kms3 += 1
 
-                                    if (titleStartPantographChet == kms3 && piketStartPantographChet == pkc3){
-                                        faktNachKmPantographChet = z3
-                                        piketNachKmPantographChet = pkc3
+                                    if (titleStartCustomFieldChet == kms3 && piketStartCustomFieldChet == pkc3){
+                                        faktNachKmCustomFieldChet = z3
+                                        piketNachKmCustomFieldChet = pkc3
                                     }
                                 }
 
@@ -2672,9 +2628,9 @@ class MyLocationService : Service() {
                                     z4 += 1000
                                     kms4 += 1
 
-                                    if (titleStartPantographChet == kms4 && piketStartPantographChet == pkc4){
-                                        faktNachKmPantographChet = z4
-                                        piketNachKmPantographChet = pkc4
+                                    if (titleStartCustomFieldChet == kms4 && piketStartCustomFieldChet == pkc4){
+                                        faktNachKmCustomFieldChet = z4
+                                        piketNachKmCustomFieldChet = pkc4
                                     }
                                 }
 
@@ -2686,9 +2642,9 @@ class MyLocationService : Service() {
                                     z5 += 1000
                                     kms5 += 1
 
-                                    if (titleStartPantographChet == kms5 && piketStartPantographChet == pkc5){
-                                        faktNachKmPantographChet = z5
-                                        piketNachKmPantographChet = pkc5
+                                    if (titleStartCustomFieldChet == kms5 && piketStartCustomFieldChet == pkc5){
+                                        faktNachKmCustomFieldChet = z5
+                                        piketNachKmCustomFieldChet = pkc5
                                     }
                                 }
 
@@ -2700,9 +2656,9 @@ class MyLocationService : Service() {
                                     z6 += 1000
                                     kms6 += 1
 
-                                    if (titleStartPantographChet == kms6 && piketStartPantographChet == pkc6){
-                                        faktNachKmPantographChet = z6
-                                        piketNachKmPantographChet = pkc6
+                                    if (titleStartCustomFieldChet == kms6 && piketStartCustomFieldChet == pkc6){
+                                        faktNachKmCustomFieldChet = z6
+                                        piketNachKmCustomFieldChet = pkc6
                                     }
                                 }
 
@@ -2714,9 +2670,9 @@ class MyLocationService : Service() {
                                     z7 += 1000
                                     kms7 += 1
 
-                                    if (titleStartPantographChet == kms7 && piketStartPantographChet == pkc7){
-                                        faktNachKmPantographChet = z7
-                                        piketNachKmPantographChet = pkc7
+                                    if (titleStartCustomFieldChet == kms7 && piketStartCustomFieldChet == pkc7){
+                                        faktNachKmCustomFieldChet = z7
+                                        piketNachKmCustomFieldChet = pkc7
                                     }
                                 }
 
@@ -2728,9 +2684,9 @@ class MyLocationService : Service() {
                                     z8 += 1000
                                     kms8 += 1
 
-                                    if (titleStartPantographChet == kms8 && piketStartPantographChet == pkc8){
-                                        faktNachKmPantographChet = z8
-                                        piketNachKmPantographChet = pkc8
+                                    if (titleStartCustomFieldChet == kms8 && piketStartCustomFieldChet == pkc8){
+                                        faktNachKmCustomFieldChet = z8
+                                        piketNachKmCustomFieldChet = pkc8
                                     }
                                 }
 
@@ -2742,16 +2698,52 @@ class MyLocationService : Service() {
                                     z9 += 1000
                                     kms9 += 1
 
-                                    if (titleStartPantographChet == kms9 && piketStartPantographChet == pkc9){
-                                        faktNachKmPantographChet = z9
-                                        piketNachKmPantographChet = pkc9
+                                    if (titleStartCustomFieldChet == kms9 && piketStartCustomFieldChet == pkc9){
+                                        faktNachKmCustomFieldChet = z9
+                                        piketNachKmCustomFieldChet = pkc9
                                     }
                                 }
 
-                                myPantograph.add(faktNachKmPantographChet)
-                                pantograph800.add(faktNachKmPantographChet - 800)
-
-                                // Конец расчёта начала Опускания токоприемников по киллометро
+                                if (distance >= faktNachKmCustomFieldChet && distance <= faktNachKmCustomFieldChet + 98) {
+                                    customField = item.fieldChetCustom
+                                    when (customField) {
+                                        "Правильность пути" -> {
+                                            customField2 = "Правильность пути"
+                                            val customFieldChet = faktStartKmChet
+                                            customField700.add(customFieldChet)
+                                        }
+                                        "Включите саут" -> {
+                                            customField2 = "Включите саут"
+                                            val customFieldChet = faktStartKmChet
+                                            customField700.add(customFieldChet)
+                                        }
+                                        "Выключите саут" -> {
+                                            customField2 = "Выключите саут"
+                                            val customFieldChet = faktStartKmChet
+                                            customField700.add(customFieldChet)
+                                        }
+                                        "Нейтральная вставка" -> {
+                                            customField2 = "Нейтральная вставка"
+                                            val customFieldChet = faktStartKmChet
+                                            customField700.add(customFieldChet)
+                                        }
+                                        "Впереди блокпост" -> {
+                                            customField2 = "Впереди блокпост"
+                                            val customFieldChet = faktStartKmChet
+                                            customField700.add(customFieldChet)
+                                        }
+                                        "Посадка бригады" -> {
+                                            customField2 = "Посадка бригады"
+                                            val customFieldChet = faktStartKmChet
+                                            customField700.add(customFieldChet)
+                                        }
+                                        "Высадка бригады" -> {
+                                            customField2 = "Высадка бригады"
+                                            val customFieldChet = faktStartKmChet
+                                            customField700.add(customFieldChet)
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -2910,26 +2902,166 @@ class MyLocationService : Service() {
                                 myBrake.add(faktNachKmBrakeChet)
                                 brake500.add(faktNachKmBrakeChet - 500)
 
-                                tvOgr15 = ""
-                                tvOgr25 = ""
-                                tvOgr40 = ""
-                                tvOgr50 = ""
-                                tvOgr55 = ""
-                                tvOgr60 = ""
-                                tvOgr65 = ""
-                                tvOgr70 = ""
-                                tvOgr75 = ""
-                                tvKmPk15 = ""
-                                tvKmPk25 = ""
-                                tvKmPk40 = ""
-                                tvKmPk50 = ""
-                                tvKmPk55 = ""
-                                tvKmPk60 = ""
-                                tvKmPk65 = ""
-                                tvKmPk70 = ""
-                                tvKmPk75 = ""
-
                                 // Конец расчёта начала Торможения по киллометро
+                            }
+                        }
+
+                        CoroutineScope(Dispatchers.Main).launch {
+                            myPantograph.clear()
+                            pantograph800.clear()
+                            myDbManagerPantograph.openDb()
+                            val dataListPantographs = myDbManagerPantograph.readDbDataPantographChet()
+                            for (item in dataListPantographs){
+
+                                titleStartPantographChet = item.startChet
+                                piketStartPantographChet = item.picketStartChet
+
+                                // Начало расчёта начала Опускания токоприемников по киллометро
+
+                                var z = 1001
+                                var kms = 2
+                                val pkc = 1
+
+                                while (z < 9999999){
+                                    z += 1000
+                                    kms += 1
+
+                                    if (titleStartPantographChet == kms && piketStartPantographChet == pkc){
+                                        faktNachKmPantographChet = z
+                                        piketNachKmPantographChet = pkc
+                                    }
+                                }
+
+                                var z1 = 1101
+                                var kms1 = 2
+                                val pkc1 = 2
+
+                                while (z1 < 9999999){
+                                    z1 += 1000
+                                    kms1 += 1
+
+                                    if (titleStartPantographChet == kms1 && piketStartPantographChet == pkc1){
+                                        faktNachKmPantographChet = z1
+                                        piketNachKmPantographChet = pkc1
+                                    }
+                                }
+
+                                var z2 = 1201
+                                var kms2 = 2
+                                val pkc2 = 3
+
+                                while (z2 < 9999999){
+                                    z2 += 1000
+                                    kms2 += 1
+
+                                    if (titleStartPantographChet == kms2 && piketStartPantographChet == pkc2){
+                                        faktNachKmPantographChet = z2
+                                        piketNachKmPantographChet = pkc2
+                                    }
+                                }
+
+                                var z3 = 1301
+                                var kms3 = 2
+                                val pkc3 = 4
+
+                                while (z3 < 9999999){
+                                    z3 += 1000
+                                    kms3 += 1
+
+                                    if (titleStartPantographChet == kms3 && piketStartPantographChet == pkc3){
+                                        faktNachKmPantographChet = z3
+                                        piketNachKmPantographChet = pkc3
+                                    }
+                                }
+
+                                var z4 = 1401
+                                var kms4 = 2
+                                val pkc4 = 5
+
+                                while (z4 < 9999999){
+                                    z4 += 1000
+                                    kms4 += 1
+
+                                    if (titleStartPantographChet == kms4 && piketStartPantographChet == pkc4){
+                                        faktNachKmPantographChet = z4
+                                        piketNachKmPantographChet = pkc4
+                                    }
+                                }
+
+                                var z5 = 1501
+                                var kms5 = 2
+                                val pkc5 = 6
+
+                                while (z5 < 9999999){
+                                    z5 += 1000
+                                    kms5 += 1
+
+                                    if (titleStartPantographChet == kms5 && piketStartPantographChet == pkc5){
+                                        faktNachKmPantographChet = z5
+                                        piketNachKmPantographChet = pkc5
+                                    }
+                                }
+
+                                var z6 = 1601
+                                var kms6 = 2
+                                val pkc6 = 7
+
+                                while (z6 < 9999999){
+                                    z6 += 1000
+                                    kms6 += 1
+
+                                    if (titleStartPantographChet == kms6 && piketStartPantographChet == pkc6){
+                                        faktNachKmPantographChet = z6
+                                        piketNachKmPantographChet = pkc6
+                                    }
+                                }
+
+                                var z7 = 1701
+                                var kms7 = 2
+                                val pkc7 = 8
+
+                                while (z7 < 9999999){
+                                    z7 += 1000
+                                    kms7 += 1
+
+                                    if (titleStartPantographChet == kms7 && piketStartPantographChet == pkc7){
+                                        faktNachKmPantographChet = z7
+                                        piketNachKmPantographChet = pkc7
+                                    }
+                                }
+
+                                var z8 = 1801
+                                var kms8 = 2
+                                val pkc8 = 9
+
+                                while (z8 < 9999999){
+                                    z8 += 1000
+                                    kms8 += 1
+
+                                    if (titleStartPantographChet == kms8 && piketStartPantographChet == pkc8){
+                                        faktNachKmPantographChet = z8
+                                        piketNachKmPantographChet = pkc8
+                                    }
+                                }
+
+                                var z9 = 1901
+                                var kms9 = 2
+                                val pkc9 = 10
+
+                                while (z9 < 9999999){
+                                    z9 += 1000
+                                    kms9 += 1
+
+                                    if (titleStartPantographChet == kms9 && piketStartPantographChet == pkc9){
+                                        faktNachKmPantographChet = z9
+                                        piketNachKmPantographChet = pkc9
+                                    }
+                                }
+
+                                myPantograph.add(faktNachKmPantographChet)
+                                pantograph800.add(faktNachKmPantographChet - 800)
+
+                                // Конец расчёта начала Опускания токоприемников по киллометро
                             }
                         }
 
@@ -3237,334 +3369,6 @@ class MyLocationService : Service() {
                                 myLimitation.add(faktNachKmChet)
 
                                 // Конец расчёта конца ограничения по киллометро
-
-                                // Начало оповещения ограничения скорости за 2 км/ч
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002) {
-
-                                    val arrayListSpeed = mutableListOf<Int>()
-
-                                    when (speedChet) {
-                                        15 -> {
-                                            val int15 = 15
-                                            arrayListSpeed.add(15)
-                                        }
-                                        25 -> {
-                                            val int25 = 25
-                                            arrayListSpeed.add(25)
-                                        }
-                                        40 -> {
-                                            val int40 = 40
-                                            arrayListSpeed.add(40)
-                                        }
-                                        50 -> {
-                                            val int50 = 50
-                                            arrayListSpeed.add(50)
-                                        }
-                                        55 -> {
-                                            val int55 = 55
-                                            arrayListSpeed.add(55)
-                                        }
-                                        60 -> {
-                                            val int60 = 60
-                                            arrayListSpeed.add(60)
-                                        }
-                                        65 -> {
-                                            val int65 = 65
-                                            arrayListSpeed.add(65)
-                                        }
-                                        70 -> {
-                                            val int70 = 70
-                                            arrayListSpeed.add(70)
-                                        }
-                                        75 -> {
-                                            val int75 = 75
-                                            arrayListSpeed.add(75)
-                                        }
-                                    }
-
-                                    Log.d("MyLog28", "arrayListSpeed = $arrayListSpeed")
-
-                                    Log.d("MyLog28", "minSpeed arrayListSpeed = ${arrayListSpeed.min()}")
-//                                    speedChetMin = arrayListSpeed.min()
-                                    val i = arrayListSpeed.min()
-                                    if (i == 15 || i == 25 || i == 40 || i == 50 || i == 55 || i == 60 || i == 65 || i == 70 || i == 75) {
-                                        mySpeed.add(i)
-                                        val mySpeed1 = mySpeed.toMutableSet().toMutableList()
-                                        val mySpeed2 = mySpeed1
-                                        Log.d("MyLog29", "mySpeed2 = $mySpeed2")
-                                        mySpeed = mySpeed1
-                                    }
-                                }
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 15 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 15")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 25 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 25!")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 40 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 40!")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 50 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 50!")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 55 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 55!")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 60 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 60!")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 65 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 65!")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 70 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 70!")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002 && speedChetMin == 75 && speedLimit){
-                                    Log.d("MyLog29", "Зашли - в 75!")
-//                                    mySpeed.add(speedChetMin)
-                                    int15 = 150
-                                    int25 = 150
-                                    int40 = 150
-                                    int50 = 150
-                                    int55 = 150
-                                    int60 = 150
-                                    int65 = 150
-                                    int70 = 150
-                                    int75 = 150
-                                    speedLimit = !speedLimit
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                // Конец оповещения ограничения скорости за 2 км/ч
-
-                                // Предупреждение о превышении за 400 метров до предупреждения
-
-                                if (currentLocation.speed * 3.6 >= 15 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 15 && isLimitations400m15){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m15 = !isLimitations400m15
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 15){
-//                                    isLimitations400m15 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocation.speed * 3.6 >= 25 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 25 && isLimitations400m25){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m25 = !isLimitations400m25
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 25){
-//                                    isLimitations400m25 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocation.speed * 3.6 >= 40 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 40 && isLimitations400m40){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m40 = !isLimitations400m40
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 40){
-//                                    isLimitations400m40 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocation.speed * 3.6 >= 50 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 50 && isLimitations400m50){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m50 = !isLimitations400m50
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 50){
-//                                    isLimitations400m50 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocation.speed * 3.6 >= 55 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 55 && isLimitations400m55){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m55 = !isLimitations400m55
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 55){
-//                                    isLimitations400m55 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocation.speed * 3.6 >= 60 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 60 && isLimitations400m60){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m60 = !isLimitations400m60
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 60){
-//                                    isLimitations400m60 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocation.speed * 3.6 >= 65 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 65 && isLimitations400m65){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m65 = !isLimitations400m65
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 65){
-//                                    isLimitations400m65 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocation.speed * 3.6 >= 70 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 70 && isLimitations400m70){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m70 = !isLimitations400m70
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 70){
-//                                    isLimitations400m70 = true
-//                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (currentLocation.speed * 3.6 >= 75 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 75 && isLimitations400m75){
-                                    myPrev400.clear()
-                                    val myPrev = faktStartKmChet + 100
-                                    myPrev400.add(myPrev)
-                                    isLimitations400m75 = !isLimitations400m75
-                                }
-//                                if (distance >= faktNachKmChet - 499 && distance <= faktNachKmChet - 451 && item.speedChet == 75){
-//                                    isLimitations400m75 = true
-//                                }
-
-                                // Конец предупреждение о превышении за 400 метров до предупреждения
-
-                                //*************************************************************************************
 
                                 // Предупреждение о превышении ограничения скорости
 
@@ -3917,201 +3721,182 @@ class MyLocationService : Service() {
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 // Конец предупреждения о превышении ограничения скорости
+
+                                // Предупреждение о превышении за 400 метров до предупреждения
+
+                                if (currentLocation.speed * 3.6 >= 15 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 15 && isLimitations400m15){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m15 = !isLimitations400m15
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocation.speed * 3.6 >= 25 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 25 && isLimitations400m25){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m25 = !isLimitations400m25
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocation.speed * 3.6 >= 40 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 40 && isLimitations400m40){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m40 = !isLimitations400m40
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocation.speed * 3.6 >= 50 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 50 && isLimitations400m50){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m50 = !isLimitations400m50
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocation.speed * 3.6 >= 55 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 55 && isLimitations400m55){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m55 = !isLimitations400m55
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocation.speed * 3.6 >= 60 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 60 && isLimitations400m60){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m60 = !isLimitations400m60
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocation.speed * 3.6 >= 65 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 65 && isLimitations400m65){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m65 = !isLimitations400m65
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocation.speed * 3.6 >= 70 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 70 && isLimitations400m70){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m70 = !isLimitations400m70
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (currentLocation.speed * 3.6 >= 75 && distance >= faktNachKmChet - 600 && distance <= faktNachKmChet - 502 && item.speedChet == 75 && isLimitations400m75){
+                                    myPrev400.clear()
+                                    val myPrev = faktStartKmChet + 100
+                                    myPrev400.add(myPrev)
+                                    isLimitations400m75 = !isLimitations400m75
+                                }
+
+                                // Конец предупреждение о превышении за 400 метров до предупреждения
+
+                                //*************************************************************************************
+
+                                // Начало оповещения ограничения скорости за 2 км/ч
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance >= faktNachKmChet - 2100 && distance <= faktNachKmChet - 2002) {
+
+                                    val arrayListSpeed = mutableListOf<Int>()
+
+                                    when (speedChet) {
+                                        15 -> {
+                                            val int15 = 15
+                                            arrayListSpeed.add(15)
+                                        }
+                                        25 -> {
+                                            val int25 = 25
+                                            arrayListSpeed.add(25)
+                                        }
+                                        40 -> {
+                                            val int40 = 40
+                                            arrayListSpeed.add(40)
+                                        }
+                                        50 -> {
+                                            val int50 = 50
+                                            arrayListSpeed.add(50)
+                                        }
+                                        55 -> {
+                                            val int55 = 55
+                                            arrayListSpeed.add(55)
+                                        }
+                                        60 -> {
+                                            val int60 = 60
+                                            arrayListSpeed.add(60)
+                                        }
+                                        65 -> {
+                                            val int65 = 65
+                                            arrayListSpeed.add(65)
+                                        }
+                                        70 -> {
+                                            val int70 = 70
+                                            arrayListSpeed.add(70)
+                                        }
+                                        75 -> {
+                                            val int75 = 75
+                                            arrayListSpeed.add(75)
+                                        }
+                                    }
+
+                                    val newItem2 = speedChet
+
+                                    if (newItem2 !in mySpeed1) {
+                                        mySpeed1.add(newItem2)
+                                    }
+
+                                    var a = 0
+
+                                    while (a <= mySpeed1.size) {
+                                        dataListArray.add(ListKm(titleStartChet, piketStartChet, titleFinishChet, piketFinishChet, speedChet))
+                                        a = a + 1
+                                    }
+
+                                    val myList = dataListArray.toMutableSet().toMutableList()
+                                    dataListArray = myList
+
+                                    for (i in dataListArray.indices) {
+                                        Log.d("MyLog34", "kmStart = ${dataListArray[i].kmStart}, pkStart = ${dataListArray[i].pkStart}, kmFinish = ${dataListArray[i].kmFinish}, pkFinish = ${dataListArray[i].pkFinish}, speed ${dataListArray[i].speed}")
+                                    }
+
+                                    Log.d("MyLog34", "dataListArray.size = ${dataListArray.size}")
+
+
+                                    Log.d("MyLog28", "arrayListSpeed = $arrayListSpeed")
+
+                                    Log.d("MyLog28", "minSpeed arrayListSpeed = ${arrayListSpeed.min()}")
+//                                    speedChetMin = arrayListSpeed.min()
+                                    val i = arrayListSpeed.min()
+                                    if (i == 15 || i == 25 || i == 40 || i == 50 || i == 55 || i == 60 || i == 65 || i == 70 || i == 75) {
+                                        mySpeed.add(i)
+                                        val mySpeed1 = mySpeed.toMutableSet().toMutableList()
+                                        val mySpeed2 = mySpeed1
+                                        Log.d("MyLog29", "mySpeed2 = $mySpeed2")
+                                        mySpeed = mySpeed1
+                                    }
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                // Конец оповещения ограничения скорости за 2 км/ч
                             }
 
 
-                        }
-
-                        CoroutineScope(Dispatchers.Main).launch {
-                            customField700.clear()
-                            myDbManagerCustomField.openDb()
-                            val dataListCustomField = myDbManagerCustomField.readDbDataCustomFieldChet()
-                            for (item in dataListCustomField){
-
-                                titleStartCustomFieldChet = item.startChetCustom
-                                piketStartCustomFieldChet = item.picketStartChetCustom
-
-                                var z = 1001
-                                var kms = 2
-                                val pkc = 1
-
-                                while (z < 9999999){
-                                    z += 1000
-                                    kms += 1
-
-                                    if (titleStartCustomFieldChet == kms && piketStartCustomFieldChet == pkc){
-                                        faktNachKmCustomFieldChet = z
-                                        piketNachKmCustomFieldChet = pkc
-                                    }
-                                }
-
-                                var z1 = 1101
-                                var kms1 = 2
-                                val pkc1 = 2
-
-                                while (z1 < 9999999){
-                                    z1 += 1000
-                                    kms1 += 1
-
-                                    if (titleStartCustomFieldChet == kms1 && piketStartCustomFieldChet == pkc1){
-                                        faktNachKmCustomFieldChet = z1
-                                        piketNachKmCustomFieldChet = pkc1
-                                    }
-                                }
-
-                                var z2 = 1201
-                                var kms2 = 2
-                                val pkc2 = 3
-
-                                while (z2 < 9999999){
-                                    z2 += 1000
-                                    kms2 += 1
-
-                                    if (titleStartCustomFieldChet == kms2 && piketStartCustomFieldChet == pkc2){
-                                        faktNachKmCustomFieldChet = z2
-                                        piketNachKmCustomFieldChet = pkc2
-                                    }
-                                }
-
-                                var z3 = 1301
-                                var kms3 = 2
-                                val pkc3 = 4
-
-                                while (z3 < 9999999){
-                                    z3 += 1000
-                                    kms3 += 1
-
-                                    if (titleStartCustomFieldChet == kms3 && piketStartCustomFieldChet == pkc3){
-                                        faktNachKmCustomFieldChet = z3
-                                        piketNachKmCustomFieldChet = pkc3
-                                    }
-                                }
-
-                                var z4 = 1401
-                                var kms4 = 2
-                                val pkc4 = 5
-
-                                while (z4 < 9999999){
-                                    z4 += 1000
-                                    kms4 += 1
-
-                                    if (titleStartCustomFieldChet == kms4 && piketStartCustomFieldChet == pkc4){
-                                        faktNachKmCustomFieldChet = z4
-                                        piketNachKmCustomFieldChet = pkc4
-                                    }
-                                }
-
-                                var z5 = 1501
-                                var kms5 = 2
-                                val pkc5 = 6
-
-                                while (z5 < 9999999){
-                                    z5 += 1000
-                                    kms5 += 1
-
-                                    if (titleStartCustomFieldChet == kms5 && piketStartCustomFieldChet == pkc5){
-                                        faktNachKmCustomFieldChet = z5
-                                        piketNachKmCustomFieldChet = pkc5
-                                    }
-                                }
-
-                                var z6 = 1601
-                                var kms6 = 2
-                                val pkc6 = 7
-
-                                while (z6 < 9999999){
-                                    z6 += 1000
-                                    kms6 += 1
-
-                                    if (titleStartCustomFieldChet == kms6 && piketStartCustomFieldChet == pkc6){
-                                        faktNachKmCustomFieldChet = z6
-                                        piketNachKmCustomFieldChet = pkc6
-                                    }
-                                }
-
-                                var z7 = 1701
-                                var kms7 = 2
-                                val pkc7 = 8
-
-                                while (z7 < 9999999){
-                                    z7 += 1000
-                                    kms7 += 1
-
-                                    if (titleStartCustomFieldChet == kms7 && piketStartCustomFieldChet == pkc7){
-                                        faktNachKmCustomFieldChet = z7
-                                        piketNachKmCustomFieldChet = pkc7
-                                    }
-                                }
-
-                                var z8 = 1801
-                                var kms8 = 2
-                                val pkc8 = 9
-
-                                while (z8 < 9999999){
-                                    z8 += 1000
-                                    kms8 += 1
-
-                                    if (titleStartCustomFieldChet == kms8 && piketStartCustomFieldChet == pkc8){
-                                        faktNachKmCustomFieldChet = z8
-                                        piketNachKmCustomFieldChet = pkc8
-                                    }
-                                }
-
-                                var z9 = 1901
-                                var kms9 = 2
-                                val pkc9 = 10
-
-                                while (z9 < 9999999){
-                                    z9 += 1000
-                                    kms9 += 1
-
-                                    if (titleStartCustomFieldChet == kms9 && piketStartCustomFieldChet == pkc9){
-                                        faktNachKmCustomFieldChet = z9
-                                        piketNachKmCustomFieldChet = pkc9
-                                    }
-                                }
-
-                                if (distance >= faktNachKmCustomFieldChet && distance <= faktNachKmCustomFieldChet + 98) {
-                                    customField = item.fieldChetCustom
-                                    when (customField) {
-                                        "Правильность пути" -> {
-                                            customField2 = "Правильность пути"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Включите саут" -> {
-                                            customField2 = "Включите саут"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Выключите саут" -> {
-                                            customField2 = "Выключите саут"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Нейтральная вставка" -> {
-                                            customField2 = "Нейтральная вставка"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Впереди блокпост" -> {
-                                            customField2 = "Впереди блокпост"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Посадка бригады" -> {
-                                            customField2 = "Посадка бригады"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Высадка бригады" -> {
-                                            customField2 = "Высадка бригады"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                    }
-                                }
-                            }
                         }
 
                         myDbManagerPantograph.closeDb()
@@ -4535,6 +4320,140 @@ class MyLocationService : Service() {
 
                 faktStartKmChet = q9
                 faktFinishKmChet = w9
+            }
+        }
+    }
+
+    private fun iteration011() {
+        if (customField700List.isNotEmpty()) {
+            if (brake500List.isNotEmpty()) {
+                if (pantograph800List.isNotEmpty()) {
+                    if (myOgranichenieList.isEmpty()){
+                        if (myPrev400List.isEmpty()){
+                            if (myLimitationList.isEmpty()){
+                                if (myBrakeList.isEmpty()){
+                                    if (myPantographList.isEmpty()){
+                                        for (itemNeutralInsert600 in customField700List) {
+                                            for (itemBrake500 in brake500List) {
+                                                for (itemPantograph800 in pantograph800List) {
+                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        faktStartKmChet == itemBrake500 &&
+                                                        faktStartKmChet == itemPantograph800) {
+
+                                                        soundSpinner()
+
+                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+
+                                                        customField700List.removeAt(0)
+                                                        brake500List[0] = itemBrake500 + 100
+                                                        pantograph800List[0] = itemPantograph800 + 100
+                                                        speedLimit = true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (customField700List.isEmpty()) {
+            if (brake500List.isNotEmpty()) {
+                if (pantograph800List.isNotEmpty()) {
+                    if (myOgranichenieList.isEmpty()){
+                        if (myPrev400List.isEmpty()){
+                            if (myLimitationList.isEmpty()){
+                                if (myBrakeList.isEmpty()){
+                                    if (myPantographList.isEmpty()){
+                                        for (itemBrake500 in brake500List) {
+                                            for (itemPantograph800 in pantograph800List) {
+                                                if (faktStartKmChet == itemBrake500 &&
+                                                    faktStartKmChet == itemPantograph800) {
+
+                                                    soundSpinner()
+
+                                                    Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
+
+                                                    brake500List.removeAt(0)
+                                                    pantograph800List[0] = itemPantograph800 + 100
+                                                    speedLimit = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (customField700List.isNotEmpty()) {
+            if (brake500List.isEmpty()) {
+                if (pantograph800List.isNotEmpty()) {
+                    if (myOgranichenieList.isEmpty()){
+                        if (myPrev400List.isEmpty()){
+                            if (myLimitationList.isEmpty()){
+                                if (myBrakeList.isEmpty()){
+                                    if (myPantographList.isEmpty()){
+                                        for (itemNeutralInsert600 in customField700List) {
+                                            for (itemPantograph800 in pantograph800List) {
+                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    faktStartKmChet == itemPantograph800) {
+
+                                                    soundSpinner()
+
+                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+
+                                                    customField700List.removeAt(0)
+                                                    pantograph800List[0] = itemPantograph800 + 100
+                                                    speedLimit = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (customField700List.isNotEmpty()) {
+            if (brake500List.isNotEmpty()) {
+                if (pantograph800List.isEmpty()) {
+                    if (myOgranichenieList.isEmpty()){
+                        if (myPrev400List.isEmpty()){
+                            if (myLimitationList.isEmpty()){
+                                if (myBrakeList.isEmpty()){
+                                    if (myPantographList.isEmpty()){
+                                        for (itemNeutralInsert600 in customField700List) {
+                                            for (itemBrake500 in brake500List) {
+                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    faktStartKmChet == itemBrake500) {
+
+                                                    soundSpinner()
+
+                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+
+                                                    customField700List.removeAt(0)
+                                                    brake500List[0] = itemBrake500 + 100
+                                                    speedLimit = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -11615,8 +11534,10 @@ class MyLocationService : Service() {
 
                                                     Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
 
+                                                    myLimitationsList2.add(faktStartKmNechet + 2100)
+                                                    Log.d("MyLog47", "myLimitation = $myLimitation")
                                                     customField700List.removeAt(0)
-                                                    myLimitationList[0] = itemLimitationsList + 100
+                                                    myLimitationList.removeAt(0)
                                                     speedLimit = true
                                                 }
                                             }
@@ -13910,7 +13831,7 @@ class MyLocationService : Service() {
                                                     if (faktStartKmChet + 2000 == itemLimitationsList &&
                                                         faktStartKmChet + 4000 == itemBrakesList &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
-                                                        if (mySpeed.size > 1) {
+                                                        if (dataListArray.size > 1) {
                                                             val limit = itemLimitationsList + 100
                                                             myLimitationList.add(limit)
                                                         }
@@ -13919,8 +13840,9 @@ class MyLocationService : Service() {
 
                                                         soundVoice2000()
 
-                                                        if (mySpeed.isNotEmpty()) {
-                                                            mySpeed.removeAt(0)
+                                                        if (dataListArray.isNotEmpty()) {
+                                                            val listKmToRemove = ListKm(dataListArray[0].kmStart, dataListArray[0].pkStart, dataListArray[0].kmFinish, dataListArray[0].pkFinish, dataListArray[0].speed)
+                                                            dataListArray.remove(listKmToRemove)
                                                         }
 
                                                         myLimitationList.removeAt(0)
@@ -13928,7 +13850,7 @@ class MyLocationService : Service() {
                                                         myBrakeList[0] = itemBrakesList + 100
                                                         speedLimit = true
                                                     }
-                                                    if (mySpeed.isEmpty()) {
+                                                    if (dataListArray.isEmpty()) {
                                                         if (myLimitationList.isNotEmpty()) {
                                                             myLimitationList.removeAt(0)
                                                         }
@@ -13963,7 +13885,7 @@ class MyLocationService : Service() {
                                     if (myLimitationList.isNotEmpty()){
                                         for (itemLimitationsList in myLimitationList){
                                             if (faktStartKmChet + 2000 == itemLimitationsList){
-                                                if (mySpeed.size > 1) {
+                                                if (dataListArray.size > 1) {
                                                     val limit = itemLimitationsList + 100
                                                     myLimitationList.add(limit)
                                                 }
@@ -13973,10 +13895,16 @@ class MyLocationService : Service() {
 
                                                 soundVoice2000()
 
-                                                if (mySpeed.isNotEmpty()) {
-                                                    mySpeed.removeAt(0)
+                                                if (dataListArray.isNotEmpty()) {
+                                                    val listKmToRemove = ListKm(dataListArray[0].kmStart, dataListArray[0].pkStart, dataListArray[0].kmFinish, dataListArray[0].pkFinish, dataListArray[0].speed)
+                                                    dataListArray.remove(listKmToRemove)
                                                 }
-                                                myLimitationList.removeAt(0)
+                                                if (myLimitationList.isNotEmpty()) {
+                                                    myLimitationList.removeAt(0)
+                                                }
+                                                if (myLimitationsList2.isNotEmpty()) {
+                                                    myLimitationsList2.clear()
+                                                }
                                                 speedLimit = true
                                             }
                                         }
@@ -14005,14 +13933,15 @@ class MyLocationService : Service() {
 
                                                     soundVoice2000()
 
-                                                    if (mySpeed.isNotEmpty()) {
-                                                        mySpeed.removeAt(0)
+                                                    if (dataListArray.isNotEmpty()) {
+                                                        val listKmToRemove = ListKm(dataListArray[0].kmStart, dataListArray[0].pkStart, dataListArray[0].kmFinish, dataListArray[0].pkFinish, dataListArray[0].speed)
+                                                        dataListArray.remove(listKmToRemove)
                                                     }
                                                     myLimitationList.removeAt(0)
                                                     myBrakeList[0] = itemBrakesList + 100
                                                     speedLimit = true
                                                 }
-                                                if (mySpeed.isEmpty()) {
+                                                if (dataListArray.isEmpty()) {
                                                     if (myLimitationList.isNotEmpty()) {
                                                         myLimitationList.removeAt(0)
                                                     }
@@ -14044,14 +13973,15 @@ class MyLocationService : Service() {
 
                                                     soundVoice2000()
 
-                                                    if (mySpeed.isNotEmpty()) {
-                                                        mySpeed.removeAt(0)
+                                                    if (dataListArray.isNotEmpty()) {
+                                                        val listKmToRemove = ListKm(dataListArray[0].kmStart, dataListArray[0].pkStart, dataListArray[0].kmFinish, dataListArray[0].pkFinish, dataListArray[0].speed)
+                                                        dataListArray.remove(listKmToRemove)
                                                     }
                                                     myLimitationList.removeAt(0)
                                                     myPantographList[0] = itemPantographsList + 100
                                                     speedLimit = true
                                                 }
-                                                if (mySpeed.isEmpty()) {
+                                                if (dataListArray.isEmpty()) {
                                                     if (myLimitationList.isNotEmpty()) {
                                                         myLimitationList.removeAt(0)
                                                     }
@@ -14078,15 +14008,15 @@ class MyLocationService : Service() {
                                         for (itemBrakesList in myBrakeList){
                                             for (itemPantographsList in myPantographList){
                                                 Log.d("MyLog2", "Опускание и Торможение!")
-                                                if (mySpeed.isNotEmpty()) {
-                                                    val limit = itemPantographsList - 1000
-                                                    myLimitationList.add(limit)
-                                                } else {
-                                                    if (myLimitationList.isNotEmpty()) {
-                                                        myLimitationList.removeAt(0)
-                                                    }
-                                                }
-                                                if (mySpeed.isEmpty() && faktStartKmChet + 3000 == itemPantographsList && faktStartKmChet + 4000 == itemBrakesList){
+//                                                if (dataListArray.isNotEmpty()) {
+//                                                    val limit = itemPantographsList - 1000
+//                                                    myLimitationList.add(limit)
+//                                                } else {
+//                                                    if (myLimitationList.isNotEmpty()) {
+//                                                        myLimitationList.removeAt(0)
+//                                                    }
+//                                                }
+                                                if (faktStartKmChet + 3000 == itemPantographsList && faktStartKmChet + 4000 == itemBrakesList){
                                                     Log.d("MyLog", "Совпадение Опускания с Торможением!")
                                                     Log.d("MyLog", "Озвучиваем Опускание! 21")
 
@@ -14103,15 +14033,15 @@ class MyLocationService : Service() {
                                     if (myPantographList.isNotEmpty()){
                                         for (itemPantographsList in myPantographList){
                                             Log.d("MyLog2", "Опускание!")
-                                            if (mySpeed.isNotEmpty()) {
-                                                val limit = itemPantographsList - 1000
-                                                myLimitationList.add(limit)
-                                            } else {
-                                                if (myLimitationList.isNotEmpty()) {
-                                                    myLimitationList.removeAt(0)
-                                                }
-                                            }
-                                            if (mySpeed.isEmpty() && faktStartKmChet + 3000 == itemPantographsList){
+//                                            if (dataListArray.isNotEmpty()) {
+//                                                val limit = itemPantographsList - 1000
+//                                                myLimitationList.add(limit)
+//                                            } else {
+//                                                if (myLimitationList.isNotEmpty()) {
+//                                                    myLimitationList.removeAt(0)
+//                                                }
+//                                            }
+                                            if (faktStartKmChet + 3000 == itemPantographsList){
                                                 Log.d("MyLog", "Озвучиваем Опускание! 2121")
 
                                                 playSound(pantograph)
@@ -14138,15 +14068,15 @@ class MyLocationService : Service() {
                                     if (myBrakeList.isNotEmpty()){
                                         for (itemBrakesList in myBrakeList){
                                             Log.d("MyLog2", "Торможение!")
-                                            if (mySpeed.isNotEmpty()) {
-                                                val limit = itemBrakesList - 2000
-                                                myLimitationList.add(limit)
-                                            } else {
-                                                if (myLimitationList.isNotEmpty()) {
-                                                    myLimitationList.removeAt(0)
-                                                }
-                                            }
-                                            if (mySpeed.isEmpty() && faktStartKmChet + 4000 == itemBrakesList) {
+//                                            if (dataListArray.isNotEmpty()) {
+//                                                val limit = itemBrakesList - 2000
+//                                                myLimitationList.add(limit)
+//                                            } else {
+//                                                if (myLimitationList.isNotEmpty()) {
+//                                                    myLimitationList.removeAt(0)
+//                                                }
+//                                            }
+                                            if (faktStartKmChet + 4000 == itemBrakesList) {
                                                 Log.d("MyLog", "Озвучиваем Торможение!22")
 
                                                 playSound(brake)
@@ -14169,6 +14099,140 @@ class MyLocationService : Service() {
     //****************************************************************************************************
     //****************************************************************************************************
     //****************************************************************************************************
+
+    private fun iteration0311() {
+        if (customField700List.isNotEmpty()) {
+            if (brake500List.isNotEmpty()) {
+                if (pantograph800List.isNotEmpty()) {
+                    if (myOgranichenieList.isEmpty()){
+                        if (myPrev400List.isEmpty()){
+                            if (myLimitationList.isEmpty()){
+                                if (myBrakeList.isEmpty()){
+                                    if (myPantographList.isEmpty()){
+                                        for (itemNeutralInsert600 in customField700List) {
+                                            for (itemBrake500 in brake500List) {
+                                                for (itemPantograph800 in pantograph800List) {
+                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        faktStartKmNechet == itemBrake500 &&
+                                                        faktStartKmNechet == itemPantograph800) {
+
+                                                        soundSpinner()
+
+                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+
+                                                        customField700List.removeAt(0)
+                                                        brake500List[0] = itemBrake500 - 100
+                                                        pantograph800List[0] = itemPantograph800 - 100
+                                                        speedLimit = true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (customField700List.isEmpty()) {
+            if (brake500List.isNotEmpty()) {
+                if (pantograph800List.isNotEmpty()) {
+                    if (myOgranichenieList.isEmpty()){
+                        if (myPrev400List.isEmpty()){
+                            if (myLimitationList.isEmpty()){
+                                if (myBrakeList.isEmpty()){
+                                    if (myPantographList.isEmpty()){
+                                        for (itemBrake500 in brake500List) {
+                                            for (itemPantograph800 in pantograph800List) {
+                                                if (faktStartKmNechet == itemBrake500 &&
+                                                    faktStartKmNechet == itemPantograph800) {
+
+                                                    soundSpinner()
+
+                                                    Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
+
+                                                    brake500List.removeAt(0)
+                                                    pantograph800List[0] = itemPantograph800 - 100
+                                                    speedLimit = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (customField700List.isNotEmpty()) {
+            if (brake500List.isEmpty()) {
+                if (pantograph800List.isNotEmpty()) {
+                    if (myOgranichenieList.isEmpty()){
+                        if (myPrev400List.isEmpty()){
+                            if (myLimitationList.isEmpty()){
+                                if (myBrakeList.isEmpty()){
+                                    if (myPantographList.isEmpty()){
+                                        for (itemNeutralInsert600 in customField700List) {
+                                            for (itemPantograph800 in pantograph800List) {
+                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    faktStartKmNechet == itemPantograph800) {
+
+                                                    soundSpinner()
+
+                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+
+                                                    customField700List.removeAt(0)
+                                                    pantograph800List[0] = itemPantograph800 - 100
+                                                    speedLimit = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (customField700List.isNotEmpty()) {
+            if (brake500List.isNotEmpty()) {
+                if (pantograph800List.isEmpty()) {
+                    if (myOgranichenieList.isEmpty()){
+                        if (myPrev400List.isEmpty()){
+                            if (myLimitationList.isEmpty()){
+                                if (myBrakeList.isEmpty()){
+                                    if (myPantographList.isEmpty()){
+                                        for (itemNeutralInsert600 in customField700List) {
+                                            for (itemBrake500 in brake500List) {
+                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    faktStartKmNechet == itemBrake500) {
+
+                                                    soundSpinner()
+
+                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+
+                                                    customField700List.removeAt(0)
+                                                    brake500List[0] = itemBrake500 - 100
+                                                    speedLimit = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private fun iteration031() {
         if (customField700List.isNotEmpty()) {
@@ -21244,10 +21308,14 @@ class MyLocationService : Service() {
 
                                                     soundSpinner()
 
+                                                    Log.d("MyLog47", "Озвучиваем Нейтральную вставку")
+
                                                     Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
 
+                                                    myLimitationsList2.add(faktStartKmNechet - 2100)
+                                                    Log.d("MyLog47", "myLimitation = $myLimitation")
                                                     customField700List.removeAt(0)
-                                                    myLimitationList[0] = itemLimitationsList - 100
+                                                    myLimitationList.removeAt(0)
                                                     speedLimit = true
                                                 }
                                             }
@@ -23542,7 +23610,7 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet - 4000 == itemBrakesList &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                        if (mySpeed.size > 1) {
+                                                        if (dataListArray.size > 1) {
                                                             val limit = itemLimitationsList - 100
                                                             myLimitationList.add(limit)
                                                         }
@@ -23551,16 +23619,18 @@ class MyLocationService : Service() {
 
                                                         soundVoice2000()
 
-                                                        if (mySpeed.isNotEmpty()) {
-                                                            mySpeed.removeAt(0)
+                                                        if (dataListArray.isNotEmpty()) {
+                                                            val listKmToRemove = ListKm(dataListArray[0].kmStart, dataListArray[0].pkStart, dataListArray[0].kmFinish, dataListArray[0].pkFinish, dataListArray[0].speed)
+                                                            dataListArray.remove(listKmToRemove)
                                                         }
+
                                                         myLimitationList.removeAt(0)
                                                         myPantographList[0] = itemPantographsList - 100
                                                         myBrakeList[0] = itemBrakesList - 100
                                                         speedLimit = true
                                                     }
 
-                                                    if (mySpeed.isEmpty()) {
+                                                    if (dataListArray.isEmpty()) {
                                                         if (myLimitationList.isNotEmpty()) {
                                                             myLimitationList.removeAt(0)
                                                         }
@@ -23595,20 +23665,29 @@ class MyLocationService : Service() {
                                     if (myLimitationList.isNotEmpty()){
                                         for (itemLimitationsList in myLimitationList){
                                             if (faktStartKmNechet - 2000 == itemLimitationsList){
-                                                if (mySpeed.size > 1) {
+                                                if (dataListArray.size > 1) {
                                                     val limit = itemLimitationsList - 100
                                                     myLimitationList.add(limit)
                                                 }
+
+                                                Log.d("MyLog47", "Озвучиваем Ограничение скорости")
 
                                                 Log.d("MyLog", "Озвучиваем Ограничение скорости! 4")
                                                 Log.d("MyLog", "speedChetMin => => => $speedNechetMin")
 
                                                 soundVoice2000()
 
-                                                if (mySpeed.isNotEmpty()) {
-                                                    mySpeed.removeAt(0)
+                                                if (dataListArray.isNotEmpty()) {
+                                                    val listKmToRemove = ListKm(dataListArray[0].kmStart, dataListArray[0].pkStart, dataListArray[0].kmFinish, dataListArray[0].pkFinish, dataListArray[0].speed)
+                                                    dataListArray.remove(listKmToRemove)
                                                 }
-                                                myLimitationList.removeAt(0)
+
+                                                if (myLimitationList.isNotEmpty()) {
+                                                    myLimitationList.removeAt(0)
+                                                }
+                                                if (myLimitationsList2.isNotEmpty()) {
+                                                    myLimitationsList2.clear()
+                                                }
                                                 speedLimit = true
                                             }
                                         }
@@ -23636,14 +23715,15 @@ class MyLocationService : Service() {
 
                                                     soundVoice2000()
 
-                                                    if (mySpeed.isNotEmpty()) {
-                                                        mySpeed.removeAt(0)
+                                                    if (dataListArray.isNotEmpty()) {
+                                                        val listKmToRemove = ListKm(dataListArray[0].kmStart, dataListArray[0].pkStart, dataListArray[0].kmFinish, dataListArray[0].pkFinish, dataListArray[0].speed)
+                                                        dataListArray.remove(listKmToRemove)
                                                     }
                                                     myLimitationList.removeAt(0)
                                                     myBrakeList[0] = itemBrakesList - 100
                                                     speedLimit = true
                                                 }
-                                                if (mySpeed.isEmpty()) {
+                                                if (dataListArray.isEmpty()) {
                                                     if (myLimitationList.isNotEmpty()) {
                                                         myLimitationList.removeAt(0)
                                                     }
@@ -23675,14 +23755,16 @@ class MyLocationService : Service() {
 
                                                     soundVoice2000()
 
-                                                    if (mySpeed.isNotEmpty()) {
-                                                        mySpeed.removeAt(0)
+                                                    if (dataListArray.isNotEmpty()) {
+                                                        val listKmToRemove = ListKm(dataListArray[0].kmStart, dataListArray[0].pkStart, dataListArray[0].kmFinish, dataListArray[0].pkFinish, dataListArray[0].speed)
+                                                        dataListArray.remove(listKmToRemove)
                                                     }
+
                                                     myLimitationList.removeAt(0)
                                                     myPantographList[0] = itemPantographsList - 100
                                                     speedLimit = true
                                                 }
-                                                if (mySpeed.isEmpty()) {
+                                                if (dataListArray.isEmpty()) {
                                                     if (myLimitationList.isNotEmpty()) {
                                                         myLimitationList.removeAt(0)
                                                     }
@@ -23709,15 +23791,15 @@ class MyLocationService : Service() {
                                         for (itemBrakesList in myBrakeList){
                                             for (itemPantographsList in myPantographList){
                                                 Log.d("MyLog2", "Опускание и Торможение!")
-                                                if (mySpeed.isNotEmpty()) {
-                                                    val limit = itemPantographsList + 1000
-                                                    myLimitationList.add(limit)
-                                                } else {
-                                                    if (myLimitationList.isNotEmpty()) {
-                                                        myLimitationList.removeAt(0)
-                                                    }
-                                                }
-                                                if (mySpeed.isEmpty() && faktStartKmNechet - 3000 == itemPantographsList && faktStartKmNechet - 4000 == itemBrakesList){
+//                                                if (dataListArray.isNotEmpty()) {
+//                                                    val limit = itemPantographsList + 1000
+//                                                    myLimitationList.add(limit)
+//                                                } else {
+//                                                    if (myLimitationList.isNotEmpty()) {
+//                                                        myLimitationList.removeAt(0)
+//                                                    }
+//                                                }
+                                                if (faktStartKmNechet - 3000 == itemPantographsList && faktStartKmNechet - 4000 == itemBrakesList){
                                                     Log.d("MyLog", "Совпадение Опускания с Торможением!")
                                                     Log.d("MyLog", "Озвучиваем Опускание! 21")
 
@@ -23734,15 +23816,15 @@ class MyLocationService : Service() {
                                     if (myPantographList.isNotEmpty()){
                                         for (itemPantographsList in myPantographList){
                                             Log.d("MyLog2", "Опускание!")
-                                            if (mySpeed.isNotEmpty()) {
-                                                val limit = itemPantographsList + 1000
-                                                myLimitationList.add(limit)
-                                            } else {
-                                                if (myLimitationList.isNotEmpty()) {
-                                                    myLimitationList.removeAt(0)
-                                                }
-                                            }
-                                            if (mySpeed.isEmpty() && faktStartKmNechet - 3000 == itemPantographsList){
+//                                            if (dataListArray.isNotEmpty()) {
+//                                                val limit = itemPantographsList + 1000
+//                                                myLimitationList.add(limit)
+//                                            } else {
+//                                                if (myLimitationList.isNotEmpty()) {
+//                                                    myLimitationList.removeAt(0)
+//                                                }
+//                                            }
+                                            if (faktStartKmNechet - 3000 == itemPantographsList){
                                                 Log.d("MyLog", "Озвучиваем Опускание! 2121")
 
                                                 playSound(pantograph)
@@ -23769,15 +23851,15 @@ class MyLocationService : Service() {
                                     if (myBrakeList.isNotEmpty()){
                                         for (itemBrakesList in myBrakeList){
                                             Log.d("MyLog2", "Торможение!")
-                                            if (mySpeed.isNotEmpty()) {
-                                                val limit = itemBrakesList + 2000
-                                                myLimitationList.add(limit)
-                                            } else {
-                                                if (myLimitationList.isNotEmpty()) {
-                                                    myLimitationList.removeAt(0)
-                                                }
-                                            }
-                                            if (mySpeed.isEmpty() && faktStartKmNechet - 4000 == itemBrakesList) {
+//                                            if (dataListArray.isNotEmpty()) {
+//                                                val limit = itemBrakesList + 2000
+//                                                myLimitationList.add(limit)
+//                                            } else {
+//                                                if (myLimitationList.isNotEmpty()) {
+//                                                    myLimitationList.removeAt(0)
+//                                                }
+//                                            }
+                                            if (faktStartKmNechet - 4000 == itemBrakesList) {
                                                 Log.d("MyLog", "Озвучиваем Торможение!22")
 
                                                 playSound(brake)

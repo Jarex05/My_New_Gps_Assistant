@@ -14,6 +14,7 @@ import com.mikhail_ryumkin_r.my_gps_assistant.R
 import com.mikhail_ryumkin_r.my_gps_assistant.databinding.ItemLimitationsNechetBinding
 import com.mikhail_ryumkin_r.my_gps_assistant.db.limitation.ListItemLimitationsNechet
 import com.mikhail_ryumkin_r.my_gps_assistant.db.limitation.MyDbManagerLimitations
+import com.mikhail_ryumkin_r.my_gps_assistant.utils.SharedPref
 
 class AdapterLimitationsNechet(listMain: ArrayList<ListItemLimitationsNechet>, private var listLimitationsFragmentNechet: ListLimitationsFragmentNechet) : RecyclerView.Adapter<AdapterLimitationsNechet.MyViewHolder>() {
     private var listArray = listMain
@@ -92,6 +93,21 @@ class AdapterLimitationsNechet(listMain: ArrayList<ListItemLimitationsNechet>, p
 
     fun removeItemLimitationsNechet(pos: Int, dbManagerLimitations: MyDbManagerLimitations){
         dbManagerLimitations.deleteDbDataLimitationsNechet(listArray[pos].idNechet)
+        var a = 0
+        var b = 0
+        var c = 0
+        var d = 0
+        var e = 0
+        a = listArray[pos].speedNechet
+        b = listArray[pos].startNechet
+        c = listArray[pos].picketStartNechet
+        d = listArray[pos].finishNechet
+        e = listArray[pos].picketFinishNechet
+        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeleteSpeed(it.context, a) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeleteKmStart(it.context, b) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeleteKmFinish(it.context, d) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeletePkStart(it.context, c) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeletePkFinish(it.context, e) }
         listArray.removeAt(pos)
         notifyItemRangeChanged(0, listArray.size)
         notifyItemRemoved(pos)
