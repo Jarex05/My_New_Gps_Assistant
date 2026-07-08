@@ -26,6 +26,7 @@ class ListBrakeFragmentNechet : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+
         binding = FragmentListBrakeNechetBinding.inflate(inflater, container, false)
 
         binding.fbAddBrakeNechet.setOnClickListener {

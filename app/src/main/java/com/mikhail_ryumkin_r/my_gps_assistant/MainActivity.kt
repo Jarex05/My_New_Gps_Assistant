@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.bottomsheetlayout)
 
-        val v = SharedPref.Companion.getValue(applicationContext)
+        val v = SharedPref.getValue(applicationContext)
 
         if (v != 0) {
             //***************************************************************

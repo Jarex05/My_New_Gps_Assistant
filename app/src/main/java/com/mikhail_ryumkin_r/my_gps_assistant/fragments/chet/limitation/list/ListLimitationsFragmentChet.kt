@@ -64,7 +64,7 @@ class ListLimitationsFragmentChet : Fragment() {
 
             val numbers = mutableListOf<Int>()
 
-            val v = SharedPref.Companion.getValueChetStart(requireActivity())
+            val v = SharedPref.getValueChetStart(requireActivity())
 
             for (a in myDbManagerLimitations.readDbDataLimitationsChet()) {
                 numbers.add(a.startChet)
@@ -80,7 +80,7 @@ class ListLimitationsFragmentChet : Fragment() {
                 }
             }
             binding.rcLimitationsChet.scrollToPosition(toIndex)
-            SharedPref.Companion.setValueChetStart(requireActivity(), 0)
+            SharedPref.setValueChetStart(requireActivity(), 0)
         }
     }
 

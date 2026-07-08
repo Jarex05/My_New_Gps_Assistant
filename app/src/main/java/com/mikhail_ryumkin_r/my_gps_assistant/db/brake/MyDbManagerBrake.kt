@@ -21,11 +21,11 @@ class MyDbManagerBrake(context: Context) {
 
     // Функции для торможения четных поездов
 
-    fun insertToDbBrakeChet(startBrakeChet: Int, picketStartBrakeChet: Int, switchAdd: Int){
+    fun insertToDbBrakeChet(startBrakeChet: Int, picketStartBrakeChet: Int, customField: String){
         val values = ContentValues().apply {
             put(MyDbNameClass.COLUMN_START_BRAKE_CHET, startBrakeChet)
             put(MyDbNameClass.COLUMN_PICKET_START_BRAKE_CHET, picketStartBrakeChet)
-            put(MyDbNameClass.COLUMN_SWITCH_BRAKE_CHET, switchAdd)
+            put(MyDbNameClass.COLUMN_CUSTOM_BRAKE_CHET, customField)
         }
         db?.insert(MyDbNameClass.TABLE_NAME_BRAKE_CHET, null, values)
     }
@@ -39,12 +39,12 @@ class MyDbManagerBrake(context: Context) {
         while (cursor?.moveToNext()!!){
             val dataStartBrakeChet: Int = cursor.getInt(cursor.getColumnIndex(MyDbNameClass.COLUMN_START_BRAKE_CHET))
             val dataPicketStartBrakeChet: Int = cursor.getInt(cursor.getColumnIndex(MyDbNameClass.COLUMN_PICKET_START_BRAKE_CHET))
-            val dataSwitchAdd: Int = cursor.getInt(cursor.getColumnIndex(MyDbNameClass.COLUMN_SWITCH_BRAKE_CHET))
+            val dataCustomFieldChet: String = cursor.getString(cursor.getColumnIndex(MyDbNameClass.COLUMN_CUSTOM_BRAKE_CHET))
             val dataIdBrakeChet = cursor.getInt(cursor.getColumnIndex(BaseColumns._ID))
             val itemBrakeChet = ListItemBrakeChet()
             itemBrakeChet.startChet = dataStartBrakeChet
             itemBrakeChet.picketStartChet = dataPicketStartBrakeChet
-            itemBrakeChet.switchChetAdd = dataSwitchAdd
+            itemBrakeChet.fieldChetCustom = dataCustomFieldChet
             itemBrakeChet.idChet = dataIdBrakeChet
             dataListBrakeChet.add(itemBrakeChet)
         }
@@ -53,12 +53,12 @@ class MyDbManagerBrake(context: Context) {
         return@withContext dataListBrakeChet
     }
 
-    fun updateDbDataBrakeChet(startBrakeChet: Int, picketStartBrakeChet: Int, switchUpdate: Int, idBrakeChet: Int){
+    fun updateDbDataBrakeChet(startBrakeChet: Int, picketStartBrakeChet: Int, customFieldUpdate: String, idBrakeChet: Int){
         val selection = BaseColumns._ID + "=$idBrakeChet"
         val values = ContentValues().apply {
             put(MyDbNameClass.COLUMN_START_BRAKE_CHET, startBrakeChet)
             put(MyDbNameClass.COLUMN_PICKET_START_BRAKE_CHET, picketStartBrakeChet)
-            put(MyDbNameClass.COLUMN_SWITCH_BRAKE_CHET, switchUpdate)
+            put(MyDbNameClass.COLUMN_CUSTOM_BRAKE_CHET, customFieldUpdate)
         }
         db?.update(MyDbNameClass.TABLE_NAME_BRAKE_CHET, values, selection, null)
     }
@@ -72,11 +72,11 @@ class MyDbManagerBrake(context: Context) {
 
     // Функции для торможения нечетных поездов
 
-    fun insertToDbBrakeNechet(startBrakeNechet: Int, picketStartBrakeNechet: Int, switchAdd: Int){
+    fun insertToDbBrakeNechet(startBrakeNechet: Int, picketStartBrakeNechet: Int, customField: String){
         val values = ContentValues().apply {
             put(MyDbNameClass.COLUMN_START_BRAKE_NECHET, startBrakeNechet)
             put(MyDbNameClass.COLUMN_PICKET_START_BRAKE_NECHET, picketStartBrakeNechet)
-            put(MyDbNameClass.COLUMN_SWITCH_BRAKE_NECHET, switchAdd)
+            put(MyDbNameClass.COLUMN_CUSTOM_BRAKE_NECHET, customField)
         }
         db?.insert(MyDbNameClass.TABLE_NAME_BRAKE_NECHET, null, values)
     }
@@ -90,12 +90,12 @@ class MyDbManagerBrake(context: Context) {
         while (cursor?.moveToNext()!!){
             val dataStartBrakeNechet: Int = cursor.getInt(cursor.getColumnIndex(MyDbNameClass.COLUMN_START_BRAKE_NECHET))
             val dataPicketStartBrakeNechet: Int = cursor.getInt(cursor.getColumnIndex(MyDbNameClass.COLUMN_PICKET_START_BRAKE_NECHET))
-            val dataSwitchAdd: Int = cursor.getInt(cursor.getColumnIndex(MyDbNameClass.COLUMN_SWITCH_BRAKE_NECHET))
+            val dataCustomFieldNechet: String = cursor.getString(cursor.getColumnIndex(MyDbNameClass.COLUMN_CUSTOM_BRAKE_NECHET))
             val dataIdBrakeNechet = cursor.getInt(cursor.getColumnIndex(BaseColumns._ID))
             val itemBrakeNechet = ListItemBrakeNechet()
             itemBrakeNechet.startNechet = dataStartBrakeNechet
             itemBrakeNechet.picketStartNechet = dataPicketStartBrakeNechet
-            itemBrakeNechet.switchNechetAdd = dataSwitchAdd
+            itemBrakeNechet.fieldNechetCustom = dataCustomFieldNechet
             itemBrakeNechet.idNechet = dataIdBrakeNechet
             dataListBrakeNechet.add(itemBrakeNechet)
         }
@@ -104,12 +104,12 @@ class MyDbManagerBrake(context: Context) {
         return@withContext dataListBrakeNechet
     }
 
-    fun updateDbDataBrakeNechet(startBrakeNechet: Int, picketStartBrakeNechet: Int, switchUpdate: Int, idBrakeNechet: Int){
+    fun updateDbDataBrakeNechet(startBrakeNechet: Int, picketStartBrakeNechet: Int, customFieldUpdate: String, idBrakeNechet: Int){
         val selection = BaseColumns._ID + "=$idBrakeNechet"
         val values = ContentValues().apply {
             put(MyDbNameClass.COLUMN_START_BRAKE_NECHET, startBrakeNechet)
             put(MyDbNameClass.COLUMN_PICKET_START_BRAKE_NECHET, picketStartBrakeNechet)
-            put(MyDbNameClass.COLUMN_SWITCH_BRAKE_NECHET, switchUpdate)
+            put(MyDbNameClass.COLUMN_CUSTOM_BRAKE_NECHET, customFieldUpdate)
         }
         db?.update(MyDbNameClass.TABLE_NAME_BRAKE_NECHET, values, selection, null)
     }

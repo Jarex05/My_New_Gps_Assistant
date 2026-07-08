@@ -16,6 +16,7 @@ import com.mikhail_ryumkin_r.my_gps_assistant.R
 @Suppress("DEPRECATION")
 class AdapterBrakeChet(listMain: ArrayList<ListItemBrakeChet>, listBrakeFragmentChet: ListBrakeFragmentChet) : RecyclerView.Adapter<AdapterBrakeChet.MyViewHolder>() {
     private var listArray = listMain
+
     private var listBrakeFragment = listBrakeFragmentChet
 
     class MyViewHolder(view: View, context: ListBrakeFragmentChet) : RecyclerView.ViewHolder(view) {
@@ -25,9 +26,9 @@ class AdapterBrakeChet(listMain: ArrayList<ListItemBrakeChet>, listBrakeFragment
         fun setData(item: ListItemBrakeChet) = with(binding){
             kmStartItemBrakeChet.text = item.startChet.toString()
             pkStartItemBrakeChet.text = item.picketStartChet.toString()
-            brakeCheckChetItem.text = item.switchChetAdd.toString()
+            brakeCheckChetItem.text = item.fieldChetCustom
 
-            if (brakeCheckChetItem.text == "1") {
+            if (brakeCheckChetItem.text == "Оживление тормозов") {
                 idItemLayoutBrakeChet.setCardBackgroundColor(Color.parseColor(
                     PreferenceManager.getDefaultSharedPreferences(itemView.context)
                         .getString("color_brake_refresh_key", "#FF009EDA")))

@@ -8,12 +8,12 @@ class ListItemBrakeNechet(): Parcelable {
     var idNechet: Int = 0
     var startNechet: Int = 0
     var picketStartNechet: Int = 0
-    var switchNechetAdd: Int = 0
+    var fieldNechetCustom: String = ""
 
     constructor(parcel: Parcel) : this() {
         startNechet = parcel.readInt()
         picketStartNechet = parcel.readInt()
-        switchNechetAdd = parcel.readInt()
+        fieldNechetCustom = parcel.readString().toString()
     }
 
     override fun describeContents(): Int {
@@ -23,7 +23,7 @@ class ListItemBrakeNechet(): Parcelable {
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(startNechet)
         dest.writeInt(picketStartNechet)
-        dest.writeInt(switchNechetAdd)
+        dest.writeString(fieldNechetCustom)
     }
 
     companion object CREATOR : Parcelable.Creator<ListItemBrakeNechet> {

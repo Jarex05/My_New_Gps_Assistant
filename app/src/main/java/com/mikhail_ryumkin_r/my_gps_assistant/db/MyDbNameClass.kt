@@ -4,7 +4,7 @@ import android.provider.BaseColumns
 
 object MyDbNameClass {
 
-    const val DATABASE_VERSION = 4
+    const val DATABASE_VERSION = 5
     const val DATABASE_NAME = "MyDatabase.db"
 
     // Таблица для сохранения редактирования киллометров четных поездов
@@ -100,10 +100,10 @@ object MyDbNameClass {
     const val TABLE_NAME_BRAKE_CHET = "table_brake_chet"
     const val COLUMN_START_BRAKE_CHET = "start_brake_chet"
     const val COLUMN_PICKET_START_BRAKE_CHET = "picket_start_brake_chet"
-    const val COLUMN_SWITCH_BRAKE_CHET = "switch_brake_chet"
+    const val COLUMN_CUSTOM_BRAKE_CHET = "custom_brake_chet"
 
     const val CREATE_TABLE_BRAKE_CHET = "CREATE TABLE IF NOT EXISTS $TABLE_NAME_BRAKE_CHET (" +
-            "${BaseColumns._ID} INTEGER PRIMARY KEY, $COLUMN_START_BRAKE_CHET TEXT, $COLUMN_PICKET_START_BRAKE_CHET TEXT, $COLUMN_SWITCH_BRAKE_CHET TEXT)"
+            "${BaseColumns._ID} INTEGER PRIMARY KEY, $COLUMN_START_BRAKE_CHET TEXT, $COLUMN_PICKET_START_BRAKE_CHET TEXT, $COLUMN_CUSTOM_BRAKE_CHET TEXT)"
     const val SQL_DELETE_TABLE_BRAKE_CHET = "DROP TABLE IF EXISTS $TABLE_NAME_BRAKE_CHET"
 
     //--------------------------------------------------------------------------//
@@ -113,10 +113,10 @@ object MyDbNameClass {
     const val TABLE_NAME_BRAKE_NECHET = "table_brake_nechet"
     const val COLUMN_START_BRAKE_NECHET = "start_brake_nechet"
     const val COLUMN_PICKET_START_BRAKE_NECHET = "picket_start_brake_nechet"
-    const val COLUMN_SWITCH_BRAKE_NECHET = "switch_brake_nechet"
+    const val COLUMN_CUSTOM_BRAKE_NECHET = "custom_brake_nechet"
 
     const val CREATE_TABLE_BRAKE_NECHET = "CREATE TABLE IF NOT EXISTS $TABLE_NAME_BRAKE_NECHET (" +
-            "${BaseColumns._ID} INTEGER PRIMARY KEY, $COLUMN_START_BRAKE_NECHET TEXT, $COLUMN_PICKET_START_BRAKE_NECHET TEXT, $COLUMN_SWITCH_BRAKE_NECHET TEXT)"
+            "${BaseColumns._ID} INTEGER PRIMARY KEY, $COLUMN_START_BRAKE_NECHET TEXT, $COLUMN_PICKET_START_BRAKE_NECHET TEXT, $COLUMN_CUSTOM_BRAKE_NECHET TEXT)"
     const val SQL_DELETE_TABLE_BRAKE_NECHET = "DROP TABLE IF EXISTS $TABLE_NAME_BRAKE_NECHET"
 
     // Таблица для сохранения произвольных оповещений чётных поездов

@@ -10,10 +10,15 @@ import androidx.navigation.fragment.navArgs
 import com.mikhail_ryumkin_r.my_gps_assistant.R
 import com.mikhail_ryumkin_r.my_gps_assistant.databinding.FragmentUpdatePantographChetBinding
 import com.mikhail_ryumkin_r.my_gps_assistant.db.pantograph.MyDbManagerPantograph
+import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.pantograph.add.AddPantographFragmentChet.ListKmAndPk
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.showToast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UpdatePantographFragmentChet : Fragment() {
     private lateinit var binding: FragmentUpdatePantographChetBinding
+    private val listKmPk = ArrayList<ListKmAndPk>()
     private val args by navArgs<UpdatePantographFragmentChetArgs>()
     private lateinit var myDbManagerPantograph: MyDbManagerPantograph
 
@@ -34,12 +39,26 @@ class UpdatePantographFragmentChet : Fragment() {
             updateChet()
         }
 
+        CoroutineScope(Dispatchers.Main).launch {
+
+            for (a in myDbManagerPantograph.readDbDataPantographChet()) {
+                listKmPk.add(ListKmAndPk(a.startChet, a.picketStartChet))
+            }
+        }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
+    }
+
+    data class ListKmAndPk(val km: Int,
+                           val pk: Int){
+        override fun toString(): String {
+            return super.toString()
+        }
     }
 
     private fun init(v: View) {
@@ -57,8 +76,38 @@ class UpdatePantographFragmentChet : Fragment() {
 
         if (startKm != 0 && startPk != 0){
             if (startKm.toString() != "" && startPk.toString() != "" && startPk.toString() == "1" || startPk.toString() == "2" || startPk.toString() == "3" || startPk.toString() == "4" || startPk.toString() == "5" || startPk.toString() == "6" || startPk.toString() == "7" || startPk.toString() == "8" || startPk.toString() == "9" || startPk.toString() == "10"){
-                myDbManagerPantograph.updateDbDataPantographChet(startKm, startPk, args.itemPantographChet.idChet)
-                findNavController().navigate(R.id.action_updatePantographFragmentChet_to_listPantographFragmentChet)
+
+                var list: MutableList<Pair<Int, Int>>
+                var isSavedYes = false
+                var isSavedNo = false
+
+                for (a in listKmPk.indices) {
+                    list = mutableListOf(Pair(listKmPk[a].km, listKmPk[a].pk))
+
+                    val newListPairKmPk = Pair(startKm, startPk)
+
+                    if (list.none { it == newListPairKmPk }) {
+                        list.add(newListPairKmPk)
+                        isSavedYes = true
+                    } else {
+                        isSavedNo = true
+                    }
+                }
+
+                if (!isSavedYes && !isSavedNo) {
+                    myDbManagerPantograph.updateDbDataPantographChet(startKm, startPk, args.itemPantographChet.idChet)
+                    findNavController().navigate(R.id.action_updatePantographFragmentChet_to_listPantographFragmentChet)
+                    showToast("Сохранено")
+                } else if (!isSavedYes && isSavedNo) {
+                    showToast("Совпадение пикетов на одном километре")
+                } else if (isSavedYes && !isSavedNo) {
+                    myDbManagerPantograph.updateDbDataPantographChet(startKm, startPk, args.itemPantographChet.idChet)
+                    findNavController().navigate(R.id.action_updatePantographFragmentChet_to_listPantographFragmentChet)
+                    showToast("Сохранено")
+                } else if (isSavedYes && isSavedNo) {
+                    showToast("Совпадение пикетов на одном километре")
+                }
+
             }
             else{
                 showToast("Поле 'Пикет' должно содержать число не менее '1' и не более '10'")

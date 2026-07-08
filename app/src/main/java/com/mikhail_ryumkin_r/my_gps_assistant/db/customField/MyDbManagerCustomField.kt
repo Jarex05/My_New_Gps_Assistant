@@ -39,12 +39,12 @@ class MyDbManagerCustomField(context: Context) {
         while (cursor?.moveToNext()!!){
             val dataStartCustomFieldChet: Int = cursor.getInt(cursor.getColumnIndex(MyDbNameClass.COLUMN_START_CUSTOM_FIELD_CHET))
             val dataPicketStartCustomFieldChet: Int = cursor.getInt(cursor.getColumnIndex(MyDbNameClass.COLUMN_PICKET_START_CUSTOM_FIELD_CHET))
-            val customFieldChet: String = cursor.getString(cursor.getColumnIndex(MyDbNameClass.COLUMN_CUSTOM_FIELD_CHET))
+            val dataCustomFieldChet: String = cursor.getString(cursor.getColumnIndex(MyDbNameClass.COLUMN_CUSTOM_FIELD_CHET))
             val dataIdCustomFieldChet = cursor.getInt(cursor.getColumnIndex(BaseColumns._ID))
             val itemCustomFieldChet = ListItemCustomFieldChet()
             itemCustomFieldChet.startChetCustom = dataStartCustomFieldChet
             itemCustomFieldChet.picketStartChetCustom = dataPicketStartCustomFieldChet
-            itemCustomFieldChet.fieldChetCustom = customFieldChet
+            itemCustomFieldChet.fieldChetCustom = dataCustomFieldChet
             itemCustomFieldChet.idChetCustom = dataIdCustomFieldChet
             dataListCustomFieldChet.add(itemCustomFieldChet)
         }

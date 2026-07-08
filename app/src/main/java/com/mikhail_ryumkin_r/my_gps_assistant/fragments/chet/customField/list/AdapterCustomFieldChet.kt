@@ -1,23 +1,15 @@
 package com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.customField.list
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mikhail_ryumkin_r.my_gps_assistant.R
-import com.mikhail_ryumkin_r.my_gps_assistant.databinding.ItemBrakeChetBinding
 import com.mikhail_ryumkin_r.my_gps_assistant.databinding.ItemCustomFieldChetBinding
-import com.mikhail_ryumkin_r.my_gps_assistant.db.brake.ListItemBrakeChet
-import com.mikhail_ryumkin_r.my_gps_assistant.db.brake.MyDbManagerBrake
 import com.mikhail_ryumkin_r.my_gps_assistant.db.customField.ListItemCustomFieldChet
 import com.mikhail_ryumkin_r.my_gps_assistant.db.customField.MyDbManagerCustomField
-import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.brake.list.AdapterBrakeChet
-import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.brake.list.ListBrakeFragmentChet
-import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.brake.list.ListBrakeFragmentChetDirections
 
 @Suppress("DEPRECATION")
 class AdapterCustomFieldChet(listMain: ArrayList<ListItemCustomFieldChet>, listCustomFieldFragmentChet: ListCustomFieldFragmentChet) : RecyclerView.Adapter<AdapterCustomFieldChet.MyViewHolder>() {

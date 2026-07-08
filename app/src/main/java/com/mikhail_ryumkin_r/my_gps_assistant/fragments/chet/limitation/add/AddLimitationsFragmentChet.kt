@@ -70,20 +70,20 @@ class AddLimitationsFragmentChet : Fragment() {
                     if (finishPk.toString() == "1" || finishPk.toString() == "2" || finishPk.toString() == "3" || finishPk.toString() == "4" || finishPk.toString() == "5" || finishPk.toString() == "6" || finishPk.toString() == "7" || finishPk.toString() == "8" || finishPk.toString() == "9" || finishPk.toString() == "10"){
                         if (startKm < finishKm){
                             myDbManagerLimitations.insertToDbLimitationsChet(startKm, startPk, finishKm, finishPk, speed, switch)
-                            SharedPref.Companion.setValueChetStart(requireActivity(), startKm)
+                            SharedPref.setValueChetStart(requireActivity(), startKm)
                             findNavController().navigate(R.id.action_addLimitationsFragmentChet_to_listLimitationsFragmentChet)
                             showToast("Сохранено!")
                         }
                         if (startKm == finishKm){
                             if (startPk < finishPk){
                                 myDbManagerLimitations.insertToDbLimitationsChet(startKm, startPk, finishKm, finishPk, speed, switch)
-                                SharedPref.Companion.setValueChetStart(requireActivity(), startKm)
+                                SharedPref.setValueChetStart(requireActivity(), startKm)
                                 findNavController().navigate(R.id.action_addLimitationsFragmentChet_to_listLimitationsFragmentChet)
                                 showToast("Сохранено!")
                             }
                             if (startPk == finishPk){
                                 myDbManagerLimitations.insertToDbLimitationsChet(startKm, startPk, finishKm, finishPk, speed, switch)
-                                SharedPref.Companion.setValueChetStart(requireActivity(), startKm)
+                                SharedPref.setValueChetStart(requireActivity(), startKm)
                                 findNavController().navigate(R.id.action_addLimitationsFragmentChet_to_listLimitationsFragmentChet)
                                 showToast("Сохранено!")
                             }

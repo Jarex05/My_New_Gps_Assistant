@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="165dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/is_save_update_brake_nechet"
@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="165dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/is_cancel_update_brake_nechet"
@@ -68,7 +68,7 @@
         tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
     <EditText
-        android:id="@+id/editBrakeNechetUpdateSwitch"
+        android:id="@+id/editBrakeNechetUpdate"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,14 +81,16 @@
         app:layout_constraintTop_toBottomOf="@+id/ed_update_pk_start_brake_nechet"
         tools:ignore="Autofill,HardcodedText,TouchTargetSizeCheck" />
 
-    <Switch
-        android:id="@+id/switchBrakeNechetUpdate"
-        android:layout_width="wrap_content"
+    <Spinner
+        android:id="@+id/spinnerUpdateNechet"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="Проба/Оживление"
+        android:layout_margin="16dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="@+id/ed_update_pk_start_brake_nechet"
         app:layout_constraintStart_toStartOf="@+id/ed_update_pk_start_brake_nechet"
         app:layout_constraintTop_toBottomOf="@+id/ed_update_pk_start_brake_nechet"
-        tools:ignore="HardcodedText,UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

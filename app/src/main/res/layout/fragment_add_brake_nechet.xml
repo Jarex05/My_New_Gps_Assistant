@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="165dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/is_save_brake_nechet"
@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="165dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/is_cancel_brake_nechet"
@@ -66,16 +66,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
-
-    <Switch
-        android:id="@+id/brakeSwitchNechetAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="Проба/Оживление"
-        app:layout_constraintStart_toStartOf="@+id/ed_pk_start_brake_nechet"
-        app:layout_constraintTop_toBottomOf="@+id/ed_pk_start_brake_nechet"
-        tools:ignore="HardcodedText,UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/editBrakeNechetSwitchAdd"
@@ -90,5 +80,17 @@
         app:layout_constraintStart_toStartOf="@+id/ed_pk_start_brake_nechet"
         app:layout_constraintTop_toBottomOf="@+id/ed_pk_start_brake_nechet"
         tools:ignore="Autofill,HardcodedText,TouchTargetSizeCheck" />
+
+    <Spinner
+        android:id="@+id/spinnerAddBrakeNechet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="@+id/ed_pk_start_brake_nechet"
+        app:layout_constraintStart_toStartOf="@+id/ed_pk_start_brake_nechet"
+        app:layout_constraintTop_toBottomOf="@+id/ed_pk_start_brake_nechet"
+        tools:ignore="TouchTargetSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

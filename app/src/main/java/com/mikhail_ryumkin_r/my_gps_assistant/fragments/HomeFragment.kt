@@ -178,7 +178,7 @@ class HomeFragment : Fragment() {
 
         switch = binding.switch1
 
-        val v = SharedPref.Companion.getValue(requireActivity())
+        val v = SharedPref.getValue(requireActivity())
 
         if (v != 0) {
             switch.isChecked = true
@@ -365,7 +365,7 @@ class HomeFragment : Fragment() {
 
         switch = binding.switch1
 
-        val v = SharedPref.Companion.getValue(requireActivity())
+        val v = SharedPref.getValue(requireActivity())
 
         if (v != 0) {
             switch.isChecked = true
@@ -379,9 +379,9 @@ class HomeFragment : Fragment() {
 
         switch.setOnClickListener {
             if (switch.isChecked) {
-                SharedPref.Companion.setValue(requireActivity(), 1)
+                SharedPref.setValue(requireActivity(), 1)
             } else {
-                SharedPref.Companion.setValue(requireActivity(), 0)
+                SharedPref.setValue(requireActivity(), 0)
             }
         }
     }

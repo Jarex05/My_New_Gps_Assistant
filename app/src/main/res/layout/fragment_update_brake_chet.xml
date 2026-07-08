@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="60dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="165dp"
         android:clickable="true"
         android:src="@drawable/is_save_update_brake_chet"
         app:backgroundTint="@color/white"
@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="165dp"
         android:clickable="true"
         android:src="@drawable/is_cancel_update_brake_chet"
         app:backgroundTint="@color/white"
@@ -66,7 +66,7 @@
         tools:ignore="ContentDescription,KeyboardInaccessibleWidget,SpeakableTextPresentCheck" />
 
     <EditText
-        android:id="@+id/editBrakeChetUpdateSwitch"
+        android:id="@+id/editBrakeChetUpdate"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -79,14 +79,17 @@
         app:layout_constraintTop_toBottomOf="@+id/ed_update_pk_start_brake_chet"
         tools:ignore="Autofill,HardcodedText,TouchTargetSizeCheck" />
 
-    <Switch
-        android:id="@+id/switchBrakeChetUpdate"
-        android:layout_width="wrap_content"
+    <Spinner
+        android:id="@+id/spinnerUpdateChet"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="Проба/Оживление"
+        android:layout_margin="16dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/ed_update_pk_start_brake_chet"
+        app:layout_constraintHorizontal_bias="0.22"
         app:layout_constraintStart_toStartOf="@+id/ed_update_pk_start_brake_chet"
         app:layout_constraintTop_toBottomOf="@+id/ed_update_pk_start_brake_chet"
-        tools:ignore="HardcodedText,UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

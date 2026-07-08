@@ -29,7 +29,7 @@
         android:id="@+id/mapRecording"
         android:layout_width="0dp"
         android:layout_height="800dp"
-        android:layout_marginBottom="130dp"
+        android:layout_marginBottom="300dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

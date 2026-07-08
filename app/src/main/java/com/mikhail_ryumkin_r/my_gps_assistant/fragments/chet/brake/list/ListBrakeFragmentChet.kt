@@ -1,12 +1,10 @@
 package com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.brake.list
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +18,6 @@ import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
 class ListBrakeFragmentChet : Fragment() {
-
     private lateinit var binding: FragmentListBrakeChetBinding
     private lateinit var myDbManagerBrake: MyDbManagerBrake
     private val adapterBrakeChet = AdapterBrakeChet(ArrayList(), this)

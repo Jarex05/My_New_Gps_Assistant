@@ -14,8 +14,10 @@ import com.mikhail_ryumkin_r.my_gps_assistant.db.brake.ListItemBrakeNechet
 import com.mikhail_ryumkin_r.my_gps_assistant.db.brake.MyDbManagerBrake
 
 @Suppress("DEPRECATION")
-class AdapterBrakeNechet(listMain: ArrayList<ListItemBrakeNechet>, private var listBrakeFragmentNechet: ListBrakeFragmentNechet) : RecyclerView.Adapter<AdapterBrakeNechet.MyViewHolder>() {
+class AdapterBrakeNechet(listMain: ArrayList<ListItemBrakeNechet>, listBrakeFragmentNechet: ListBrakeFragmentNechet) : RecyclerView.Adapter<AdapterBrakeNechet.MyViewHolder>() {
     private var listArray = listMain
+
+    private var listBrakeFragment = listBrakeFragmentNechet
 
     class MyViewHolder(view: View, context: ListBrakeFragmentNechet) : RecyclerView.ViewHolder(view) {
         private val binding = ItemBrakeNechetBinding.bind(view)
@@ -24,9 +26,9 @@ class AdapterBrakeNechet(listMain: ArrayList<ListItemBrakeNechet>, private var l
         fun setData(item: ListItemBrakeNechet) = with(binding){
             kmStartItemBrakeNechet.text = item.startNechet.toString()
             pkStartItemBrakeNechet.text = item.picketStartNechet.toString()
-            brakeCheckNechetItem.text = item.switchNechetAdd.toString()
+            brakeCheckNechetItem.text = item.fieldNechetCustom
 
-            if (brakeCheckNechetItem.text == "1") {
+            if (brakeCheckNechetItem.text == "Оживление тормозов") {
                 idItemLayoutBrakeNechet.setCardBackgroundColor(Color.parseColor(
                     PreferenceManager.getDefaultSharedPreferences(itemView.context)
                         .getString("color_brake_refresh_key", "#FF009EDA")))
@@ -45,7 +47,7 @@ class AdapterBrakeNechet(listMain: ArrayList<ListItemBrakeNechet>, private var l
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return MyViewHolder(inflater.inflate(R.layout.item_brake_nechet, parent, false), listBrakeFragmentNechet)
+        return MyViewHolder(inflater.inflate(R.layout.item_brake_nechet, parent, false), listBrakeFragment)
     }
 
     override fun getItemCount(): Int {

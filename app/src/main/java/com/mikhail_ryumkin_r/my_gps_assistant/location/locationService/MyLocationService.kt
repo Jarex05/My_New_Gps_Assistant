@@ -245,6 +245,7 @@ class MyLocationService : Service() {
     private var vysadkaBrigady: Int = 0
     private var pravelnostyPuti: Int = 0
     private var blokPost: Int = 0
+    private var zheleznoDorozhnyyPereyezd: Int = 0
 
     private var ogr15: Int = 0
     private var ogr25: Int = 0
@@ -275,6 +276,9 @@ class MyLocationService : Service() {
 
     private var customField = ""
     private var customField2 = ""
+
+    private var customFieldBrake500 = ""
+    private var customField2Brake500 = ""
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -339,7 +343,7 @@ class MyLocationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        SharedPref.Companion.setValueDeleteSpeed(baseContext, 0)
+        SharedPref.setValueDeleteSpeed(baseContext, 0)
         myDbManagerPantograph = MyDbManagerPantograph(applicationContext)
         myDbManagerBrake = MyDbManagerBrake(applicationContext)
         myDbManagerLimitations = MyDbManagerLimitations(applicationContext)
@@ -407,6 +411,7 @@ class MyLocationService : Service() {
         sautout = loadSound("sautout.mp3")
         pravelnostyPuti = loadSound("pravelnostyPuti.mp3")
         blokPost = loadSound("blokPost.mp3")
+        zheleznoDorozhnyyPereyezd = loadSound("zheleznodorozhnyy_pereyezd.mp3")
 
         ogr15 = loadSound("ogr15.mp3")
         ogr25 = loadSound("ogr25.mp3")
@@ -477,6 +482,28 @@ class MyLocationService : Service() {
                 Log.d("MyLog24", "playSound = Правильность пути")
 //                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
 //                dataCustomField.remove(listKmToRemove)
+            }
+            "Переезд" -> {
+                playSound(zheleznoDorozhnyyPereyezd)
+                Log.d("MyLog24", "playSound = Переезд")
+            }
+        }
+    }
+
+    private fun soundSpinnerBrake500() {
+
+        when (customField2Brake500) {
+            "Проба тормозов" -> {
+
+                playSound(probaTormazov)
+                Log.d("MyLog24", "soundSpinnerBrake500 = Проба тормозов")
+
+            }
+            "Оживление тормозов" -> {
+
+                playSound(ozhivleniyeTormozov)
+                Log.d("MyLog24", "soundSpinnerBrake500 = Оживление тормозов")
+
             }
         }
     }
@@ -594,9 +621,9 @@ class MyLocationService : Service() {
 
                     startNotification()
                     val s = "км: $kmDistance пк: $pkDistance"
-                    SharedPref.Companion.setValueNotification(baseContext, s)
+                    SharedPref.setValueNotification(baseContext, s)
 
-                    val v = SharedPref.Companion.getValue(baseContext)
+                    val v = SharedPref.getValue(baseContext)
 
                     if (v != 0) {
 
@@ -609,18 +636,26 @@ class MyLocationService : Service() {
                         val pantograph8001 = pantograph800.toMutableSet()
                         val brake5001 = brake500.toMutableSet()
                         val neutralInsert6001 = customField700.toMutableSet()
-//                        Log.d("MyLog47", "neutralInsert6001 => $neutralInsert6001")
                         val myLimitation1 = myLimitation.toMutableSet()
                         val myLimitationList2 = myLimitationsList2.toMutableSet()
                         val myBrake1 = myBrake.toMutableSet()
                         val myPantograph1 = myPantograph.toMutableSet()
 
+                        Log.d("MyLog49", "neutralInsert6001 => $neutralInsert6001")
+                        Log.d("MyLog49", "myLimitation1 => $myLimitation1")
+                        Log.d("MyLog49", "myBrake1 => $myBrake1")
+                        Log.d("MyLog49", "myPantograph1 => $myPantograph1")
+                        Log.d("MyLog49", "brake5001 => $brake5001")
+                        Log.d("MyLog49", "pantograph8001 => $pantograph8001")
+                        Log.d("MyLog49", "myPrev4001 => $myPrev4001")
+                        Log.d("MyLog49", "myOgranichenie1 => $myOgranichenie1")
+
                         if (dataListArray.isNotEmpty()) {
-                            val a = SharedPref.Companion.getValueDeleteSpeed(baseContext)
-                            val b = SharedPref.Companion.getValueDeleteKmStart(baseContext)
-                            val c = SharedPref.Companion.getValueDeletePkStart(baseContext)
-                            val d = SharedPref.Companion.getValueDeleteKmFinish(baseContext)
-                            val e = SharedPref.Companion.getValueDeletePkFinish(baseContext)
+                            val a = SharedPref.getValueDeleteSpeed(baseContext)
+                            val b = SharedPref.getValueDeleteKmStart(baseContext)
+                            val c = SharedPref.getValueDeletePkStart(baseContext)
+                            val d = SharedPref.getValueDeleteKmFinish(baseContext)
+                            val e = SharedPref.getValueDeletePkFinish(baseContext)
                             var indexToRemove: Int? = null
                             for ((index, number) in dataListArray.withIndex()) {
                                 if (number.speed == a && number.kmStart == b &&
@@ -639,11 +674,11 @@ class MyLocationService : Service() {
                             if (indexToRemove != null) {
                                 dataListArray.removeAt(indexToRemove)
                             }
-                            SharedPref.Companion.setValueDeleteSpeed(baseContext, 0)
-                            SharedPref.Companion.setValueDeleteKmStart(baseContext, 0)
-                            SharedPref.Companion.setValueDeletePkStart(baseContext, 0)
-                            SharedPref.Companion.setValueDeleteKmFinish(baseContext, 0)
-                            SharedPref.Companion.setValueDeletePkFinish(baseContext, 0)
+                            SharedPref.setValueDeleteSpeed(baseContext, 0)
+                            SharedPref.setValueDeleteKmStart(baseContext, 0)
+                            SharedPref.setValueDeletePkStart(baseContext, 0)
+                            SharedPref.setValueDeleteKmFinish(baseContext, 0)
+                            SharedPref.setValueDeletePkFinish(baseContext, 0)
                             Log.d("MyLog", "mySpeed => ${dataListArray[0].speed}")
                         }
 //                        Log.d("MyLog16", "mySpeed16 => $mySpeed")
@@ -1045,7 +1080,7 @@ class MyLocationService : Service() {
                                     }
                                 }
 //                                customField700.add(faktNachKmCustomFieldNechet)
-//
+
 //                                dataCustomField.add(ListCustomField(faktNachKmCustomFieldNechet, item.fieldNechetCustom))
 //
 //                                val myList = dataCustomField.toMutableSet().toMutableList()
@@ -1099,6 +1134,11 @@ class MyLocationService : Service() {
                                         }
                                         "Высадка бригады" -> {
                                             customField2 = "Высадка бригады"
+                                            val customFieldNechet = faktStartKmNechet
+                                            customField700.add(customFieldNechet)
+                                        }
+                                        "Переезд" -> {
+                                            customField2 = "Переезд"
                                             val customFieldNechet = faktStartKmNechet
                                             customField700.add(customFieldNechet)
                                         }
@@ -1260,7 +1300,24 @@ class MyLocationService : Service() {
                                 }
 
                                 myBrake.add(faktNachKmBrakeNechet)
-                                brake500.add(faktNachKmBrakeNechet + 500)
+
+                                if (distance <= faktNachKmBrakeNechet + 498 && distance >= faktNachKmBrakeNechet + 402) {
+                                    customFieldBrake500 = item.fieldNechetCustom
+                                    when (customFieldBrake500) {
+                                        "Проба тормозов" -> {
+                                            customField2Brake500 = "Проба тормозов"
+                                            val customFieldNechet = faktStartKmNechet
+                                            brake500.add(customFieldNechet)
+                                        }
+                                        "Оживление тормозов" -> {
+                                            customField2Brake500 = "Оживление тормозов"
+                                            val customFieldNechet = faktStartKmNechet
+                                            brake500.add(customFieldNechet)
+                                        }
+                                    }
+                                }
+
+//                                brake500.add(faktNachKmBrakeNechet + 500)
 
                                 // Конец расчёта начала Торможения по киллометро
                             }
@@ -1429,7 +1486,7 @@ class MyLocationService : Service() {
                             myLimitation.clear()
                             myDbManagerLimitations.openDb()
                             val dataListLimitations = myDbManagerLimitations.readDbDataLimitationsNechet()
-                            uslNechet = SharedPref.Companion.getValueUsl(baseContext).toFloat()
+                            uslNechet = SharedPref.getValueUsl(baseContext).toFloat()
                             sumCalculateUslNechet = (uslNechet * 14) + 50
                             for (item in dataListLimitations){
 
@@ -2275,11 +2332,11 @@ class MyLocationService : Service() {
                         val myPantograph1 = myPantograph.toMutableSet().sorted()
 
                         if (dataListArray.isNotEmpty()) {
-                            val a = SharedPref.Companion.getValueDeleteSpeed(baseContext)
-                            val b = SharedPref.Companion.getValueDeleteKmStart(baseContext)
-                            val c = SharedPref.Companion.getValueDeletePkStart(baseContext)
-                            val d = SharedPref.Companion.getValueDeleteKmFinish(baseContext)
-                            val e = SharedPref.Companion.getValueDeletePkFinish(baseContext)
+                            val a = SharedPref.getValueDeleteSpeed(baseContext)
+                            val b = SharedPref.getValueDeleteKmStart(baseContext)
+                            val c = SharedPref.getValueDeletePkStart(baseContext)
+                            val d = SharedPref.getValueDeleteKmFinish(baseContext)
+                            val e = SharedPref.getValueDeletePkFinish(baseContext)
                             var indexToRemove: Int? = null
                             for ((index, number) in dataListArray.withIndex()) {
                                 if (number.speed == a && number.kmStart == b &&
@@ -2298,11 +2355,11 @@ class MyLocationService : Service() {
                             if (indexToRemove != null) {
                                 dataListArray.removeAt(indexToRemove)
                             }
-                            SharedPref.Companion.setValueDeleteSpeed(baseContext, 0)
-                            SharedPref.Companion.setValueDeleteKmStart(baseContext, 0)
-                            SharedPref.Companion.setValueDeletePkStart(baseContext, 0)
-                            SharedPref.Companion.setValueDeleteKmFinish(baseContext, 0)
-                            SharedPref.Companion.setValueDeletePkFinish(baseContext, 0)
+                            SharedPref.setValueDeleteSpeed(baseContext, 0)
+                            SharedPref.setValueDeleteKmStart(baseContext, 0)
+                            SharedPref.setValueDeletePkStart(baseContext, 0)
+                            SharedPref.setValueDeleteKmFinish(baseContext, 0)
+                            SharedPref.setValueDeletePkFinish(baseContext, 0)
                             Log.d("MyLog", "mySpeed => ${dataListArray[0].speed}")
                         }
                         Log.d("MyLog", "myOgranichenieList => $myOgranichenieList")
@@ -2742,6 +2799,12 @@ class MyLocationService : Service() {
                                             val customFieldChet = faktStartKmChet
                                             customField700.add(customFieldChet)
                                         }
+                                        "Переезд" -> {
+                                            customField2 = "Переезд"
+                                            val customFieldChet = faktStartKmChet
+                                            customField700.add(customFieldChet)
+                                        }
+
                                     }
                                 }
                             }
@@ -2900,7 +2963,24 @@ class MyLocationService : Service() {
                                 }
 
                                 myBrake.add(faktNachKmBrakeChet)
-                                brake500.add(faktNachKmBrakeChet - 500)
+
+                                if (distance >= faktNachKmBrakeChet - 498 && distance <= faktNachKmBrakeChet - 402) {
+                                    customFieldBrake500 = item.fieldChetCustom
+                                    when (customFieldBrake500) {
+                                        "Проба тормозов" -> {
+                                            customField2Brake500 = "Проба тормозов"
+                                            val customFieldChet = faktStartKmChet
+                                            brake500.add(customFieldChet)
+                                        }
+                                        "Оживление тормозов" -> {
+                                            customField2Brake500 = "Оживление тормозов"
+                                            val customFieldChet = faktStartKmChet
+                                            brake500.add(customFieldChet)
+                                        }
+                                    }
+                                }
+
+//                                brake500.add(faktNachKmBrakeChet - 500)
 
                                 // Конец расчёта начала Торможения по киллометро
                             }
@@ -3069,7 +3149,7 @@ class MyLocationService : Service() {
                             myLimitation.clear()
                             myDbManagerLimitations.openDb()
                             val dataListLimitations = myDbManagerLimitations.readDbDataLimitationsChet()
-                            uslChet = SharedPref.Companion.getValueUsl(baseContext).toFloat()
+                            uslChet = SharedPref.getValueUsl(baseContext).toFloat()
                             sumCalculateUslChet = (uslChet * 14) + 50
                             for (item in dataListLimitations){
 
@@ -4333,16 +4413,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemBrake500 &&
                                                         faktStartKmChet == itemPantograph800) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
@@ -4374,7 +4454,14 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemBrake500 &&
                                                     faktStartKmChet == itemPantograph800) {
 
-                                                    soundSpinner()
+                                                    soundSpinnerBrake500()
+//                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -4401,14 +4488,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
-                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                if (faktStartKmChet == itemCustomField700 &&
                                                     faktStartKmChet == itemPantograph800) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     pantograph800List[0] = itemPantograph800 + 100
@@ -4433,14 +4520,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
-                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                if (faktStartKmChet == itemCustomField700 &&
                                                     faktStartKmChet == itemBrake500) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     brake500List[0] = itemBrake500 + 100
@@ -4467,12 +4554,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
-                                            if (faktStartKmChet == itemNeutralInsert600) {
+                                        for (itemCustomField700 in customField700List) {
+                                            if (faktStartKmChet == itemCustomField700) {
 
                                                 soundSpinner()
 
-                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку!")
+                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                 customField700List.removeAt(0)
                                             }
@@ -4499,15 +4586,17 @@ class MyLocationService : Service() {
                                         for (itemBrake500 in brake500List) {
                                             if (faktStartKmChet == itemBrake500) {
 
-                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                soundSpinnerBrake500()
 
-                                                if (v != 0) {
-                                                    playSound(ozhivleniyeTormozov)
-                                                } else {
-                                                    playSound(probaTormazov)
-                                                }
+//                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                if (v != 0) {
+//                                                    playSound(ozhivleniyeTormozov)
+//                                                } else {
+//                                                    playSound(probaTormazov)
+//                                                }
 
-                                                Log.d("MyLog2", "Озвучиваем Торможение ближе к цели!")
+                                                Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
                                                 brake500List.removeAt(0)
                                             }
@@ -4560,7 +4649,7 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
@@ -4568,7 +4657,7 @@ class MyLocationService : Service() {
                                                             for (itemLimitationsList in myLimitationList){
                                                                 for (itemBrakesList in myBrakeList){
                                                                     for (itemPantographsList in myPantographList){
-                                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                        if (faktStartKmChet == itemCustomField700 &&
                                                                             faktStartKmChet == itemBrake500 &&
                                                                             faktStartKmChet == itemPantograph800 &&
                                                                             faktStartKmChet == itemOgranichenieList &&
@@ -4579,7 +4668,7 @@ class MyLocationService : Service() {
 
                                                                             soundSpinner()
 
-                                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                             customField700List.removeAt(0)
                                                                             brake500List[0] = itemBrake500 + 100
@@ -4618,14 +4707,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmChet == itemCustomField700 &&
                                                                         faktStartKmChet == itemBrake500 &&
                                                                         faktStartKmChet == itemOgranichenieList &&
                                                                         faktStartKmChet == itemMyPrev400List &&
@@ -4635,7 +4724,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 + 100
@@ -4670,14 +4759,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmChet == itemCustomField700 &&
                                                                         faktStartKmChet == itemPantograph800 &&
                                                                         faktStartKmChet == itemOgranichenieList &&
                                                                         faktStartKmChet == itemMyPrev400List &&
@@ -4687,7 +4776,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         pantograph800List[0] = itemPantograph800 + 100
@@ -4737,13 +4826,15 @@ class MyLocationService : Service() {
                                                                         faktStartKmChet + 4000 == itemBrakesList &&
                                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                        soundSpinnerBrake500()
 
-                                                                        if (v != 0) {
-                                                                            playSound(ozhivleniyeTormozov)
-                                                                        } else {
-                                                                            playSound(probaTormazov)
-                                                                        }
+//                                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                        if (v != 0) {
+//                                                                            playSound(ozhivleniyeTormozov)
+//                                                                        } else {
+//                                                                            playSound(probaTormazov)
+//                                                                        }
 
                                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -4782,13 +4873,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet == itemMyPrev400List &&
                                                                     faktStartKmChet + 2000 == itemLimitationsList &&
@@ -4797,7 +4888,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     myOgranichenieList[0] = itemOgranichenieList + 100
@@ -4843,13 +4934,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmChet + 4000 == itemBrakesList &&
                                                                     faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -4934,14 +5027,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmChet == itemCustomField700 &&
                                                                         faktStartKmChet == itemBrake500 &&
                                                                         faktStartKmChet == itemPantograph800 &&
                                                                         faktStartKmChet == itemOgranichenieList &&
@@ -4951,7 +5044,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 + 100
@@ -4988,13 +5081,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet + 2000 == itemLimitationsList &&
@@ -5003,7 +5096,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -5036,13 +5129,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet + 2000 == itemLimitationsList &&
@@ -5051,7 +5144,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 + 100
@@ -5097,13 +5190,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmChet + 4000 == itemBrakesList &&
                                                                     faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -5140,12 +5235,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
@@ -5153,7 +5248,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
@@ -5195,13 +5290,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
                                                                 faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -5280,14 +5377,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemLimitationsList in myLimitationList){
                                                                 for (itemBrakesList in myBrakeList){
-                                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmChet == itemCustomField700 &&
                                                                         faktStartKmChet == itemBrake500 &&
                                                                         faktStartKmChet == itemPantograph800 &&
                                                                         faktStartKmChet == itemOgranichenieList &&
@@ -5297,7 +5394,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 + 100
@@ -5334,13 +5431,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -5349,7 +5446,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -5382,13 +5479,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -5397,7 +5494,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 + 100
@@ -5443,13 +5540,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmChet + 2000 == itemLimitationsList &&
                                                                     faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -5486,12 +5585,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
@@ -5499,7 +5598,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
@@ -5541,13 +5640,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
                                                                 faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -5626,14 +5727,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemLimitationsList in myLimitationList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmChet == itemCustomField700 &&
                                                                         faktStartKmChet == itemBrake500 &&
                                                                         faktStartKmChet == itemPantograph800 &&
                                                                         faktStartKmChet == itemOgranichenieList &&
@@ -5643,7 +5744,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 + 100
@@ -5680,13 +5781,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -5695,7 +5796,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -5728,13 +5829,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -5743,7 +5844,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 + 100
@@ -5789,13 +5890,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmChet + 2000 == itemLimitationsList &&
                                                                     faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -5832,12 +5935,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
@@ -5845,7 +5948,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
@@ -5887,13 +5990,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
                                                                 faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -5972,14 +6077,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmChet == itemCustomField700 &&
                                                                         faktStartKmChet == itemBrake500 &&
                                                                         faktStartKmChet == itemPantograph800 &&
                                                                         faktStartKmChet == itemOgranichenieList &&
@@ -5989,7 +6094,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 + 100
@@ -6025,13 +6130,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -6040,7 +6145,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -6072,13 +6177,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -6087,7 +6192,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 + 100
@@ -6132,13 +6237,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmChet + 4000 == itemBrakesList &&
                                                                     faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -6174,12 +6281,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
@@ -6187,7 +6294,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myOgranichenieList[0] = itemOgranichenieList + 100
@@ -6228,13 +6335,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
                                                                 faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -6311,13 +6420,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemLimitationsList in myLimitationList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
@@ -6326,7 +6435,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -6361,12 +6470,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -6374,7 +6483,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -6405,12 +6514,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -6418,7 +6527,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 + 100
@@ -6460,13 +6569,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -6501,18 +6612,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
@@ -6550,13 +6661,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -6629,13 +6742,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemBrakesList in myBrakeList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
@@ -6644,7 +6757,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -6678,12 +6791,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -6691,7 +6804,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -6721,12 +6834,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -6734,7 +6847,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 + 100
@@ -6775,13 +6888,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -6815,18 +6930,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
@@ -6863,13 +6978,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -6940,13 +7057,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemOgranichenieList &&
@@ -6955,7 +7072,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -6989,12 +7106,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -7002,7 +7119,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -7032,12 +7149,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -7045,7 +7162,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 + 100
@@ -7086,13 +7203,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -7126,18 +7245,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myOgranichenieList[0] = itemOgranichenieList + 100
@@ -7174,13 +7293,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -7251,12 +7372,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
@@ -7264,7 +7385,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -7296,18 +7417,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet == itemMyPrev400List) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -7335,18 +7456,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet == itemMyPrev400List) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -7383,13 +7504,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet == itemMyPrev400List) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -7421,16 +7544,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet == itemMyPrev400List) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
@@ -7463,13 +7586,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet == itemMyPrev400List) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -7534,12 +7659,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemLimitationsList in myLimitationList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
@@ -7547,7 +7672,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -7580,18 +7705,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -7620,18 +7745,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -7669,13 +7794,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -7708,16 +7835,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemLimitationsList in myLimitationList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
@@ -7751,13 +7878,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet + 2000 == itemLimitationsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -7824,12 +7953,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
@@ -7837,7 +7966,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -7869,18 +7998,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -7908,18 +8037,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -7956,13 +8085,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -7994,16 +8125,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
@@ -8036,13 +8167,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -8107,12 +8240,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemOgranichenieList &&
@@ -8120,7 +8253,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -8152,18 +8285,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -8191,18 +8324,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -8239,13 +8372,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemOgranichenieList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -8277,16 +8412,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList + 100
@@ -8319,13 +8454,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -8390,18 +8527,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemOgranichenieList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -8431,16 +8568,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemBrake500 &&
                                                         faktStartKmChet == itemOgranichenieList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
@@ -8466,16 +8603,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet == itemOgranichenieList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
@@ -8508,13 +8645,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet == itemOgranichenieList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -8544,14 +8683,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
-                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                if (faktStartKmChet == itemCustomField700 &&
                                                     faktStartKmChet == itemOgranichenieList) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     myOgranichenieList[0] = itemOgranichenieList + 100
@@ -8580,13 +8719,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemBrake500 &&
                                                     faktStartKmChet == itemOgranichenieList) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -8645,14 +8786,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmChet == itemCustomField700 &&
                                                                         faktStartKmChet == itemBrake500 &&
                                                                         faktStartKmChet == itemPantograph800 &&
                                                                         faktStartKmChet == itemMyPrev400List &&
@@ -8662,7 +8803,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 + 100
@@ -8699,13 +8840,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemMyPrev400List &&
                                                                     faktStartKmChet + 2000 == itemLimitationsList &&
@@ -8714,7 +8855,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -8747,13 +8888,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemMyPrev400List &&
                                                                     faktStartKmChet + 2000 == itemLimitationsList &&
@@ -8762,7 +8903,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 + 100
@@ -8808,13 +8949,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmChet + 4000 == itemBrakesList &&
                                                                     faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможения ближе к цели")
 
@@ -8851,12 +8994,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
@@ -8864,7 +9007,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myPrev400List[0] = itemMyPrev400List + 100
@@ -8906,13 +9049,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
                                                                 faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -8991,13 +9136,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -9006,7 +9151,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -9041,12 +9186,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
@@ -9054,7 +9199,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -9085,12 +9230,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
@@ -9098,7 +9243,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 + 100
@@ -9140,13 +9285,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
                                                                 faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -9181,18 +9328,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myPrev400List[0] = itemMyPrev400List + 100
@@ -9230,13 +9377,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -9309,13 +9458,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -9324,7 +9473,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -9359,12 +9508,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
@@ -9372,7 +9521,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -9403,12 +9552,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
@@ -9416,7 +9565,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 + 100
@@ -9458,13 +9607,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
                                                                 faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -9499,18 +9650,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myPrev400List[0] = itemMyPrev400List + 100
@@ -9548,13 +9699,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -9627,13 +9780,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet == itemMyPrev400List &&
@@ -9642,7 +9795,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -9676,12 +9829,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
@@ -9689,7 +9842,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -9719,12 +9872,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
@@ -9732,7 +9885,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 + 100
@@ -9773,13 +9926,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
                                                                 faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -9813,18 +9968,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemBrakesList in myBrakeList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 4000 == itemBrakesList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myPrev400List[0] = itemMyPrev400List + 100
@@ -9861,13 +10016,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet + 4000 == itemBrakesList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -9938,12 +10095,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -9951,7 +10108,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -9984,18 +10141,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -10024,18 +10181,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -10073,13 +10230,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -10112,16 +10271,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemLimitationsList in myLimitationList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
@@ -10155,13 +10314,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet + 2000 == itemLimitationsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -10228,12 +10389,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -10241,7 +10402,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -10273,18 +10434,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -10312,18 +10473,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -10360,13 +10521,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -10398,16 +10561,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
@@ -10440,13 +10603,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -10511,12 +10676,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet == itemMyPrev400List &&
@@ -10524,7 +10689,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -10556,18 +10721,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -10595,18 +10760,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -10643,13 +10808,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -10681,16 +10848,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List + 100
@@ -10723,13 +10890,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -10794,18 +10963,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet == itemMyPrev400List) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -10835,16 +11004,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemBrake500 &&
                                                         faktStartKmChet == itemMyPrev400List) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
@@ -10870,16 +11039,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet == itemMyPrev400List) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
@@ -10912,13 +11081,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet == itemMyPrev400List) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -10948,14 +11119,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
-                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                if (faktStartKmChet == itemCustomField700 &&
                                                     faktStartKmChet == itemMyPrev400List) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     myPrev400List[0] = itemMyPrev400List + 100
@@ -10984,13 +11155,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemBrake500 &&
                                                     faktStartKmChet == itemMyPrev400List) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -11049,13 +11222,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                                if (faktStartKmChet == itemCustomField700 &&
                                                                     faktStartKmChet == itemBrake500 &&
                                                                     faktStartKmChet == itemPantograph800 &&
                                                                     faktStartKmChet + 2000 == itemLimitationsList &&
@@ -11064,7 +11237,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 + 100
@@ -11099,12 +11272,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
@@ -11112,7 +11285,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -11143,12 +11316,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
@@ -11156,7 +11329,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 + 100
@@ -11198,13 +11371,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
                                                                 faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -11239,18 +11414,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemLimitationsList in myLimitationList){
                                                 for (itemBrakesList in myBrakeList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 4000 == itemBrakesList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myLimitationList[0] = itemLimitationsList + 100
@@ -11288,13 +11463,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet + 4000 == itemBrakesList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -11367,18 +11544,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -11409,16 +11586,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemLimitationsList in myLimitationList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemBrake500 &&
                                                         faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
@@ -11445,16 +11622,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemLimitationsList in myLimitationList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
@@ -11488,13 +11665,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet + 2000 == itemLimitationsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -11525,14 +11704,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemLimitationsList in myLimitationList){
-                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                if (faktStartKmChet == itemCustomField700 &&
                                                     faktStartKmChet + 2000 == itemLimitationsList) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     myLimitationsList2.add(faktStartKmNechet + 2100)
                                                     Log.d("MyLog47", "myLimitation = $myLimitation")
@@ -11564,13 +11743,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemBrake500 &&
                                                     faktStartKmChet + 2000 == itemLimitationsList) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -11631,12 +11812,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
@@ -11644,7 +11825,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -11677,18 +11858,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -11717,18 +11898,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -11766,13 +11947,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -11805,16 +11988,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemLimitationsList in myLimitationList){
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet + 2000 == itemLimitationsList &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList + 100
@@ -11848,13 +12031,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet + 2000 == itemLimitationsList &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -11921,12 +12106,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet + 2000 == itemLimitationsList &&
@@ -11934,7 +12119,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -11967,18 +12152,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -12007,18 +12192,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -12056,13 +12241,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet + 2000 == itemLimitationsList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -12095,16 +12282,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemLimitationsList in myLimitationList){
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet + 2000 == itemLimitationsList &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList + 100
@@ -12138,13 +12325,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet + 2000 == itemLimitationsList &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -12211,12 +12400,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmChet == itemNeutralInsert600 &&
+                                                            if (faktStartKmChet == itemCustomField700 &&
                                                                 faktStartKmChet == itemBrake500 &&
                                                                 faktStartKmChet == itemPantograph800 &&
                                                                 faktStartKmChet + 4000 == itemBrakesList &&
@@ -12224,7 +12413,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 + 100
@@ -12256,18 +12445,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemBrakesList in myBrakeList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet + 4000 == itemBrakesList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -12295,18 +12484,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemBrakesList in myBrakeList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet + 4000 == itemBrakesList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 + 100
@@ -12343,13 +12532,15 @@ class MyLocationService : Service() {
                                                             faktStartKmChet + 4000 == itemBrakesList &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -12381,16 +12572,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrakesList in myBrakeList){
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet + 4000 == itemBrakesList &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myPantographList[0] = itemPantographsList + 100
@@ -12423,13 +12614,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet + 4000 == itemBrakesList &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -12494,18 +12687,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet + 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -12535,16 +12728,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemBrake500 &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
@@ -12570,16 +12763,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
@@ -12612,13 +12805,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -12648,14 +12843,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrakesList in myBrakeList){
-                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                if (faktStartKmChet == itemCustomField700 &&
                                                     faktStartKmChet + 4000 == itemBrakesList) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     myBrakeList[0] = itemBrakesList + 100
@@ -12684,13 +12879,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemBrake500 &&
                                                     faktStartKmChet + 4000 == itemBrakesList) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -12749,18 +12946,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmChet == itemNeutralInsert600 &&
+                                                        if (faktStartKmChet == itemCustomField700 &&
                                                             faktStartKmChet == itemBrake500 &&
                                                             faktStartKmChet == itemPantograph800 &&
                                                             faktStartKmChet + 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 + 100
@@ -12790,16 +12987,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemBrake500 &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 + 100
@@ -12825,16 +13022,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmChet == itemNeutralInsert600 &&
+                                                    if (faktStartKmChet == itemCustomField700 &&
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 + 100
@@ -12867,13 +13064,15 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemPantograph800 &&
                                                         faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -12903,14 +13102,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantographsList in myPantographList){
-                                                if (faktStartKmChet == itemNeutralInsert600 &&
+                                                if (faktStartKmChet == itemCustomField700 &&
                                                     faktStartKmChet + 3000 == itemPantographsList) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     myPantographList[0] = itemPantographsList + 100
@@ -12939,13 +13138,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemBrake500 &&
                                                     faktStartKmChet + 3000 == itemPantographsList) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeChet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -14109,16 +14310,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemBrake500 &&
                                                         faktStartKmNechet == itemPantograph800) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
@@ -14150,7 +14351,14 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemBrake500 &&
                                                     faktStartKmNechet == itemPantograph800) {
 
-                                                    soundSpinner()
+                                                    soundSpinnerBrake500()
+//                                                    val v = SharedPref.getValueChangeBrakeChet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -14177,14 +14385,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
-                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                if (faktStartKmNechet == itemCustomField700 &&
                                                     faktStartKmNechet == itemPantograph800) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     pantograph800List[0] = itemPantograph800 - 100
@@ -14209,14 +14417,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
-                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                if (faktStartKmNechet == itemCustomField700 &&
                                                     faktStartKmNechet == itemBrake500) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     brake500List[0] = itemBrake500 - 100
@@ -14243,12 +14451,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
-                                            if (faktStartKmNechet == itemNeutralInsert600) {
+                                        for (itemCustomField700 in customField700List) {
+                                            if (faktStartKmNechet == itemCustomField700) {
 
                                                 soundSpinner()
 
-                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку!")
+                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                 customField700List.removeAt(0)
                                             }
@@ -14275,15 +14483,17 @@ class MyLocationService : Service() {
                                         for (itemBrake500 in brake500List) {
                                             if (faktStartKmNechet == itemBrake500) {
 
-                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                soundSpinnerBrake500()
 
-                                                if (v != 0) {
-                                                    playSound(ozhivleniyeTormozov)
-                                                } else {
-                                                    playSound(probaTormazov)
-                                                }
+//                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                if (v != 0) {
+//                                                    playSound(ozhivleniyeTormozov)
+//                                                } else {
+//                                                    playSound(probaTormazov)
+//                                                }
 
-                                                Log.d("MyLog2", "Озвучиваем Торможение ближе к цели!")
+                                                Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
                                                 brake500List.removeAt(0)
                                             }
@@ -14336,7 +14546,7 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
@@ -14344,7 +14554,7 @@ class MyLocationService : Service() {
                                                             for (itemLimitationsList in myLimitationList){
                                                                 for (itemBrakesList in myBrakeList){
                                                                     for (itemPantographsList in myPantographList){
-                                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                                             faktStartKmNechet == itemBrake500 &&
                                                                             faktStartKmNechet == itemPantograph800 &&
                                                                             faktStartKmNechet == itemOgranichenieList &&
@@ -14355,7 +14565,7 @@ class MyLocationService : Service() {
 
                                                                             soundSpinner()
 
-                                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                             customField700List.removeAt(0)
                                                                             brake500List[0] = itemBrake500 - 100
@@ -14394,14 +14604,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                                         faktStartKmNechet == itemBrake500 &&
                                                                         faktStartKmNechet == itemOgranichenieList &&
                                                                         faktStartKmNechet == itemMyPrev400List &&
@@ -14411,7 +14621,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 - 100
@@ -14446,14 +14656,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                                         faktStartKmNechet == itemPantograph800 &&
                                                                         faktStartKmNechet == itemOgranichenieList &&
                                                                         faktStartKmNechet == itemMyPrev400List &&
@@ -14463,7 +14673,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         pantograph800List[0] = itemPantograph800 - 100
@@ -14513,13 +14723,15 @@ class MyLocationService : Service() {
                                                                         faktStartKmNechet - 4000 == itemBrakesList &&
                                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                        soundSpinnerBrake500()
 
-                                                                        if (v != 0) {
-                                                                            playSound(ozhivleniyeTormozov)
-                                                                        } else {
-                                                                            playSound(probaTormazov)
-                                                                        }
+//                                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                        if (v != 0) {
+//                                                                            playSound(ozhivleniyeTormozov)
+//                                                                        } else {
+//                                                                            playSound(probaTormazov)
+//                                                                        }
 
                                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -14558,13 +14770,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
                                                                     faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -14573,7 +14785,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     myOgranichenieList[0] = itemOgranichenieList - 100
@@ -14619,13 +14831,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmNechet - 4000 == itemBrakesList &&
                                                                     faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -14710,14 +14924,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                                         faktStartKmNechet == itemBrake500 &&
                                                                         faktStartKmNechet == itemPantograph800 &&
                                                                         faktStartKmNechet == itemOgranichenieList &&
@@ -14727,7 +14941,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 - 100
@@ -14764,13 +14978,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -14779,7 +14993,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -14812,13 +15026,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -14827,7 +15041,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 - 100
@@ -14873,13 +15087,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmNechet - 4000 == itemBrakesList &&
                                                                     faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -14916,12 +15132,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
@@ -14929,7 +15145,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
@@ -14971,13 +15187,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
                                                                 faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -15056,14 +15274,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemLimitationsList in myLimitationList){
                                                                 for (itemBrakesList in myBrakeList){
-                                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                                         faktStartKmNechet == itemBrake500 &&
                                                                         faktStartKmNechet == itemPantograph800 &&
                                                                         faktStartKmNechet == itemOgranichenieList &&
@@ -15073,7 +15291,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 - 100
@@ -15110,13 +15328,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -15125,7 +15343,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -15158,13 +15376,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -15173,7 +15391,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 - 100
@@ -15219,13 +15437,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                     faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -15262,12 +15482,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -15275,7 +15495,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
@@ -15317,13 +15537,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -15402,14 +15624,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemLimitationsList in myLimitationList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                                         faktStartKmNechet == itemBrake500 &&
                                                                         faktStartKmNechet == itemPantograph800 &&
                                                                         faktStartKmNechet == itemOgranichenieList &&
@@ -15419,7 +15641,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 - 100
@@ -15456,13 +15678,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -15471,7 +15693,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -15504,13 +15726,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -15519,7 +15741,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 - 100
@@ -15565,13 +15787,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                     faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -15608,12 +15832,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -15621,7 +15845,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
@@ -15663,13 +15887,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                 faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -15748,14 +15974,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                                         faktStartKmNechet == itemBrake500 &&
                                                                         faktStartKmNechet == itemPantograph800 &&
                                                                         faktStartKmNechet == itemOgranichenieList &&
@@ -15765,7 +15991,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 - 100
@@ -15801,13 +16027,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -15816,7 +16042,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -15848,13 +16074,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -15863,7 +16089,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 - 100
@@ -15908,13 +16134,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmNechet - 4000 == itemBrakesList &&
                                                                     faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -15950,12 +16178,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
@@ -15963,7 +16191,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myOgranichenieList[0] = itemOgranichenieList - 100
@@ -16004,13 +16232,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
                                                                 faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -16087,13 +16317,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemLimitationsList in myLimitationList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
@@ -16102,7 +16332,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -16137,12 +16367,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -16150,7 +16380,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -16181,12 +16411,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -16194,7 +16424,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 - 100
@@ -16236,13 +16466,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -16277,18 +16509,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
@@ -16326,13 +16558,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -16405,13 +16639,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemBrakesList in myBrakeList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
@@ -16420,7 +16654,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -16454,12 +16688,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -16467,7 +16701,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -16497,12 +16731,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -16510,7 +16744,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 - 100
@@ -16551,13 +16785,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -16591,18 +16827,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
@@ -16639,13 +16875,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -16716,13 +16954,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemOgranichenieList &&
@@ -16731,7 +16969,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -16765,12 +17003,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -16778,7 +17016,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -16808,12 +17046,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -16821,7 +17059,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 - 100
@@ -16862,13 +17100,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -16902,18 +17142,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myOgranichenieList[0] = itemOgranichenieList - 100
@@ -16950,13 +17190,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -17027,12 +17269,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemMyPrev400List in myPrev400List){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
@@ -17040,7 +17282,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -17072,18 +17314,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet == itemMyPrev400List) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -17111,18 +17353,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemMyPrev400List in myPrev400List){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet == itemMyPrev400List) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -17159,13 +17401,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet == itemMyPrev400List) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -17197,16 +17441,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemMyPrev400List in myPrev400List){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet == itemMyPrev400List) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
@@ -17239,13 +17483,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet == itemMyPrev400List) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -17310,12 +17556,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemLimitationsList in myLimitationList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
@@ -17323,7 +17569,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -17356,18 +17602,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -17396,18 +17642,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -17445,13 +17691,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -17484,16 +17732,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemLimitationsList in myLimitationList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
@@ -17527,13 +17775,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -17600,12 +17850,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
@@ -17613,7 +17863,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -17645,18 +17895,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -17684,18 +17934,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -17732,13 +17982,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -17770,16 +18022,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
@@ -17812,13 +18064,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -17883,12 +18137,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemOgranichenieList &&
@@ -17896,7 +18150,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -17928,18 +18182,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -17967,18 +18221,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -18015,13 +18269,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemOgranichenieList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -18053,16 +18309,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myOgranichenieList[0] = itemOgranichenieList - 100
@@ -18095,13 +18351,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -18166,18 +18424,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemOgranichenieList in myOgranichenieList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemOgranichenieList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -18207,16 +18465,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemBrake500 &&
                                                         faktStartKmNechet == itemOgranichenieList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
@@ -18242,16 +18500,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemOgranichenieList in myOgranichenieList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet == itemOgranichenieList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
@@ -18284,13 +18542,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet == itemOgranichenieList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -18320,14 +18580,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemOgranichenieList in myOgranichenieList){
-                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                if (faktStartKmNechet == itemCustomField700 &&
                                                     faktStartKmNechet == itemOgranichenieList) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     myOgranichenieList[0] = itemOgranichenieList - 100
@@ -18356,13 +18616,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemBrake500 &&
                                                     faktStartKmNechet == itemOgranichenieList) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -18421,14 +18683,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
                                                                 for (itemPantographsList in myPantographList){
-                                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                                         faktStartKmNechet == itemBrake500 &&
                                                                         faktStartKmNechet == itemPantograph800 &&
                                                                         faktStartKmNechet == itemMyPrev400List &&
@@ -18438,7 +18700,7 @@ class MyLocationService : Service() {
 
                                                                         soundSpinner()
 
-                                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                         customField700List.removeAt(0)
                                                                         brake500List[0] = itemBrake500 - 100
@@ -18475,13 +18737,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
                                                                     faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -18490,7 +18752,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -18523,13 +18785,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
                                                                     faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -18538,7 +18800,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     pantograph800List[0] = itemPantograph800 - 100
@@ -18584,13 +18846,15 @@ class MyLocationService : Service() {
                                                                     faktStartKmNechet - 4000 == itemBrakesList &&
                                                                     faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                    soundSpinnerBrake500()
 
-                                                                    if (v != 0) {
-                                                                        playSound(ozhivleniyeTormozov)
-                                                                    } else {
-                                                                        playSound(probaTormazov)
-                                                                    }
+//                                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                    if (v != 0) {
+//                                                                        playSound(ozhivleniyeTormozov)
+//                                                                    } else {
+//                                                                        playSound(probaTormazov)
+//                                                                    }
 
                                                                     Log.d("MyLog2", "Озвучиваем Торможения ближе к цели")
 
@@ -18627,12 +18891,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
@@ -18640,7 +18904,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 myPrev400List[0] = itemMyPrev400List - 100
@@ -18682,13 +18946,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
                                                                 faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -18767,13 +19033,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemBrakesList in myBrakeList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -18782,7 +19048,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -18817,12 +19083,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -18830,7 +19096,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -18861,12 +19127,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -18874,7 +19140,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 - 100
@@ -18916,13 +19182,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -18957,18 +19225,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myPrev400List[0] = itemMyPrev400List - 100
@@ -19006,13 +19274,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -19085,13 +19355,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -19100,7 +19370,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -19135,12 +19405,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -19148,7 +19418,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -19179,12 +19449,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -19192,7 +19462,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 - 100
@@ -19234,13 +19504,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                 faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -19275,18 +19547,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myPrev400List[0] = itemMyPrev400List - 100
@@ -19324,13 +19596,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -19403,13 +19677,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet == itemMyPrev400List &&
@@ -19418,7 +19692,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -19452,12 +19726,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
@@ -19465,7 +19739,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -19495,12 +19769,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
@@ -19508,7 +19782,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 - 100
@@ -19549,13 +19823,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
                                                                 faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -19589,18 +19865,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemBrakesList in myBrakeList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 4000 == itemBrakesList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myPrev400List[0] = itemMyPrev400List - 100
@@ -19637,13 +19913,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet - 4000 == itemBrakesList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -19714,12 +19992,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemLimitationsList in myLimitationList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -19727,7 +20005,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -19760,18 +20038,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -19800,18 +20078,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -19849,13 +20127,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -19888,16 +20168,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemLimitationsList in myLimitationList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
@@ -19931,13 +20211,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -20004,12 +20286,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -20017,7 +20299,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -20049,18 +20331,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -20088,18 +20370,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -20136,13 +20418,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -20174,16 +20458,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
@@ -20216,13 +20500,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -20287,12 +20573,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet == itemMyPrev400List &&
@@ -20300,7 +20586,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -20332,18 +20618,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -20371,18 +20657,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -20419,13 +20705,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -20457,16 +20745,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myPrev400List[0] = itemMyPrev400List - 100
@@ -20499,13 +20787,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -20570,18 +20860,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemMyPrev400List in myPrev400List){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet == itemMyPrev400List) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -20611,16 +20901,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemMyPrev400List in myPrev400List){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemBrake500 &&
                                                         faktStartKmNechet == itemMyPrev400List) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
@@ -20646,16 +20936,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemMyPrev400List in myPrev400List){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet == itemMyPrev400List) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
@@ -20688,13 +20978,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet == itemMyPrev400List) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -20724,14 +21016,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemMyPrev400List in myPrev400List){
-                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                if (faktStartKmNechet == itemCustomField700 &&
                                                     faktStartKmNechet == itemMyPrev400List) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     myPrev400List[0] = itemMyPrev400List - 100
@@ -20760,13 +21052,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemBrake500 &&
                                                     faktStartKmNechet == itemMyPrev400List) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -20825,13 +21119,13 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
                                                             for (itemPantographsList in myPantographList){
-                                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                                if (faktStartKmNechet == itemCustomField700 &&
                                                                     faktStartKmNechet == itemBrake500 &&
                                                                     faktStartKmNechet == itemPantograph800 &&
                                                                     faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -20840,7 +21134,7 @@ class MyLocationService : Service() {
 
                                                                     soundSpinner()
 
-                                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                     customField700List.removeAt(0)
                                                                     brake500List[0] = itemBrake500 - 100
@@ -20875,12 +21169,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
@@ -20888,7 +21182,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -20919,12 +21213,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
@@ -20932,7 +21226,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 pantograph800List[0] = itemPantograph800 - 100
@@ -20974,13 +21268,15 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
                                                                 faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                                val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                                soundSpinnerBrake500()
 
-                                                                if (v != 0) {
-                                                                    playSound(ozhivleniyeTormozov)
-                                                                } else {
-                                                                    playSound(probaTormazov)
-                                                                }
+//                                                                val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                                if (v != 0) {
+//                                                                    playSound(ozhivleniyeTormozov)
+//                                                                } else {
+//                                                                    playSound(probaTormazov)
+//                                                                }
 
                                                                 Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -21015,18 +21311,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemLimitationsList in myLimitationList){
                                                 for (itemBrakesList in myBrakeList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             myLimitationList[0] = itemLimitationsList - 100
@@ -21064,13 +21360,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet - 4000 == itemBrakesList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -21143,18 +21441,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemLimitationsList in myLimitationList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -21185,16 +21483,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemLimitationsList in myLimitationList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemBrake500 &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
@@ -21221,16 +21519,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemLimitationsList in myLimitationList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
@@ -21264,13 +21562,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -21301,16 +21601,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemLimitationsList in myLimitationList){
-                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                if (faktStartKmNechet == itemCustomField700 &&
                                                     faktStartKmNechet - 2000 == itemLimitationsList) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog47", "Озвучиваем Нейтральную вставку")
-
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     myLimitationsList2.add(faktStartKmNechet - 2100)
                                                     Log.d("MyLog47", "myLimitation = $myLimitation")
@@ -21342,13 +21640,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemBrake500 &&
                                                     faktStartKmNechet - 2000 == itemLimitationsList) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -21409,12 +21709,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemBrakesList in myBrakeList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -21422,7 +21722,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -21455,18 +21755,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -21495,18 +21795,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -21544,13 +21844,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -21583,16 +21885,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemLimitationsList in myLimitationList){
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList - 100
@@ -21626,13 +21928,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet - 2000 == itemLimitationsList &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -21699,12 +22003,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemLimitationsList in myLimitationList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet - 2000 == itemLimitationsList &&
@@ -21712,7 +22016,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -21745,18 +22049,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -21785,18 +22089,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemLimitationsList in myLimitationList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -21834,13 +22138,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet - 2000 == itemLimitationsList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -21873,16 +22179,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isNotEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemLimitationsList in myLimitationList){
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet - 2000 == itemLimitationsList &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myLimitationList[0] = itemLimitationsList - 100
@@ -21916,13 +22222,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet - 2000 == itemLimitationsList &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -21989,12 +22297,12 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemBrakesList in myBrakeList){
                                                         for (itemPantographsList in myPantographList){
-                                                            if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                            if (faktStartKmNechet == itemCustomField700 &&
                                                                 faktStartKmNechet == itemBrake500 &&
                                                                 faktStartKmNechet == itemPantograph800 &&
                                                                 faktStartKmNechet - 4000 == itemBrakesList &&
@@ -22002,7 +22310,7 @@ class MyLocationService : Service() {
 
                                                                 soundSpinner()
 
-                                                                Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                                Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                                 customField700List.removeAt(0)
                                                                 brake500List[0] = itemBrake500 - 100
@@ -22034,18 +22342,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemBrakesList in myBrakeList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet - 4000 == itemBrakesList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -22073,18 +22381,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemBrakesList in myBrakeList){
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet - 4000 == itemBrakesList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             pantograph800List[0] = itemPantograph800 - 100
@@ -22121,13 +22429,15 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet - 4000 == itemBrakesList &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                            val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                            soundSpinnerBrake500()
 
-                                                            if (v != 0) {
-                                                                playSound(ozhivleniyeTormozov)
-                                                            } else {
-                                                                playSound(probaTormazov)
-                                                            }
+//                                                            val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                            if (v != 0) {
+//                                                                playSound(ozhivleniyeTormozov)
+//                                                            } else {
+//                                                                playSound(probaTormazov)
+//                                                            }
 
                                                             Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -22159,16 +22469,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrakesList in myBrakeList){
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet - 4000 == itemBrakesList &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         myPantographList[0] = itemPantographsList - 100
@@ -22201,13 +22511,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet - 4000 == itemBrakesList &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -22272,18 +22584,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemBrakesList in myBrakeList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -22313,16 +22625,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemBrake500 &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
@@ -22348,16 +22660,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemBrakesList in myBrakeList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
@@ -22390,13 +22702,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -22426,14 +22740,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isNotEmpty()){
                                     if (myPantographList.isEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrakesList in myBrakeList){
-                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                if (faktStartKmNechet == itemCustomField700 &&
                                                     faktStartKmNechet - 4000 == itemBrakesList) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     myBrakeList[0] = itemBrakesList - 100
@@ -22462,13 +22776,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemBrake500 &&
                                                     faktStartKmNechet - 4000 == itemBrakesList) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -22527,18 +22843,18 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantograph800 in pantograph800List) {
                                                     for (itemPantographsList in myPantographList){
-                                                        if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                        if (faktStartKmNechet == itemCustomField700 &&
                                                             faktStartKmNechet == itemBrake500 &&
                                                             faktStartKmNechet == itemPantograph800 &&
                                                             faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                             soundSpinner()
 
-                                                            Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                            Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                             customField700List.removeAt(0)
                                                             brake500List[0] = itemBrake500 - 100
@@ -22568,16 +22884,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemBrake500 in brake500List) {
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemBrake500 &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         brake500List[0] = itemBrake500 - 100
@@ -22603,16 +22919,16 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantograph800 in pantograph800List) {
                                                 for (itemPantographsList in myPantographList){
-                                                    if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                    if (faktStartKmNechet == itemCustomField700 &&
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                         soundSpinner()
 
-                                                        Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                        Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                         customField700List.removeAt(0)
                                                         pantograph800List[0] = itemPantograph800 - 100
@@ -22645,13 +22961,15 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemPantograph800 &&
                                                         faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                        val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                        soundSpinnerBrake500()
 
-                                                        if (v != 0) {
-                                                            playSound(ozhivleniyeTormozov)
-                                                        } else {
-                                                            playSound(probaTormazov)
-                                                        }
+//                                                        val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                        if (v != 0) {
+//                                                            playSound(ozhivleniyeTormozov)
+//                                                        } else {
+//                                                            playSound(probaTormazov)
+//                                                        }
 
                                                         Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 
@@ -22681,14 +22999,14 @@ class MyLocationService : Service() {
                             if (myLimitationList.isEmpty()){
                                 if (myBrakeList.isEmpty()){
                                     if (myPantographList.isNotEmpty()){
-                                        for (itemNeutralInsert600 in customField700List) {
+                                        for (itemCustomField700 in customField700List) {
                                             for (itemPantographsList in myPantographList){
-                                                if (faktStartKmNechet == itemNeutralInsert600 &&
+                                                if (faktStartKmNechet == itemCustomField700 &&
                                                     faktStartKmNechet - 3000 == itemPantographsList) {
 
                                                     soundSpinner()
 
-                                                    Log.d("MyLog2", "Озвучиваем Нейтральную вставку")
+                                                    Log.d("MyLog2", "Озвучиваем Произвольные поля")
 
                                                     customField700List.removeAt(0)
                                                     myPantographList[0] = itemPantographsList - 100
@@ -22717,13 +23035,15 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemBrake500 &&
                                                     faktStartKmNechet - 3000 == itemPantographsList) {
 
-                                                    val v = SharedPref.Companion.getValueChangeBrakeNechet(baseContext)
+                                                    soundSpinnerBrake500()
 
-                                                    if (v != 0) {
-                                                        playSound(ozhivleniyeTormozov)
-                                                    } else {
-                                                        playSound(probaTormazov)
-                                                    }
+//                                                    val v = SharedPref.getValueChangeBrakeNechet(baseContext)
+//
+//                                                    if (v != 0) {
+//                                                        playSound(ozhivleniyeTormozov)
+//                                                    } else {
+//                                                        playSound(probaTormazov)
+//                                                    }
 
                                                     Log.d("MyLog2", "Озвучиваем Торможение ближе к цели")
 

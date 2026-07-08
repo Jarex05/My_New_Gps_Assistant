@@ -33,9 +33,12 @@
 
             <com.google.android.material.bottomappbar.BottomAppBar
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="160dp"
                 android:id="@+id/bottomAppBar"
                 android:layout_gravity="bottom"
+                app:paddingBottomSystemWindowInsets="true"
+                app:paddingLeftSystemWindowInsets="true"
+                app:paddingRightSystemWindowInsets="true"
                 android:backgroundTint="@color/lavender"
                 app:titleTextColor="@color/black"
                 app:fabAlignmentMode="center"

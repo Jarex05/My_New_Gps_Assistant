@@ -7,12 +7,12 @@ class ListItemBrakeChet(): Parcelable {
     var idChet: Int = 0
     var startChet: Int = 0
     var picketStartChet: Int = 0
-    var switchChetAdd: Int = 0
+    var fieldChetCustom: String = ""
 
     constructor(parcel: Parcel) : this() {
         startChet = parcel.readInt()
         picketStartChet = parcel.readInt()
-        switchChetAdd = parcel.readInt()
+        fieldChetCustom = parcel.readString().toString()
     }
 
     override fun describeContents(): Int {
@@ -22,7 +22,7 @@ class ListItemBrakeChet(): Parcelable {
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeInt(startChet)
         dest.writeInt(picketStartChet)
-        dest.writeInt(switchChetAdd)
+        dest.writeString(fieldChetCustom)
     }
 
     companion object CREATOR : Parcelable.Creator<ListItemBrakeChet> {

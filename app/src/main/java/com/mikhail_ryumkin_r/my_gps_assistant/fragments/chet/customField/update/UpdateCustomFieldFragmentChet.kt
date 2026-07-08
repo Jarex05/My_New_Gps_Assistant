@@ -14,11 +14,16 @@ import androidx.navigation.fragment.navArgs
 import com.mikhail_ryumkin_r.my_gps_assistant.R
 import com.mikhail_ryumkin_r.my_gps_assistant.databinding.FragmentUpdateCustomFieldChetBinding
 import com.mikhail_ryumkin_r.my_gps_assistant.db.customField.MyDbManagerCustomField
+import com.mikhail_ryumkin_r.my_gps_assistant.fragments.chet.customField.add.AddCustomFieldFragmentChet.ListKmAndPk
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.SharedPref
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.showToast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UpdateCustomFieldFragmentChet : Fragment() {
     private lateinit var binding: FragmentUpdateCustomFieldChetBinding
+    private val listKmPk = ArrayList<ListKmAndPk>()
     private val args by navArgs<UpdateCustomFieldFragmentChetArgs>()
     private lateinit var myDbManagerCustomField: MyDbManagerCustomField
     private lateinit var spinner: Spinner
@@ -48,7 +53,7 @@ class UpdateCustomFieldFragmentChet : Fragment() {
         }
 
         spinner = binding.spinnerUpdateChet
-        val data = mutableListOf<String?>("Нейтральная вставка", "Посадка бригады", "Высадка бригады", "Включите саут", "Выключите саут", "Впереди блокпост", "Правильность пути")
+        val data = mutableListOf<String?>("Нейтральная вставка", "Посадка бригады", "Высадка бригады", "Включите саут", "Выключите саут", "Впереди блокпост", "Правильность пути", "Переезд")
         val adapter = ArrayAdapter(requireActivity(), android.R.layout.simple_spinner_item, data)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
@@ -73,6 +78,13 @@ class UpdateCustomFieldFragmentChet : Fragment() {
             }
         }
 
+        CoroutineScope(Dispatchers.Main).launch {
+
+            for (a in myDbManagerCustomField.readDbDataCustomFieldChet()) {
+                listKmPk.add(ListKmAndPk(a.startChetCustom, a.picketStartChetCustom))
+            }
+        }
+
         return binding.root
     }
 
@@ -80,6 +92,13 @@ class UpdateCustomFieldFragmentChet : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         init(view)
+    }
+
+    data class ListKmAndPk(val km: Int,
+                           val pk: Int){
+        override fun toString(): String {
+            return super.toString()
+        }
     }
 
     private fun init(v: View) {
@@ -99,8 +118,38 @@ class UpdateCustomFieldFragmentChet : Fragment() {
         if (startKm != 0 && startPk != 0){
             if (startKm.toString() != "" && startPk.toString() != ""){
                 if (startPk.toString() == "1" || startPk.toString() == "2" || startPk.toString() == "3" || startPk.toString() == "4" || startPk.toString() == "5" || startPk.toString() == "6" || startPk.toString() == "7" || startPk.toString() == "8" || startPk.toString() == "9" || startPk.toString() == "10"){
-                    myDbManagerCustomField.updateDbDataCustomFieldChet(startKm, startPk, customField, args.itemCustomFieldChet.idChetCustom)
-                    findNavController().navigate(R.id.action_updateCustomFieldFragmentChet_to_listCustomFieldFragmentChet)
+
+                    var list: MutableList<Pair<Int, Int>>
+                    var isSavedYes = false
+                    var isSavedNo = false
+
+                    for (a in listKmPk.indices) {
+                        list = mutableListOf(Pair(listKmPk[a].km, listKmPk[a].pk))
+
+                        val newListPairKmPk = Pair(startKm, startPk)
+
+                        if (list.none { it == newListPairKmPk }) {
+                            list.add(newListPairKmPk)
+                            isSavedYes = true
+                        } else {
+                            isSavedNo = true
+                        }
+                    }
+
+                    if (!isSavedYes && !isSavedNo) {
+                        myDbManagerCustomField.updateDbDataCustomFieldChet(startKm, startPk, customField, args.itemCustomFieldChet.idChetCustom)
+                        findNavController().navigate(R.id.action_updateCustomFieldFragmentChet_to_listCustomFieldFragmentChet)
+                        showToast("Сохранено")
+                    } else if (!isSavedYes && isSavedNo) {
+                        showToast("Совпадение пикетов на одном километре")
+                    } else if (isSavedYes && !isSavedNo) {
+                        myDbManagerCustomField.updateDbDataCustomFieldChet(startKm, startPk, customField, args.itemCustomFieldChet.idChetCustom)
+                        findNavController().navigate(R.id.action_updateCustomFieldFragmentChet_to_listCustomFieldFragmentChet)
+                        showToast("Сохранено")
+                    } else if (isSavedYes && isSavedNo) {
+                        showToast("Совпадение пикетов на одном километре")
+                    }
+
                 }
                 else{
                     showToast("Поле 'Пикет' должно содержать число не менее '1' и не более '10'")
