@@ -38,14 +38,11 @@ import com.mikhail_ryumkin_r.my_gps_assistant.utils.SharedPref
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.checkPermission
 import com.mikhail_ryumkin_r.my_gps_assistant.utils.showToast
 import com.mikhail_ryumkin_r.my_gps_assistant.BuildConfig
-import com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.customField.CustomFieldNechetFragment
-import com.mikhail_ryumkin_r.my_gps_assistant.utils.openFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
-//import org.osmdroid.library.BuildConfig
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider

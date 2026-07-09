@@ -213,7 +213,6 @@ class MyLocationService : Service() {
     private lateinit var geoPointsTrack: ArrayList<GeoPoint>
 
     private var dataListArray = mutableListOf<ListKm>()
-    private var dataCustomField = mutableListOf<ListCustomField>()
 
     private var lastLocation: Location? = null
     private lateinit var locProvider: FusedLocationProviderClient
@@ -325,12 +324,6 @@ class MyLocationService : Service() {
     }
 
     data class ListKm(var kmStart: Int, var pkStart: Int, var kmFinish: Int, var pkFinish: Int, var speed: Int){
-        override fun toString(): String {
-            return super.toString()
-        }
-    }
-
-    data class ListCustomField(var kmStart: Int, var customField: String){
         override fun toString(): String {
             return super.toString()
         }
@@ -551,32 +544,34 @@ class MyLocationService : Service() {
 
     private fun soundVoice2000() {
         if (dataListArray.isNotEmpty()) {
-            if (dataListArray[0].speed == 15) {
-                playSound(voice15)
-            }
-            else if (dataListArray[0].speed == 25) {
-                playSound(voice25)
-            }
-            else if (dataListArray[0].speed == 40) {
-                playSound(voice40)
-            }
-            else if (dataListArray[0].speed == 50) {
-                playSound(voice50)
-            }
-            else if (dataListArray[0].speed == 55) {
-                playSound(voice55)
-            }
-            else if (dataListArray[0].speed == 60) {
-                playSound(voice60)
-            }
-            else if (dataListArray[0].speed == 65) {
-                playSound(voice65)
-            }
-            else if (dataListArray[0].speed == 70) {
-                playSound(voice70)
-            }
-            else if (dataListArray[0].speed == 75) {
-                playSound(voice75)
+            when (dataListArray[0].speed) {
+                15 -> {
+                    playSound(voice15)
+                }
+                25 -> {
+                    playSound(voice25)
+                }
+                40 -> {
+                    playSound(voice40)
+                }
+                50 -> {
+                    playSound(voice50)
+                }
+                55 -> {
+                    playSound(voice55)
+                }
+                60 -> {
+                    playSound(voice60)
+                }
+                65 -> {
+                    playSound(voice65)
+                }
+                70 -> {
+                    playSound(voice70)
+                }
+                75 -> {
+                    playSound(voice75)
+                }
             }
         }
     }
@@ -922,7 +917,7 @@ class MyLocationService : Service() {
                         // Совпадает 4 элемента Без Ограничения в пути и Превышения за 400 метров и Ограничения за 2000 метров и Торможения за 4000 метров
                         iteration58()
 
-                        // Совпадение ограничения в движении с остальными звуками
+                        // Совпадение ограничения в движении с остальными звуками.
                         // Совпадают 5 элементов
                         iteration59()
 
@@ -1816,9 +1811,6 @@ class MyLocationService : Service() {
                                             tvKmPk15 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr15 = ""
-//                                    tvKmPk15 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 15){
@@ -1855,9 +1847,6 @@ class MyLocationService : Service() {
                                             tvKmPk25 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr25 = ""
-//                                    tvKmPk25 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 25){
@@ -1894,9 +1883,6 @@ class MyLocationService : Service() {
                                             tvKmPk40 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr40 = ""
-//                                    tvKmPk40 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 40){
@@ -1933,9 +1919,6 @@ class MyLocationService : Service() {
                                             tvKmPk50 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr50 = ""
-//                                    tvKmPk50 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 50){
@@ -1972,9 +1955,6 @@ class MyLocationService : Service() {
                                             tvKmPk55 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr55 = ""
-//                                    tvKmPk55 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 55){
@@ -2011,9 +1991,6 @@ class MyLocationService : Service() {
                                             tvKmPk60 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr60 = ""
-//                                    tvKmPk60 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 60){
@@ -2050,9 +2027,6 @@ class MyLocationService : Service() {
                                             tvKmPk65 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr65 = ""
-//                                    tvKmPk65 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 65){
@@ -2089,9 +2063,6 @@ class MyLocationService : Service() {
                                             tvKmPk70 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr70 = ""
-//                                    tvKmPk70 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 70){
@@ -2128,9 +2099,6 @@ class MyLocationService : Service() {
                                             tvKmPk75 = "$titleStartNechet км $piketStartNechet пк - $titleFinishNechet км $piketFinishNechet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr75 = ""
-//                                    tvKmPk75 = ""
                                 }
 
                                 if (distance <= faktEndKmNechet - sumCalculateUslNechet && distance >= faktEndKmNechet - sumCalculateUslNechet - 50 && item.speedNechet == 75){
@@ -2281,7 +2249,7 @@ class MyLocationService : Service() {
 
                                     while (a <= mySpeed1.size) {
                                         dataListArray.add(ListKm(titleStartNechet, piketStartNechet, titleFinishNechet, piketFinishNechet, speedNechet))
-                                        a = a + 1
+                                        a += 1
                                     }
 
                                     val myList = dataListArray.toMutableSet().toMutableList()
@@ -2603,7 +2571,7 @@ class MyLocationService : Service() {
                         // Совпадает 4 элемента Без Ограничения в пути и Превышения за 400 метров и Ограничения за 2000 метров и Торможения за 4000 метров
                         iteration28()
 
-                        // Совпадение ограничения в движении с остальными звуками
+                        // Совпадение ограничения в движении с остальными звуками.
                         // Совпадают 5 элементов
                         iteration29()
 
@@ -3514,9 +3482,6 @@ class MyLocationService : Service() {
                                             tvKmPk25 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr25 = ""
-//                                    tvKmPk25 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 25){
@@ -3553,9 +3518,6 @@ class MyLocationService : Service() {
                                             tvKmPk40 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr40 = ""
-//                                    tvKmPk40 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 40){
@@ -3592,9 +3554,6 @@ class MyLocationService : Service() {
                                             tvKmPk50 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr50 = ""
-//                                    tvKmPk50 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 50){
@@ -3631,9 +3590,6 @@ class MyLocationService : Service() {
                                             tvKmPk55 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr55 = ""
-//                                    tvKmPk55 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 55){
@@ -3670,9 +3626,6 @@ class MyLocationService : Service() {
                                             tvKmPk60 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr60 = ""
-//                                    tvKmPk60 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 60){
@@ -3709,9 +3662,6 @@ class MyLocationService : Service() {
                                             tvKmPk65 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr65 = ""
-//                                    tvKmPk65 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 65){
@@ -3748,9 +3698,6 @@ class MyLocationService : Service() {
                                             tvKmPk70 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr70 = ""
-//                                    tvKmPk70 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 70){
@@ -3787,9 +3734,6 @@ class MyLocationService : Service() {
                                             tvKmPk75 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
                                         }
                                     }
-                                } else {
-//                                    tvOgr75 = ""
-//                                    tvKmPk75 = ""
                                 }
 
                                 if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 75){
@@ -3897,39 +3841,30 @@ class MyLocationService : Service() {
 
                                     when (speedChet) {
                                         15 -> {
-                                            val int15 = 15
                                             arrayListSpeed.add(15)
                                         }
                                         25 -> {
-                                            val int25 = 25
                                             arrayListSpeed.add(25)
                                         }
                                         40 -> {
-                                            val int40 = 40
                                             arrayListSpeed.add(40)
                                         }
                                         50 -> {
-                                            val int50 = 50
                                             arrayListSpeed.add(50)
                                         }
                                         55 -> {
-                                            val int55 = 55
                                             arrayListSpeed.add(55)
                                         }
                                         60 -> {
-                                            val int60 = 60
                                             arrayListSpeed.add(60)
                                         }
                                         65 -> {
-                                            val int65 = 65
                                             arrayListSpeed.add(65)
                                         }
                                         70 -> {
-                                            val int70 = 70
                                             arrayListSpeed.add(70)
                                         }
                                         75 -> {
-                                            val int75 = 75
                                             arrayListSpeed.add(75)
                                         }
                                     }
@@ -3944,7 +3879,7 @@ class MyLocationService : Service() {
 
                                     while (a <= mySpeed1.size) {
                                         dataListArray.add(ListKm(titleStartChet, piketStartChet, titleFinishChet, piketFinishChet, speedChet))
-                                        a = a + 1
+                                        a += 1
                                     }
 
                                     val myList = dataListArray.toMutableSet().toMutableList()
@@ -4030,9 +3965,9 @@ class MyLocationService : Service() {
     @SuppressLint("ObsoleteSdkInt")
     private fun startNotification(){
 
-        val s = SharedPref.Companion.getValueNotification(baseContext)
+        val s = SharedPref.getValueNotification(baseContext)
 
-        val v = SharedPref.Companion.getValue(baseContext)
+        val v = SharedPref.getValue(baseContext)
 
         if (v != 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -13663,7 +13598,7 @@ class MyLocationService : Service() {
             }
         }
 
-        // Совпадение превышения за 400 метров с остальными звуками
+        // Совпадение превышения за 400 метров с остальными звуками.
         // Совпадает 4 элемента
 
         if (customField700List.isEmpty()) {
@@ -23560,7 +23495,7 @@ class MyLocationService : Service() {
             }
         }
 
-        // Совпадение превышения за 400 метров с остальными звуками
+        // Совпадение превышения за 400 метров с остальными звуками.
         // Совпадает 4 элемента
 
         if (customField700List.isEmpty()) {

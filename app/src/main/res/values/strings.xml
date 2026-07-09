@@ -141,4 +141,8 @@
     <string name="fragment_update_pk_start_redacktor_nechet">Пк. начало</string>
     <string name="fragment_update_minus_redacktor_nechet">Минус</string>
     <string name="fragment_update_plus_redacktor_nechet">Плюс</string>
+
+    <!--Названия для установки КМ и условной длины во фрагменте в настройках-->
+    <string name="settings_km">Введите километр для начала записи маршрута</string>
+    <string name="settings_usl_dl">Введите условную длину поезда</string>
 </resources>

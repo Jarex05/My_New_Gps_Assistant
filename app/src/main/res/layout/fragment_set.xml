@@ -9,18 +9,18 @@
 
     <EditText
         android:id="@+id/edKmSave"
-        android:layout_width="205dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="75dp"
+        android:layout_width="175dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="15dp"
         android:ems="10"
-        android:hint="Введите км для записи"
+        android:hint="Введите км"
         android:inputType="number"
         android:maxLength="7"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.078"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="Autofill,HardcodedText,TouchTargetSizeCheck" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/logoTv"
+        app:layout_constraintTop_toBottomOf="@+id/logoTv"
+        tools:ignore="Autofill,HardcodedText,MissingConstraints,TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/bSaveKm"
@@ -36,15 +36,15 @@
 
     <EditText
         android:id="@+id/edUsl"
-        android:layout_width="173dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="35dp"
+        android:layout_width="175dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="15dp"
         android:ems="10"
         android:hint="Введите условную"
         android:inputType="number"
         android:maxLength="3"
-        app:layout_constraintStart_toStartOf="@+id/edKmSave"
-        app:layout_constraintTop_toBottomOf="@+id/edKmSave"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
         tools:ignore="Autofill,HardcodedText,TouchTargetSizeCheck" />
 
     <Button
@@ -57,5 +57,31 @@
         app:layout_constraintStart_toEndOf="@+id/edUsl"
         app:layout_constraintTop_toTopOf="@+id/edUsl"
         tools:ignore="HardcodedText,TextSizeCheck,TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/logoTv"
+        android:layout_width="335dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="75dp"
+        android:text="@string/settings_km"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextSizeCheck" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="335dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="35dp"
+        android:text="@string/settings_usl_dl"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/edKmSave"
+        app:layout_constraintTop_toBottomOf="@+id/edKmSave" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
