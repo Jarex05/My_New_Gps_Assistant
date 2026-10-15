@@ -9,11 +9,11 @@
 
     <EditText
         android:id="@+id/edKmSave"
-        android:layout_width="175dp"
+        android:layout_width="130dp"
         android:layout_height="42dp"
         android:layout_marginTop="15dp"
         android:ems="10"
-        android:hint="Введите км"
+        android:hint="Километр"
         android:inputType="number"
         android:maxLength="7"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,11 +36,11 @@
 
     <EditText
         android:id="@+id/edUsl"
-        android:layout_width="175dp"
+        android:layout_width="130dp"
         android:layout_height="42dp"
         android:layout_marginTop="15dp"
         android:ems="10"
-        android:hint="Введите условную"
+        android:hint="Условная"
         android:inputType="number"
         android:maxLength="3"
         app:layout_constraintStart_toStartOf="@+id/textView3"
@@ -61,7 +61,7 @@
     <TextView
         android:id="@+id/logoTv"
         android:layout_width="335dp"
-        android:layout_height="33dp"
+        android:layout_height="40dp"
         android:layout_marginStart="30dp"
         android:layout_marginTop="75dp"
         android:text="@string/settings_km"
@@ -76,11 +76,20 @@
     <TextView
         android:id="@+id/textView3"
         android:layout_width="335dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="35dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
         android:text="@string/settings_usl_dl"
         android:textSize="14sp"
         android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="335dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="20dp"
+        android:text="---------------------------------------"
         app:layout_constraintStart_toStartOf="@+id/edKmSave"
         app:layout_constraintTop_toBottomOf="@+id/edKmSave" />
 

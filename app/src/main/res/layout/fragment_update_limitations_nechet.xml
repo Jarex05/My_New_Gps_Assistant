@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/fragment_update_km_start_limitations_nechet"
         android:importantForAutofill="no"
@@ -20,14 +20,14 @@
         android:maxLength="4"
         android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView28"
         tools:ignore="HardcodedText,TextContrastCheck" />
 
     <EditText
         android:id="@+id/ed_update_pk_start_limitations_nechet"
         android:layout_width="129dp"
         android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/fragment_update_pk_start_limitations_nechet"
         android:inputType="number"
@@ -43,7 +43,7 @@
         android:id="@+id/ed_update_finish_limitations_nechet"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/fragment_update_km_finish_limitations_nechet"
         android:importantForAutofill="no"
@@ -58,7 +58,7 @@
         android:id="@+id/ed_update_pk_finish_limitations_nechet"
         android:layout_width="129dp"
         android:layout_height="50dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/fragment_update_pk_finish_limitations_nechet"
         android:inputType="number"
@@ -100,7 +100,7 @@
         android:id="@+id/ed_update_speed_limitations_nechet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/fragment_update_speed_limitations_nechet"
         android:inputType="number"
@@ -128,10 +128,22 @@
         android:id="@+id/switchLimitationNechetUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="Постоянное/Временное"
         app:layout_constraintStart_toStartOf="@+id/ed_update_speed_limitations_nechet"
         app:layout_constraintTop_toBottomOf="@+id/ed_update_speed_limitations_nechet"
         tools:ignore="HardcodedText,UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/textView28"
+        android:layout_width="325dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="72dp"
+        android:text="@string/zagolovok_update_limitation_nechet"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

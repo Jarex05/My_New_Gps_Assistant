@@ -143,6 +143,33 @@
     <string name="fragment_update_plus_redacktor_nechet">Плюс</string>
 
     <!--Названия для установки КМ и условной длины во фрагменте в настройках-->
-    <string name="settings_km">Введите километр для начала записи маршрута</string>
+    <string name="settings_km">Введите километр для начала записи маршрута, как на Клуб-У</string>
     <string name="settings_usl_dl">Введите условную длину поезда</string>
+
+    <!--Названия заголовков при добавлении или обновлении торможения, опускания, ограничения и произволных полей -->
+    <string name="zagolovok_limitation_chet">Добавление ограничения чётного направления</string>
+    <string name="zagolovok_update_limitation_chet">Изменение ограничения чётного направления</string>
+    <string name="zagolovok_limitation_nechet">Добавление ограничения нечётного направления</string>
+    <string name="zagolovok_update_limitation_nechet">Изменение ограничения нечётного направления</string>
+
+    <string name="zagolovok_break_chet">Добавление торможения чётного направления</string>
+    <string name="zagolovok_update_break_chet">Изменение торможения чётного направления</string>
+    <string name="zagolovok_break_nechet">Добавление торможения нечётного направления</string>
+    <string name="zagolovok_update_break_nechet">Изменение торможения нечётного направления</string>
+
+    <string name="zagolovok_pantograph_chet">Добавление опускания чётного направления</string>
+    <string name="zagolovok_update_pantograph_chet">Изменение опускания чётного направления</string>
+    <string name="zagolovok_pantograph_nechet">Добавление опускания нечётного направления</string>
+    <string name="zagolovok_update_pantograph_nechet">Изменение опускания нечётного направления</string>
+
+    <string name="zagolovok_custom_field_chet">Добавление произвольного значения чётного направления</string>
+    <string name="zagolovok_update_custom_field_chet">Изменение произвольного значения чётного направления</string>
+    <string name="zagolovok_custom_field_nechet">Добавление произвольного значения нечётного направления</string>
+    <string name="zagolovok_update_custom_field_nechet">Изменение произвольного значения нечётного направления</string>
+
+    <!--Названия заголовков при добавлении километра, для автоматического редактирования при записи маршрута -->
+    <string name="zagolovok_redacktor_chet">Добавление километра для автоматического прибавления или уменьшения метража при записи маршрута чётного направления</string>
+    <string name="zagolovok_update_redacktor_chet">Изменение километра для автоматического прибавления или уменьшения метража при записи маршрута чётного направления</string>
+    <string name="zagolovok_redacktor_nechet">Добавление километра для автоматического прибавления или уменьшения метража при записи маршрута нечётного направления</string>
+    <string name="zagolovok_update_redacktor_nechet">Изменение километра для автоматического прибавления или уменьшения метража при записи маршрута нечётного направления</string>
 </resources>
