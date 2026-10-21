@@ -2,12 +2,14 @@ package com.mikhail_ryumkin_r.my_gps_assistant.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -69,11 +71,26 @@ class HomeFragment : Fragment() {
         MainViewModel.ViewModelFactory((requireContext().applicationContext as MainApp).database)
     }
 
+//    private val foregroundPermissionLauncher = registerForActivityResult(
+//        ActivityResultContracts.RequestMultiplePermissions()
+//    ) { permissions ->
+//        val fineGranted = permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)
+//        val coarseGranted = permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
+//
+//        if (fineGranted || coarseGranted) {
+//            // Обычные права получены, теперь можно переходить к фоновым
+//            checkAndRequestBackgroundPermission()
+//        } else {
+//            showToast("Без доступа к геолокации фоновый режим невозможен")
+//        }
+//    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
             settingsOsm()
+//        startLocationPermissionFlow()
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -99,9 +116,26 @@ class HomeFragment : Fragment() {
         }
     }
 
+//    private val backgroundPermissionLauncher = registerForActivityResult(
+//        ActivityResultContracts.RequestPermission()
+//    ) { isGranted ->
+//        if (isGranted) {
+//            getTrack()
+////            checkLocationEnabled()
+//        } else {
+//            showToast("Фоновый доступ отклонен. Приложение не сможет работать в режиме сна")
+//        }
+//    }
+
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        startLocationPermissionFlow()
+//    }
+
     private fun checkLocPermission(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
             checkPermissionAfter10()
+//            checkAndRequestBackgroundPermission()
         } else {
             checkPermissionBefore10()
         }
@@ -122,6 +156,7 @@ class HomeFragment : Fragment() {
                 getTrack()
                 checkLocationEnabled()
             } else {
+//                showBackgroundRationaleDialog()
                 pLauncher.launch(
                     arrayOf(
                         Manifest.permission.ACCESS_BACKGROUND_LOCATION
@@ -136,6 +171,66 @@ class HomeFragment : Fragment() {
             )
         }
     }
+
+//    private fun startLocationPermissionFlow() {
+//        val fineGranted = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+//        val coarseGranted = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+//
+//        if (fineGranted || coarseGranted) {
+//            // Базовые права уже есть, проверяем фоновые
+//            checkAndRequestBackgroundPermission()
+//        } else {
+//            // Базовых прав нет, запрашиваем сначала их
+//            foregroundPermissionLauncher.launch(
+//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+//            )
+//        }
+//    }
+
+//    private fun checkAndRequestBackgroundPermission() {
+//        // Фоновые права появились только в Android 10 (API 29). На старых устройствах они не нужны
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+//            getTrack()
+////            checkLocationEnabled()
+//            return
+//        }
+//
+//        val backgroundGranted = ContextCompat.checkSelfPermission(
+//            requireActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION
+//        ) == PackageManager.PERMISSION_GRANTED
+//
+//        if (backgroundGranted) {
+//            getTrack()
+////            checkLocationEnabled()
+//        } else {
+//            // Google ОБЯЗЫВАЕТ показать объяснение пользователю ПЕРЕД запросом фоновой геолокации
+//            showBackgroundRationaleDialog()
+//        }
+//    }
+
+//    @RequiresApi(Build.VERSION_CODES.Q)
+//    private fun showBackgroundRationaleDialog() {
+//        AlertDialog.Builder(requireActivity())
+//            .setTitle("Требуется фоновый доступ")
+//            .setMessage("Этому приложению необходим доступ к геолокации в фоновом режиме для (укажите вашу причину, например: записи вашего маршрута, когда экран выключен).\n\nНа следующем экране выберите пункт 'Разрешить в любом режиме'.")
+//            .setPositiveButton("Понятно") { _, _ ->
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+//                        data = Uri.fromParts("package", requireActivity().packageName, null)
+//                    }
+//                    startActivity(intent)
+//                    showToast("Пожалуйста, выберите 'Разрешить в любом режиме'")
+//                } else {
+//                    backgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+//                }
+//            }
+//            .setNegativeButton("Отмена") { dialog, _ ->
+//                dialog.dismiss()
+//                showToast("Фоновый режим не активирован")
+//            }
+//            .create()
+//            .show()
+//    }
 
     private fun checkPermissionBefore10() {
         if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -333,6 +428,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+//        checkAndRequestBackgroundPermission()
         checkLocPermission()
 
         binding.tvOgr15.text = ""
