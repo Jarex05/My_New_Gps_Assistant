@@ -47,12 +47,22 @@ import kotlinx.coroutines.withContext
 import org.osmdroid.util.GeoPoint
 import java.io.IOException
 import kotlin.collections.mutableListOf
+import kotlinx.coroutines.channels.Channel
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 
 @Suppress("DEPRECATION")
-class MyLocationService : Service() {
+class MyLocationService : LifecycleService() {
     private var isOgranichenie: Int = 0
     private var speedLimit = true
+    private var brakeBoolean = false
+    private var isEnd = false
 
     val myLimitationsList2 = mutableListOf<Int>()
 
@@ -100,15 +110,6 @@ class MyLocationService : Service() {
     private var isOgr70 = true
     private var isOgr75 = true
 
-    private var ogranichenie1: Int = 0
-    private var prev4001: Int = 0
-    private var isPantograph8001: Int = 0
-    private var isBrake5001: Int = 0
-    private var isCustomField7001: Int = 0
-    private var limitation1: Int = 0
-    private var brake1: Int = 0
-    private var pantograph1: Int = 0
-
     private var usl = 0.0F
     private var uslChet = usl
     private var uslNechet = usl
@@ -124,16 +125,6 @@ class MyLocationService : Service() {
     private var isLimitations400m65 = true
     private var isLimitations400m70 = true
     private var isLimitations400m75 = true
-
-    private var int15: Int = 150
-    private var int25: Int = 150
-    private var int40: Int = 150
-    private var int50: Int = 150
-    private var int55: Int = 150
-    private var int60: Int = 150
-    private var int65: Int = 150
-    private var int70: Int = 150
-    private var int75: Int = 150
 
     var tvOgr15: String = ""
     var tvOgr25: String = ""
@@ -211,6 +202,8 @@ class MyLocationService : Service() {
     private var fragmentLatLongToService: String = ""
     private var isTrack = true
     private val distanceKmList = ArrayList<ListLatLongKm>()
+    private var customFieldData = ArrayList<ListCustomField>()
+    var brakeFieldData = mutableListOf<String>()
     private lateinit var geoPointsTrack: ArrayList<GeoPoint>
 
     private var dataListArray = mutableListOf<ListKm>()
@@ -219,45 +212,9 @@ class MyLocationService : Service() {
     private lateinit var locProvider: FusedLocationProviderClient
     private lateinit var locRequest: LocationRequest
 
-    private lateinit var soundPool: SoundPool
-    private lateinit var assetManager: AssetManager
-
-    private var voice15: Int = 0
-    private var voice25: Int = 0
-    private var voice40: Int = 0
-    private var voice50: Int = 0
-    private var voice55: Int = 0
-    private var voice60: Int = 0
-    private var voice65: Int = 0
-    private var voice70: Int = 0
-    private var voice75: Int = 0
-    private var voiceprev: Int = 0
-    private var pantograph: Int = 0
-    private var brake: Int = 0
-    private var songvipolneno: Int = 0
-    private var opuskaniyeTokopriyemnika: Int = 0
-    private var ozhivleniyeTormozov: Int = 0
-    private var probaTormazov: Int = 0
-    private var neutralInsert: Int = 0
-    private var posadkaBrigady: Int = 0
-    private var saut: Int = 0
-    private var sautout: Int = 0
-    private var vysadkaBrigady: Int = 0
-    private var pravelnostyPuti: Int = 0
-    private var blokPost: Int = 0
-    private var zheleznoDorozhnyyPereyezd: Int = 0
-
-    private var ogr15: Int = 0
-    private var ogr25: Int = 0
-    private var ogr40: Int = 0
-    private var ogr50: Int = 0
-    private var ogr55: Int = 0
-    private var ogr60: Int = 0
-    private var ogr65: Int = 0
-    private var ogr70: Int = 0
-    private var ogr75: Int = 0
-
-    private var streamID = 0
+    private lateinit var soundPoolTreck: SoundPool
+    private val trackSoundsMap = HashMap<Int, Int>()
+    private val soundQueue = Channel<Int>(Channel.UNLIMITED)
 
     private lateinit var myDbManagerLimitations: MyDbManagerLimitations
     private lateinit var myDbManagerPantograph: MyDbManagerPantograph
@@ -280,9 +237,11 @@ class MyLocationService : Service() {
     private var customFieldBrake500 = ""
     private var customField2Brake500 = ""
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+//    @SuppressLint("MissingSuperCall")
+//    fun onBind(intent: Intent?): IBinder? {
+//        intent?.let { super.onBind(it) }
+//        return null
+//    }
 
     private val receiverLatLongKmToService = object : BroadcastReceiver(){
         override fun onReceive(context: Context?, intentLatLongKmToService: Intent?) {
@@ -324,6 +283,13 @@ class MyLocationService : Service() {
         }
     }
 
+    data class ListCustomField(val km: Int,
+                               val customField: String){
+        override fun toString(): String {
+            return super.toString()
+        }
+    }
+
     data class ListKm(var kmStart: Int, var pkStart: Int, var kmFinish: Int, var pkFinish: Int, var speed: Int){
         override fun toString(): String {
             return super.toString()
@@ -336,7 +302,9 @@ class MyLocationService : Service() {
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         SharedPref.setValueDeleteSpeed(baseContext, 0)
         myDbManagerPantograph = MyDbManagerPantograph(applicationContext)
         myDbManagerBrake = MyDbManagerBrake(applicationContext)
@@ -349,230 +317,80 @@ class MyLocationService : Service() {
         return START_STICKY
     }
 
-    private fun playSound(sound: Int): Int {
-        if (sound > 0) {
-            streamID = soundPool.play(sound, 1F, 1F, 1, 0, 1F)
-        }
-        return streamID
-    }
-
-    private fun loadSound(fileName: String): Int {
-        val afd: AssetFileDescriptor = try {
-            application.assets.openFd(fileName)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.d("MyLog", "Не могу загрузить файл $fileName")
-
-            return -1
-        }
-        return soundPool.load(afd,1)
-    }
-
     override fun onCreate() {
         super.onCreate()
         geoPointsTrack = ArrayList()
         initLocation()
 
-        val attributes = AudioAttributes.Builder()
+        initSoundPoolTreck()
+        startSoundPlaybackWorker()
+
+    }
+
+    private fun initSoundPoolTreck() {
+        val attributesTreck = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_GAME)
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .build()
-        soundPool = SoundPool.Builder()
-            .setAudioAttributes(attributes)
+        soundPoolTreck = SoundPool.Builder()
+            .setAudioAttributes(attributesTreck)
             .build()
 
-        assetManager = assets
-        voice15 = loadSound("voice15.mp3")
-        voice25 = loadSound("voice25.mp3")
-        voice40 = loadSound("voice40.mp3")
-        voice50 = loadSound("voice50.mp3")
-        voice55 = loadSound("voice55.mp3")
-        voice60 = loadSound("voice60.mp3")
-        voice65 = loadSound("voice65.mp3")
-        voice70 = loadSound("voice70.mp3")
-        voice75 = loadSound("voice75.mp3")
-        voiceprev = loadSound("voiceprev.mp3")
-        pantograph = loadSound("pantograph.mp3")
-        brake = loadSound("brake.mp3")
-        songvipolneno = loadSound("songvipolneno.mp3")
-        opuskaniyeTokopriyemnika = loadSound("opuskaniyeTokopriyemnika.mp3")
-        ozhivleniyeTormozov = loadSound("ozhivleniyeTormozov.mp3")
-        probaTormazov = loadSound("probaTormazov.mp3")
-        neutralInsert = loadSound("neutralInsert.mp3")
-        posadkaBrigady = loadSound("posadkaBrigady.mp3")
-        vysadkaBrigady = loadSound("vysadkaBrigady.mp3")
-        saut = loadSound("saut.mp3")
-        sautout = loadSound("sautout.mp3")
-        pravelnostyPuti = loadSound("pravelnostyPuti.mp3")
-        blokPost = loadSound("blokPost.mp3")
-        zheleznoDorozhnyyPereyezd = loadSound("zheleznodorozhnyy_pereyezd.mp3")
+        // Загружаем звуки (замените R.raw.sound1 и т.д. на ваши файлы)
+        trackSoundsMap[1] = soundPoolTreck.load(this, R.raw.neutralinsert, 1)
+        trackSoundsMap[2] = soundPoolTreck.load(this, R.raw.posadkabrigady, 1)
+        trackSoundsMap[3] = soundPoolTreck.load(this, R.raw.vysadkabrigady, 1)
+        trackSoundsMap[4] = soundPoolTreck.load(this, R.raw.saut, 1)
+        trackSoundsMap[5] = soundPoolTreck.load(this, R.raw.sautout, 1)
+        trackSoundsMap[6] = soundPoolTreck.load(this, R.raw.blokpost, 1)
+        trackSoundsMap[7] = soundPoolTreck.load(this, R.raw.pravelnostyputi, 1)
+        trackSoundsMap[8] = soundPoolTreck.load(this, R.raw.zheleznodorozhnyy_pereyezd, 1)
 
-        ogr15 = loadSound("ogr15.mp3")
-        ogr25 = loadSound("ogr25.mp3")
-        ogr40 = loadSound("ogr40.mp3")
-        ogr50 = loadSound("ogr50.mp3")
-        ogr55 = loadSound("ogr55.mp3")
-        ogr60 = loadSound("ogr60.mp3")
-        ogr65 = loadSound("ogr65.mp3")
-        ogr70 = loadSound("ogr70.mp3")
-        ogr75 = loadSound("ogr75.mp3")
+        trackSoundsMap[9] = soundPoolTreck.load(this, R.raw.probatormazov, 1)
+        trackSoundsMap[10] = soundPoolTreck.load(this, R.raw.ozhivleniyetormozov, 1)
+
+        trackSoundsMap[11] = soundPoolTreck.load(this, R.raw.opuskaniyetokopriyemnika, 1)
+
+        trackSoundsMap[12] = soundPoolTreck.load(this, R.raw.brake, 1)
+        trackSoundsMap[13] = soundPoolTreck.load(this, R.raw.pantograph, 1)
+
+        trackSoundsMap[14] = soundPoolTreck.load(this, R.raw.ogr15, 1)
+        trackSoundsMap[15] = soundPoolTreck.load(this, R.raw.ogr25, 1)
+        trackSoundsMap[16] = soundPoolTreck.load(this, R.raw.ogr40, 1)
+        trackSoundsMap[17] = soundPoolTreck.load(this, R.raw.ogr50, 1)
+        trackSoundsMap[18] = soundPoolTreck.load(this, R.raw.ogr55, 1)
+        trackSoundsMap[19] = soundPoolTreck.load(this, R.raw.ogr60, 1)
+        trackSoundsMap[20] = soundPoolTreck.load(this, R.raw.ogr65, 1)
+        trackSoundsMap[21] = soundPoolTreck.load(this, R.raw.ogr70, 1)
+        trackSoundsMap[22] = soundPoolTreck.load(this, R.raw.ogr75, 1)
+
+        trackSoundsMap[23] = soundPoolTreck.load(this, R.raw.voiceprev, 1)
+
+        trackSoundsMap[24] = soundPoolTreck.load(this, R.raw.voice15, 1)
+        trackSoundsMap[25] = soundPoolTreck.load(this, R.raw.voice25, 1)
+        trackSoundsMap[26] = soundPoolTreck.load(this, R.raw.voice40, 1)
+        trackSoundsMap[27] = soundPoolTreck.load(this, R.raw.voice50, 1)
+        trackSoundsMap[28] = soundPoolTreck.load(this, R.raw.voice55, 1)
+        trackSoundsMap[29] = soundPoolTreck.load(this, R.raw.voice60, 1)
+        trackSoundsMap[30] = soundPoolTreck.load(this, R.raw.voice65, 1)
+        trackSoundsMap[31] = soundPoolTreck.load(this, R.raw.voice70, 1)
+        trackSoundsMap[32] = soundPoolTreck.load(this, R.raw.voice75, 1)
+
+        trackSoundsMap[33] = soundPoolTreck.load(this, R.raw.songvipolneno, 1)
+
     }
 
-    private fun soundSpinner() {
+    private fun startSoundPlaybackWorker() {
+        lifecycleScope.launch {
+            // Как только в канале появляется ID звука, этот цикл его забирает
+            for (soundId in soundQueue) {
+                // Воспроизводим аудиофайл
+                soundPoolTreck.play(soundId, 1f, 1f, 1, 0, 1f)
 
-//        dataCustomField[0].customField
-        when (customField2) {
-            "Нейтральная вставка" -> {
-
-                playSound(neutralInsert)
-                Log.d("MyLog24", "playSound = Нейтральная вставка")
-//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
-//                dataCustomField.remove(listKmToRemove)
-
-            }
-            "Посадка бригады" -> {
-
-                playSound(posadkaBrigady)
-                Log.d("MyLog24", "playSound = Посадка бригады")
-//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
-//                dataCustomField.remove(listKmToRemove)
-
-            }
-            "Высадка бригады" -> {
-
-                playSound(vysadkaBrigady)
-                Log.d("MyLog24", "playSound = Высадка бригады")
-//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
-//                dataCustomField.remove(listKmToRemove)
-
-            }
-            "Включите саут" -> {
-
-                playSound(saut)
-                Log.d("MyLog24", "playSound = Включите саут")
-//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
-//                dataCustomField.remove(listKmToRemove)
-
-            }
-            "Выключите саут" -> {
-
-                playSound(sautout)
-                Log.d("MyLog24", "playSound = Выключите саут")
-//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
-//                dataCustomField.remove(listKmToRemove)
-
-            }
-            "Впереди блокпост" -> {
-
-                playSound(blokPost)
-                Log.d("MyLog24", "playSound = Впереди блокпост")
-//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
-//                dataCustomField.remove(listKmToRemove)
-
-            }
-            "Правильность пути" -> {
-
-                playSound(pravelnostyPuti)
-                Log.d("MyLog24", "playSound = Правильность пути")
-//                val listKmToRemove = ListCustomField(dataCustomField[0].kmStart, dataCustomField[0].customField)
-//                dataCustomField.remove(listKmToRemove)
-            }
-            "Переезд" -> {
-                playSound(zheleznoDorozhnyyPereyezd)
-                Log.d("MyLog24", "playSound = Переезд")
-            }
-        }
-    }
-
-    private fun soundSpinnerBrake500() {
-
-        when (customField2Brake500) {
-            "Проба тормозов" -> {
-
-                playSound(probaTormazov)
-                Log.d("MyLog24", "soundSpinnerBrake500 = Проба тормозов")
-
-            }
-            "Оживление тормозов" -> {
-
-                playSound(ozhivleniyeTormozov)
-                Log.d("MyLog24", "soundSpinnerBrake500 = Оживление тормозов")
-
-            }
-        }
-    }
-
-    private fun soundOgranichenie() {
-        when (isOgranichenie) {
-            15 -> {
-                playSound(ogr15)
-                isOgranichenie = 0
-            }
-            25 -> {
-                playSound(ogr25)
-                isOgranichenie = 0
-            }
-            40 -> {
-                playSound(ogr40)
-                isOgranichenie = 0
-            }
-            50 -> {
-                playSound(ogr50)
-                isOgranichenie = 0
-            }
-            55 -> {
-                playSound(ogr55)
-                isOgranichenie = 0
-            }
-            60 -> {
-                playSound(ogr60)
-                isOgranichenie = 0
-            }
-            65 -> {
-                playSound(ogr65)
-                isOgranichenie = 0
-            }
-            70 -> {
-                playSound(ogr70)
-                isOgranichenie = 0
-            }
-            75 -> {
-                playSound(ogr75)
-                isOgranichenie = 0
-            }
-        }
-    }
-
-    private fun soundVoice2000() {
-        if (dataListArray.isNotEmpty()) {
-            when (dataListArray[0].speed) {
-                15 -> {
-                    playSound(voice15)
-                }
-                25 -> {
-                    playSound(voice25)
-                }
-                40 -> {
-                    playSound(voice40)
-                }
-                50 -> {
-                    playSound(voice50)
-                }
-                55 -> {
-                    playSound(voice55)
-                }
-                60 -> {
-                    playSound(voice60)
-                }
-                65 -> {
-                    playSound(voice65)
-                }
-                70 -> {
-                    playSound(voice70)
-                }
-                75 -> {
-                    playSound(voice75)
-                }
+                // Фиксированная пауза ПОСЛЕ окончания (или во время) звука.
+                // Например, 2500 миллисекунд (2.5 секунды), чтобы речевое информационное
+                // сообщение успело нормально прозвучать до начала следующего.
+                delay(8.seconds)
             }
         }
     }
@@ -634,7 +452,6 @@ class MyLocationService : Service() {
                         val neutralInsert6001 = customField700.toMutableSet()
                         val myLimitation1 = myLimitation.toMutableSet()
                         myLimitationSorted = myLimitation1.toMutableList()
-                        val myLimitationList2 = myLimitationsList2.toMutableSet()
                         val myBrake1 = myBrake.toMutableSet()
                         val myPantograph1 = myPantograph.toMutableSet()
 
@@ -887,12 +704,14 @@ class MyLocationService : Service() {
 
                         CoroutineScope(Dispatchers.Main).launch {
                             customField700.clear()
+                            customFieldData.clear()
                             myDbManagerCustomField.openDb()
                             val dataListCustomField = myDbManagerCustomField.readDbDataCustomFieldNechet()
                             for (item in dataListCustomField){
 
                                 titleStartCustomFieldNechet = item.startNechetCustom
                                 piketStartCustomFieldNechet = item.picketStartNechetCustom
+                                customField = item.fieldNechetCustom
 
                                 var z = 9999999
                                 var kms = 10000
@@ -1035,52 +854,8 @@ class MyLocationService : Service() {
                                 }
                                 customField700.add(faktNachKmCustomFieldNechet)
 
-                                if (distance <= faktNachKmCustomFieldNechet && distance >= faktNachKmCustomFieldNechet - 98) {
-                                    customField700.clear()
-                                    customField = item.fieldNechetCustom
-                                    when (customField) {
-                                        "Правильность пути" -> {
-                                            customField2 = "Правильность пути"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Включите саут" -> {
-                                            customField2 = "Включите саут"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Выключите саут" -> {
-                                            customField2 = "Выключите саут"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Нейтральная вставка" -> {
-                                            customField2 = "Нейтральная вставка"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Впереди блокпост" -> {
-                                            customField2 = "Впереди блокпост"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Посадка бригады" -> {
-                                            customField2 = "Посадка бригады"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Высадка бригады" -> {
-                                            customField2 = "Высадка бригады"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                        "Переезд" -> {
-                                            customField2 = "Переезд"
-                                            val customFieldNechet = faktStartKmNechet
-                                            customField700.add(customFieldNechet)
-                                        }
-                                    }
-                                }
+                                customFieldData.add(ListCustomField(faktNachKmCustomFieldNechet, customField))
+
                             }
                         }
 
@@ -1093,6 +868,7 @@ class MyLocationService : Service() {
 
                                 titleStartBrakeNechet = item.startNechet
                                 piketStartBrakeNechet = item.picketStartNechet
+                                customFieldBrake500 = item.fieldNechetCustom
 
                                 // Начало расчёта начала Торможения по киллометро
 
@@ -1240,19 +1016,43 @@ class MyLocationService : Service() {
                                 brake500.add(faktNachKmBrakeNechet + 500)
 
                                 if (distance <= faktNachKmBrakeNechet + 498 && distance >= faktNachKmBrakeNechet + 402) {
-                                    customFieldBrake500 = item.fieldNechetCustom
-                                    when (customFieldBrake500) {
-                                        "Проба тормозов" -> {
-                                            customField2Brake500 = "Проба тормозов"
-                                            val customFieldNechet = faktStartKmNechet
-                                            brake500.add(customFieldNechet)
-                                        }
-                                        "Оживление тормозов" -> {
-                                            customField2Brake500 = "Оживление тормозов"
-                                            val customFieldNechet = faktStartKmNechet
-                                            brake500.add(customFieldNechet)
+                                    brakeFieldData.clear()
+
+                                    brakeFieldData.add(customFieldBrake500)
+
+                                }
+
+                                if (brakeBoolean) {
+
+                                    if (brakeFieldData.isNotEmpty()) {
+                                        customField2Brake500 = brakeFieldData[0]
+
+                                        var soundId = 0
+
+                                        when (customField2Brake500) {
+                                            "Проба тормозов" -> {
+
+                                                Log.d("MyLog24", "soundSpinnerBrake500 = Проба тормозов")
+
+                                                soundId = trackSoundsMap[9]!!
+                                                soundQueue.trySend(soundId)
+                                                brakeFieldData.removeAt(0)
+                                                brakeBoolean = false
+
+                                            }
+                                            "Оживление тормозов" -> {
+
+                                                Log.d("MyLog24", "soundSpinnerBrake500 = Оживление тормозов")
+
+                                                soundId = trackSoundsMap[10]!!
+                                                soundQueue.trySend(soundId)
+                                                brakeFieldData.removeAt(0)
+                                                brakeBoolean = false
+
+                                            }
                                         }
                                     }
+
                                 }
 
                                 // Конец расчёта начала Торможения по киллометро
@@ -2054,7 +1854,7 @@ class MyLocationService : Service() {
 
                                 // Предупреждение о превышении за 400 метров до предупреждения
 
-                                if (currentLocationNechet.speed * 3.6 >= 15 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 15 && isLimitations400m15){
+                                if (currentLocationNechet.speed * 3.6 >= 15 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 15 && isLimitations400m15){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2063,7 +1863,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocationNechet.speed * 3.6 >= 25 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 25 && isLimitations400m25){
+                                if (currentLocationNechet.speed * 3.6 >= 25 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 25 && isLimitations400m25){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2072,7 +1872,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocationNechet.speed * 3.6 >= 40 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 40 && isLimitations400m40){
+                                if (currentLocationNechet.speed * 3.6 >= 40 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 40 && isLimitations400m40){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2081,7 +1881,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocationNechet.speed * 3.6 >= 50 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 50 && isLimitations400m50){
+                                if (currentLocationNechet.speed * 3.6 >= 50 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 50 && isLimitations400m50){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2090,7 +1890,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocationNechet.speed * 3.6 >= 55 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 55 && isLimitations400m55){
+                                if (currentLocationNechet.speed * 3.6 >= 55 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 55 && isLimitations400m55){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2099,7 +1899,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocationNechet.speed * 3.6 >= 60 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 60 && isLimitations400m60){
+                                if (currentLocationNechet.speed * 3.6 >= 60 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 60 && isLimitations400m60){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2108,7 +1908,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocationNechet.speed * 3.6 >= 65 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 65 && isLimitations400m65){
+                                if (currentLocationNechet.speed * 3.6 >= 65 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 65 && isLimitations400m65){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2117,7 +1917,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocationNechet.speed * 3.6 >= 70 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 70 && isLimitations400m70){
+                                if (currentLocationNechet.speed * 3.6 >= 70 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 70 && isLimitations400m70){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2126,7 +1926,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocationNechet.speed * 3.6 >= 75 && distance <= faktNachKmNechet + 800 && distance >= faktNachKmNechet + 702 && item.speedNechet == 75 && isLimitations400m75){
+                                if (currentLocationNechet.speed * 3.6 >= 75 && distance <= faktNachKmNechet + 700 && distance >= faktNachKmNechet + 602 && item.speedNechet == 75 && isLimitations400m75){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmNechet - 200
                                     myPrev400.add(myPrev)
@@ -2143,39 +1943,30 @@ class MyLocationService : Service() {
 
                                     when (speedNechet) {
                                         15 -> {
-                                            int15 = item.speedNechet
                                             arrayListSpeed.add(15)
                                         }
                                         25 -> {
-                                            int25 = item.speedNechet
                                             arrayListSpeed.add(25)
                                         }
                                         40 -> {
-                                            int40 = item.speedNechet
                                             arrayListSpeed.add(40)
                                         }
                                         50 -> {
-                                            int50 = item.speedNechet
                                             arrayListSpeed.add(50)
                                         }
                                         55 -> {
-                                            int55 = item.speedNechet
                                             arrayListSpeed.add(55)
                                         }
                                         60 -> {
-                                            int60 = item.speedNechet
                                             arrayListSpeed.add(60)
                                         }
                                         65 -> {
-                                            int65 = item.speedNechet
                                             arrayListSpeed.add(65)
                                         }
                                         70 -> {
-                                            int70 = item.speedNechet
                                             arrayListSpeed.add(70)
                                         }
                                         75 -> {
-                                            int75 = item.speedNechet
                                             arrayListSpeed.add(75)
                                         }
                                     }
@@ -2237,7 +2028,6 @@ class MyLocationService : Service() {
                         val neutralInsert6001 = customField700.toMutableSet().sorted()
                         val myLimitation1 = myLimitation.toMutableSet().sorted()
                         myLimitationSorted = myLimitation1.toMutableList()
-                        val myLimitationList2 = myLimitationsList2.toMutableSet()
                         val myBrake1 = myBrake.toMutableSet().sorted()
                         val myPantograph1 = myPantograph.toMutableSet().sorted()
 
@@ -2490,12 +2280,14 @@ class MyLocationService : Service() {
 
                         CoroutineScope(Dispatchers.Main).launch {
                             customField700.clear()
+                            customFieldData.clear()
                             myDbManagerCustomField.openDb()
                             val dataListCustomField = myDbManagerCustomField.readDbDataCustomFieldChet()
                             for (item in dataListCustomField){
 
                                 titleStartCustomFieldChet = item.startChetCustom
                                 piketStartCustomFieldChet = item.picketStartChetCustom
+                                customField = item.fieldChetCustom
 
                                 var z = 1001
                                 var kms = 2
@@ -2639,53 +2431,9 @@ class MyLocationService : Service() {
 
                                 customField700.add(faktNachKmCustomFieldChet)
 
-                                if (distance >= faktNachKmCustomFieldChet && distance <= faktNachKmCustomFieldChet + 98) {
-                                    customField700.clear()
-                                    customField = item.fieldChetCustom
-                                    when (customField) {
-                                        "Правильность пути" -> {
-                                            customField2 = "Правильность пути"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Включите саут" -> {
-                                            customField2 = "Включите саут"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Выключите саут" -> {
-                                            customField2 = "Выключите саут"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Нейтральная вставка" -> {
-                                            customField2 = "Нейтральная вставка"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Впереди блокпост" -> {
-                                            customField2 = "Впереди блокпост"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Посадка бригады" -> {
-                                            customField2 = "Посадка бригады"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Высадка бригады" -> {
-                                            customField2 = "Высадка бригады"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
-                                        "Переезд" -> {
-                                            customField2 = "Переезд"
-                                            val customFieldChet = faktStartKmChet
-                                            customField700.add(customFieldChet)
-                                        }
+                                customFieldData.add(ListCustomField(faktNachKmCustomFieldChet, customField))
 
-                                    }
-                                }
+
                             }
                         }
 
@@ -2698,6 +2446,7 @@ class MyLocationService : Service() {
 
                                 titleStartBrakeChet = item.startChet
                                 piketStartBrakeChet = item.picketStartChet
+                                customFieldBrake500 = item.fieldChetCustom
 
                                 // Начало расчёта начала Торможения по киллометро
 
@@ -2845,20 +2594,43 @@ class MyLocationService : Service() {
                                 brake500.add(faktNachKmBrakeChet - 500)
 
                                 if (distance >= faktNachKmBrakeChet - 498 && distance <= faktNachKmBrakeChet - 402) {
-                                    brake500.clear()
-                                    customFieldBrake500 = item.fieldChetCustom
-                                    when (customFieldBrake500) {
-                                        "Проба тормозов" -> {
-                                            customField2Brake500 = "Проба тормозов"
-                                            val customFieldChet = faktStartKmChet
-                                            brake500.add(customFieldChet)
-                                        }
-                                        "Оживление тормозов" -> {
-                                            customField2Brake500 = "Оживление тормозов"
-                                            val customFieldChet = faktStartKmChet
-                                            brake500.add(customFieldChet)
+                                    brakeFieldData.clear()
+
+                                    brakeFieldData.add(customFieldBrake500)
+
+                                }
+
+                                if (brakeBoolean) {
+
+                                    if (brakeFieldData.isNotEmpty()) {
+                                        customField2Brake500 = brakeFieldData[0]
+
+                                        var soundId = 0
+
+                                        when (customField2Brake500) {
+                                            "Проба тормозов" -> {
+
+                                                Log.d("MyLog24", "soundSpinnerBrake500 = Проба тормозов")
+
+                                                soundId = trackSoundsMap[9]!!
+                                                soundQueue.trySend(soundId)
+                                                brakeFieldData.removeAt(0)
+                                                brakeBoolean = false
+
+                                            }
+                                            "Оживление тормозов" -> {
+
+                                                Log.d("MyLog24", "soundSpinnerBrake500 = Оживление тормозов")
+
+                                                soundId = trackSoundsMap[10]!!
+                                                soundQueue.trySend(soundId)
+                                                brakeFieldData.removeAt(0)
+                                                brakeBoolean = false
+
+                                            }
                                         }
                                     }
+
                                 }
 
                                 // Конец расчёта начала Торможения по киллометро
@@ -3359,11 +3131,20 @@ class MyLocationService : Service() {
                                     }
                                 }
 
-                                if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 50 && item.speedChet == 15){
+                                if (distance >= faktEndKmChet + sumCalculateUslChet && distance <= faktEndKmChet + sumCalculateUslChet + 70 && item.speedChet == 15){
                                     myOgranichenie.clear()
                                     tvOgr15 = ""
                                     tvKmPk15 = ""
+//                                    var soundId = 0
+//                                    soundId = trackSoundsMap[33]!!
+//                                    soundQueue.trySend(soundId)
+//                                    isEnd = true
+//                                    Log.d("MyLog152", "isEnd1 = $isEnd")
                                 }
+//                                if (distance >= faktEndKmChet + sumCalculateUslChet + 100 && distance <= faktEndKmChet + sumCalculateUslChet + 200 && item.speedChet == 15 && isEnd){
+//                                    isEnd = false
+//                                    Log.d("MyLog152", "isEnd2 = $isEnd")
+//                                }
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -3659,7 +3440,7 @@ class MyLocationService : Service() {
 
                                 // Предупреждение о превышении за 400 метров до предупреждения
 
-                                if (currentLocation.speed * 3.6 >= 15 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 15 && isLimitations400m15){
+                                if (currentLocation.speed * 3.6 >= 15 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 15 && isLimitations400m15){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -3668,7 +3449,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocation.speed * 3.6 >= 25 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 25 && isLimitations400m25){
+                                if (currentLocation.speed * 3.6 >= 25 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 25 && isLimitations400m25){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -3677,7 +3458,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocation.speed * 3.6 >= 40 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 40 && isLimitations400m40){
+                                if (currentLocation.speed * 3.6 >= 40 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 40 && isLimitations400m40){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -3686,7 +3467,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocation.speed * 3.6 >= 50 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 50 && isLimitations400m50){
+                                if (currentLocation.speed * 3.6 >= 50 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 50 && isLimitations400m50){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -3695,7 +3476,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocation.speed * 3.6 >= 55 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 55 && isLimitations400m55){
+                                if (currentLocation.speed * 3.6 >= 55 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 55 && isLimitations400m55){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -3704,7 +3485,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocation.speed * 3.6 >= 60 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 60 && isLimitations400m60){
+                                if (currentLocation.speed * 3.6 >= 60 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 60 && isLimitations400m60){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -3713,7 +3494,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocation.speed * 3.6 >= 65 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 65 && isLimitations400m65){
+                                if (currentLocation.speed * 3.6 >= 65 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 65 && isLimitations400m65){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -3722,7 +3503,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocation.speed * 3.6 >= 70 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 70 && isLimitations400m70){
+                                if (currentLocation.speed * 3.6 >= 70 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 70 && isLimitations400m70){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -3731,7 +3512,7 @@ class MyLocationService : Service() {
 
                                 //---------------------------------------------------------------------------------------------------------------------------------------
 
-                                if (currentLocation.speed * 3.6 >= 75 && distance >= faktNachKmChet - 800 && distance <= faktNachKmChet - 702 && item.speedChet == 75 && isLimitations400m75){
+                                if (currentLocation.speed * 3.6 >= 75 && distance >= faktNachKmChet - 700 && distance <= faktNachKmChet - 602 && item.speedChet == 75 && isLimitations400m75){
                                     myPrev400.clear()
                                     val myPrev = faktStartKmChet + 200
                                     myPrev400.add(myPrev)
@@ -4760,7 +4541,9 @@ class MyLocationService : Service() {
                                         for (itemPantograph800 in pantograph800List) {
                                             if (faktStartKmChet == itemPantograph800) {
 
-                                                playSound(opuskaniyeTokopriyemnika)
+                                                var soundId = 0
+                                                soundId = trackSoundsMap[11]!!
+                                                soundQueue.trySend(soundId)
 
                                                 Log.d("MyLog2", "Озвучиваем Опускание токоприёмника ближе к цели!")
 
@@ -5292,7 +5075,9 @@ class MyLocationService : Service() {
                                                                     faktStartKmChet == itemBrakesList &&
                                                                     faktStartKmChet == itemPantographsList) {
 
-                                                                    playSound(opuskaniyeTokopriyemnika)
+                                                                    var soundId = 0
+                                                                    soundId = trackSoundsMap[11]!!
+                                                                    soundQueue.trySend(soundId)
 
                                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -5541,7 +5326,7 @@ class MyLocationService : Service() {
                                                                     pantograph800List[0] = itemPantograph800 + 100
                                                                     for (pantograph in pantograph800List) {
                                                                         for (custom in customField700List) {
-                                                                            if (brake != custom) {
+                                                                            if (pantograph != custom) {
                                                                                 Log.d("MyLog97", "pantograph = $pantograph, custom = $custom")
                                                                                 customField700List.removeAt(0)
                                                                             }
@@ -5816,7 +5601,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet == itemBrakesList &&
                                                                 faktStartKmChet == itemPantographsList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -6344,7 +6131,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet == itemLimitationsList &&
                                                                 faktStartKmChet == itemBrakesList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -6872,7 +6661,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet == itemLimitationsList &&
                                                                 faktStartKmChet == itemPantographsList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -7394,7 +7185,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet == itemBrakesList &&
                                                                 faktStartKmChet == itemPantographsList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -7931,7 +7724,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet == itemLimitationsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -8467,7 +8262,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet == itemBrakesList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -9002,7 +8799,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemMyPrev400List &&
                                                             faktStartKmChet == itemPantographsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -9547,7 +9346,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet == itemMyPrev400List) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -10102,7 +9903,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet == itemLimitationsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -10652,7 +10455,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet == itemBrakesList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -11201,7 +11006,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemOgranichenieList &&
                                                         faktStartKmChet == itemPantographsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -11762,7 +11569,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemPantograph800 &&
                                                     faktStartKmChet == itemOgranichenieList) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -12302,7 +12111,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmChet == itemBrakesList &&
                                                                 faktStartKmChet == itemPantographsList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -12840,7 +12651,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemLimitationsList &&
                                                             faktStartKmChet == itemBrakesList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -13382,7 +13195,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemLimitationsList &&
                                                             faktStartKmChet == itemPantographsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -13918,7 +13733,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemBrakesList &&
                                                             faktStartKmChet == itemPantographsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -14469,7 +14286,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet == itemLimitationsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -15019,7 +14838,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet == itemBrakesList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -15568,7 +15389,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemMyPrev400List &&
                                                         faktStartKmChet == itemPantographsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -16129,7 +15952,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemPantograph800 &&
                                                     faktStartKmChet == itemMyPrev400List) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -16679,7 +16504,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemBrakesList &&
                                                             faktStartKmChet == itemPantographsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -17247,7 +17074,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemPantograph800 &&
                                                     faktStartKmChet == itemLimitationsList) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -17807,7 +17636,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemLimitationsList &&
                                                         faktStartKmChet == itemBrakesList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -18363,7 +18194,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemLimitationsList &&
                                                         faktStartKmChet == itemPantographsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -18913,7 +18746,9 @@ class MyLocationService : Service() {
                                                         faktStartKmChet == itemBrakesList &&
                                                         faktStartKmChet == itemPantographsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -19474,7 +19309,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemPantograph800 &&
                                                     faktStartKmChet == itemBrakesList) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -20040,7 +19877,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmChet == itemPantograph800 &&
                                                     faktStartKmChet == itemPantographsList) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -21177,7 +21016,9 @@ class MyLocationService : Service() {
 
                                                             Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 2")
 
-                                                            playSound(voiceprev)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[23]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             for (custom in customField700) {
                                                                 if (faktStartKmChet + 100 == custom) {
@@ -21265,7 +21106,9 @@ class MyLocationService : Service() {
 
                                                         Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 31")
 
-                                                        playSound(voiceprev)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[23]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         for (custom in customField700) {
                                                             if (faktStartKmChet + 100 == custom) {
@@ -21355,7 +21198,9 @@ class MyLocationService : Service() {
 
                                                         Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 32")
 
-                                                        playSound(voiceprev)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[23]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         for (custom in customField700) {
                                                             if (faktStartKmChet + 100 == custom) {
@@ -21445,7 +21290,9 @@ class MyLocationService : Service() {
 
                                                         Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 156")
 
-                                                        playSound(voiceprev)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[23]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         for (custom in customField700) {
                                                             if (faktStartKmChet + 100 == custom) {
@@ -21533,7 +21380,9 @@ class MyLocationService : Service() {
 
                                                     Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 3")
 
-                                                    playSound(voiceprev)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[23]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     for (custom in customField700) {
                                                         if (faktStartKmChet + 100 == custom) {
@@ -21625,7 +21474,9 @@ class MyLocationService : Service() {
 
                                                     Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 4")
 
-                                                    playSound(voiceprev)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[23]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     for (custom in customField700) {
                                                         if (faktStartKmChet + 100 == custom) {
@@ -21715,7 +21566,9 @@ class MyLocationService : Service() {
 
                                                     Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 5")
 
-                                                    playSound(voiceprev)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[23]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     for (custom in customField700) {
                                                         if (faktStartKmChet + 100 == custom) {
@@ -21805,7 +21658,9 @@ class MyLocationService : Service() {
 
                                                 Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 1")
 
-                                                playSound(voiceprev)
+                                                var soundId = 0
+                                                soundId = trackSoundsMap[23]!!
+                                                soundQueue.trySend(soundId)
 
                                                 for (custom in customField700) {
                                                     if (faktStartKmChet + 100 == custom) {
@@ -22290,7 +22145,9 @@ class MyLocationService : Service() {
                                                     Log.d("MyLog", "Совпадение Опускания с Торможением!")
                                                     Log.d("MyLog100", "Озвучиваем Торможение! 101")
 
-                                                    playSound(brake)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[12]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     for (custom in customField700) {
                                                         if (faktStartKmChet + 100 == custom) {
@@ -22371,7 +22228,9 @@ class MyLocationService : Service() {
                                                 Log.d("MyLog", "Озвучиваем Торможение!22")
                                                 Log.d("MyLog100", "Озвучиваем Опускание! 102")
 
-                                                playSound(brake)
+                                                var soundId = 0
+                                                soundId = trackSoundsMap[12]!!
+                                                soundQueue.trySend(soundId)
 
                                                 for (custom in customField700) {
                                                     if (faktStartKmChet + 100 == custom) {
@@ -22455,7 +22314,9 @@ class MyLocationService : Service() {
                                                 Log.d("MyLog", "Совпадение Опускания с Торможением!")
                                                 Log.d("MyLog100", "Озвучиваем Опускание! 103")
 
-                                                playSound(pantograph)
+                                                var soundId = 0
+                                                soundId = trackSoundsMap[13]!!
+                                                soundQueue.trySend(soundId)
 
                                                 for (custom in customField700) {
                                                     if (faktStartKmChet + 100 == custom) {
@@ -23248,7 +23109,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemLimitationsList &&
                                                             faktStartKmChet == itemBrakesList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание токоприёмника ближе к цели!")
 
@@ -23326,7 +23189,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemLimitationsList &&
                                                             faktStartKmChet == itemPantographList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание токоприёмника ближе к цели!")
 
@@ -23404,7 +23269,9 @@ class MyLocationService : Service() {
                                                             faktStartKmChet == itemBrakeList &&
                                                             faktStartKmChet == itemPantographList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание токоприёмника ближе к цели!")
 
@@ -24889,7 +24756,9 @@ class MyLocationService : Service() {
                                         for (itemPantograph800 in pantograph800List) {
                                             if (faktStartKmNechet == itemPantograph800) {
 
-                                                playSound(opuskaniyeTokopriyemnika)
+                                                var soundId = 0
+                                                soundId = trackSoundsMap[11]!!
+                                                soundQueue.trySend(soundId)
 
                                                 Log.d("MyLog2", "Озвучиваем Опускание токоприёмника ближе к цели!")
 
@@ -25421,7 +25290,9 @@ class MyLocationService : Service() {
                                                                     faktStartKmNechet == itemBrakesList &&
                                                                     faktStartKmNechet == itemPantographsList) {
 
-                                                                    playSound(opuskaniyeTokopriyemnika)
+                                                                    var soundId = 0
+                                                                    soundId = trackSoundsMap[11]!!
+                                                                    soundQueue.trySend(soundId)
 
                                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -25670,7 +25541,7 @@ class MyLocationService : Service() {
                                                                     pantograph800List[0] = itemPantograph800 - 100
                                                                     for (pantograph in pantograph800List) {
                                                                         for (custom in customField700List) {
-                                                                            if (brake != custom) {
+                                                                            if (pantograph != custom) {
                                                                                 Log.d("MyLog97", "pantograph = $pantograph, custom = $custom")
                                                                                 customField700List.removeAt(0)
                                                                             }
@@ -25945,7 +25816,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet == itemBrakesList &&
                                                                 faktStartKmNechet == itemPantographsList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -26473,7 +26346,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet == itemLimitationsList &&
                                                                 faktStartKmNechet == itemBrakesList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -27001,7 +26876,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet == itemLimitationsList &&
                                                                 faktStartKmNechet == itemPantographsList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -27523,7 +27400,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet == itemBrakesList &&
                                                                 faktStartKmNechet == itemPantographsList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -28060,7 +27939,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet == itemLimitationsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -28596,7 +28477,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet == itemBrakesList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -29131,7 +29014,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemMyPrev400List &&
                                                             faktStartKmNechet == itemPantographsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -29676,7 +29561,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet == itemMyPrev400List) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -30231,7 +30118,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet == itemLimitationsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -30780,7 +30669,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet == itemBrakesList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -31329,7 +31220,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemOgranichenieList &&
                                                         faktStartKmNechet == itemPantographsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -31888,7 +31781,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemPantograph800 &&
                                                     faktStartKmNechet == itemOgranichenieList) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -32427,7 +32322,9 @@ class MyLocationService : Service() {
                                                                 faktStartKmNechet == itemBrakesList &&
                                                                 faktStartKmNechet == itemPantographsList) {
 
-                                                                playSound(opuskaniyeTokopriyemnika)
+                                                                var soundId = 0
+                                                                soundId = trackSoundsMap[11]!!
+                                                                soundQueue.trySend(soundId)
 
                                                                 Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -32965,7 +32862,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemLimitationsList &&
                                                             faktStartKmNechet == itemBrakesList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -33507,7 +33406,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemLimitationsList &&
                                                             faktStartKmNechet == itemPantographsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -34043,7 +33944,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemBrakesList &&
                                                             faktStartKmNechet == itemPantographsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -34594,7 +34497,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet == itemLimitationsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -35144,7 +35049,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet == itemBrakesList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -35693,7 +35600,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemMyPrev400List &&
                                                         faktStartKmNechet == itemPantographsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -36252,7 +36161,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemPantograph800 &&
                                                     faktStartKmNechet == itemMyPrev400List) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -36801,7 +36712,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemBrakesList &&
                                                             faktStartKmNechet == itemPantographsList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -37368,7 +37281,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemPantograph800 &&
                                                     faktStartKmNechet == itemLimitationsList) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -37928,7 +37843,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemLimitationsList &&
                                                         faktStartKmNechet == itemBrakesList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -38484,7 +38401,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemLimitationsList &&
                                                         faktStartKmNechet == itemPantographsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -39034,7 +38953,9 @@ class MyLocationService : Service() {
                                                         faktStartKmNechet == itemBrakesList &&
                                                         faktStartKmNechet == itemPantographsList) {
 
-                                                        playSound(opuskaniyeTokopriyemnika)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[11]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -39593,7 +39514,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemPantograph800 &&
                                                     faktStartKmNechet == itemBrakesList) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -40156,7 +40079,9 @@ class MyLocationService : Service() {
                                                 if (faktStartKmNechet == itemPantograph800 &&
                                                     faktStartKmNechet == itemPantographsList) {
 
-                                                    playSound(opuskaniyeTokopriyemnika)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[11]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     Log.d("MyLog2", "Озвучиваем Опускание ближе к цели")
 
@@ -41288,7 +41213,9 @@ class MyLocationService : Service() {
 
                                                             Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 2")
 
-                                                            playSound(voiceprev)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[23]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             for (custom in customField700) {
                                                                 if (faktStartKmNechet - 100 == custom) {
@@ -41376,7 +41303,9 @@ class MyLocationService : Service() {
 
                                                         Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 31")
 
-                                                        playSound(voiceprev)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[23]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         for (custom in customField700) {
                                                             if (faktStartKmNechet - 100 == custom) {
@@ -41466,7 +41395,9 @@ class MyLocationService : Service() {
 
                                                         Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 32")
 
-                                                        playSound(voiceprev)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[23]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         for (custom in customField700) {
                                                             if (faktStartKmNechet - 100 == custom) {
@@ -41556,7 +41487,9 @@ class MyLocationService : Service() {
 
                                                         Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 156")
 
-                                                        playSound(voiceprev)
+                                                        var soundId = 0
+                                                        soundId = trackSoundsMap[23]!!
+                                                        soundQueue.trySend(soundId)
 
                                                         for (custom in customField700) {
                                                             if (faktStartKmNechet - 100 == custom) {
@@ -41644,7 +41577,9 @@ class MyLocationService : Service() {
 
                                                     Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 3")
 
-                                                    playSound(voiceprev)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[23]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     for (custom in customField700) {
                                                         if (faktStartKmNechet - 100 == custom) {
@@ -41736,7 +41671,9 @@ class MyLocationService : Service() {
 
                                                     Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 4")
 
-                                                    playSound(voiceprev)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[23]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     for (custom in customField700) {
                                                         if (faktStartKmNechet - 100 == custom) {
@@ -41826,7 +41763,9 @@ class MyLocationService : Service() {
 
                                                     Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 5")
 
-                                                    playSound(voiceprev)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[23]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     for (custom in customField700) {
                                                         if (faktStartKmNechet - 100 == custom) {
@@ -41916,7 +41855,9 @@ class MyLocationService : Service() {
 
                                                 Log.d("MyLog1", "Озвучивание превышения скорости за 400 метров! 1")
 
-                                                playSound(voiceprev)
+                                                var soundId = 0
+                                                soundId = trackSoundsMap[23]!!
+                                                soundQueue.trySend(soundId)
 
                                                 for (custom in customField700) {
                                                     if (faktStartKmNechet - 100 == custom) {
@@ -42358,7 +42299,9 @@ class MyLocationService : Service() {
                                                     Log.d("MyLog", "Совпадение Опускания с Торможением!")
                                                     Log.d("MyLog", "Озвучиваем Опускание! 21")
 
-                                                    playSound(brake)
+                                                    var soundId = 0
+                                                    soundId = trackSoundsMap[12]!!
+                                                    soundQueue.trySend(soundId)
 
                                                     for (custom in customField700) {
                                                         if (faktStartKmNechet - 100 == custom) {
@@ -42438,7 +42381,9 @@ class MyLocationService : Service() {
                                                 Log.d("MyLog", "Озвучиваем Торможение!22")
                                                 Log.d("MyLog100", "Озвучиваем Опускание! 102")
 
-                                                playSound(brake)
+                                                var soundId = 0
+                                                soundId = trackSoundsMap[12]!!
+                                                soundQueue.trySend(soundId)
 
                                                 for (custom in customField700) {
                                                     if (faktStartKmNechet - 100 == custom) {
@@ -42522,7 +42467,9 @@ class MyLocationService : Service() {
                                                 Log.d("MyLog", "Совпадение Опускания с Торможением!")
                                                 Log.d("MyLog100", "Озвучиваем Опускание! 103")
 
-                                                playSound(pantograph)
+                                                var soundId = 0
+                                                soundId = trackSoundsMap[13]!!
+                                                soundQueue.trySend(soundId)
 
                                                 for (custom in customField700) {
                                                     if (faktStartKmNechet - 100 == custom) {
@@ -43315,7 +43262,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemLimitationsList &&
                                                             faktStartKmNechet == itemBrakesList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание токоприёмника ближе к цели!")
 
@@ -43393,7 +43342,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemLimitationsList &&
                                                             faktStartKmNechet == itemPantographList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание токоприёмника ближе к цели!")
 
@@ -43471,7 +43422,9 @@ class MyLocationService : Service() {
                                                             faktStartKmNechet == itemBrakeList &&
                                                             faktStartKmNechet == itemPantographList) {
 
-                                                            playSound(opuskaniyeTokopriyemnika)
+                                                            var soundId = 0
+                                                            soundId = trackSoundsMap[11]!!
+                                                            soundQueue.trySend(soundId)
 
                                                             Log.d("MyLog2", "Озвучиваем Опускание токоприёмника ближе к цели!")
 
@@ -44439,10 +44392,198 @@ class MyLocationService : Service() {
         }
     }
 
+    private fun soundSpinner() {
+
+        for (i in customFieldData.indices) {
+            if (customFieldData[i].km == faktStartKmChet) {
+                customField2 = customFieldData[i].customField
+                Log.d("MyLog152", "customSound = $customField2")
+            }
+        }
+        var soundId = 0
+
+        when (customField2) {
+            "Нейтральная вставка" -> {
+
+                Log.d("MyLog24", "playSound = Нейтральная вставка")
+
+                soundId = trackSoundsMap[1]!!
+                soundQueue.trySend(soundId)
+
+            }
+            "Посадка бригады" -> {
+
+                Log.d("MyLog24", "playSound = Посадка бригады")
+                soundId = trackSoundsMap[2]!!
+                soundQueue.trySend(soundId)
+
+            }
+            "Высадка бригады" -> {
+
+                Log.d("MyLog24", "playSound = Высадка бригады")
+                soundId = trackSoundsMap[3]!!
+                soundQueue.trySend(soundId)
+
+            }
+            "Включите саут" -> {
+
+                Log.d("MyLog24", "playSound = Включите саут")
+                soundId = trackSoundsMap[4]!!
+                soundQueue.trySend(soundId)
+
+            }
+            "Выключите саут" -> {
+
+                Log.d("MyLog24", "playSound = Выключите саут")
+                soundId = trackSoundsMap[5]!!
+                soundQueue.trySend(soundId)
+
+            }
+            "Впереди блокпост" -> {
+
+                Log.d("MyLog24", "playSound = Впереди блокпост")
+                soundId = trackSoundsMap[6]!!
+                soundQueue.trySend(soundId)
+
+            }
+            "Правильность пути" -> {
+
+                Log.d("MyLog24", "playSound = Правильность пути")
+                soundId = trackSoundsMap[7]!!
+                soundQueue.trySend(soundId)
+            }
+            "Переезд" -> {
+
+                Log.d("MyLog24", "playSound = Переезд")
+                soundId = trackSoundsMap[8]!!
+                soundQueue.trySend(soundId)
+            }
+        }
+    }
+
+    private fun soundSpinnerBrake500() {
+        brakeBoolean = true
+    }
+
+    private fun soundOgranichenie() {
+
+        var soundId = 0
+        when (isOgranichenie) {
+            15 -> {
+//                playSound(ogr15)
+                soundId = trackSoundsMap[14]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+            25 -> {
+//                playSound(ogr25)
+                soundId = trackSoundsMap[15]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+            40 -> {
+//                playSound(ogr40)
+                soundId = trackSoundsMap[16]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+            50 -> {
+//                playSound(ogr50)
+                soundId = trackSoundsMap[17]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+            55 -> {
+//                playSound(ogr55)
+                soundId = trackSoundsMap[18]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+            60 -> {
+//                playSound(ogr60)
+                soundId = trackSoundsMap[19]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+            65 -> {
+//                playSound(ogr65)
+                soundId = trackSoundsMap[20]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+            70 -> {
+//                playSound(ogr70)
+                soundId = trackSoundsMap[21]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+            75 -> {
+//                playSound(ogr75)
+                soundId = trackSoundsMap[22]!!
+                soundQueue.trySend(soundId)
+                isOgranichenie = 0
+            }
+        }
+    }
+
+    private fun soundVoice2000() {
+        if (dataListArray.isNotEmpty()) {
+            var soundId = 0
+            when (dataListArray[0].speed) {
+                15 -> {
+//                    playSound(voice15)
+                    soundId = trackSoundsMap[24]!!
+                    soundQueue.trySend(soundId)
+                }
+                25 -> {
+//                    playSound(voice25)
+                    soundId = trackSoundsMap[25]!!
+                    soundQueue.trySend(soundId)
+                }
+                40 -> {
+//                    playSound(voice40)
+                    soundId = trackSoundsMap[26]!!
+                    soundQueue.trySend(soundId)
+                }
+                50 -> {
+//                    playSound(voice50)
+                    soundId = trackSoundsMap[27]!!
+                    soundQueue.trySend(soundId)
+                }
+                55 -> {
+//                    playSound(voice55)
+                    soundId = trackSoundsMap[28]!!
+                    soundQueue.trySend(soundId)
+                }
+                60 -> {
+//                    playSound(voice60)
+                    soundId = trackSoundsMap[29]!!
+                    soundQueue.trySend(soundId)
+                }
+                65 -> {
+//                    playSound(voice65)
+                    soundId = trackSoundsMap[30]!!
+                    soundQueue.trySend(soundId)
+                }
+                70 -> {
+//                    playSound(voice70)
+                    soundId = trackSoundsMap[31]!!
+                    soundQueue.trySend(soundId)
+                }
+                75 -> {
+//                    playSound(voice75)
+                    soundId = trackSoundsMap[32]!!
+                    soundQueue.trySend(soundId)
+                }
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         isRunning = false
         locProvider.removeLocationUpdates(locCallback)
+        soundPoolTreck.release()
     }
 
     companion object{

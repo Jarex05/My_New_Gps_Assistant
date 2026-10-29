@@ -13,11 +13,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Switch
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -26,6 +29,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mikhail_ryumkin_r.my_gps_assistant.MainApp
@@ -71,26 +75,11 @@ class HomeFragment : Fragment() {
         MainViewModel.ViewModelFactory((requireContext().applicationContext as MainApp).database)
     }
 
-//    private val foregroundPermissionLauncher = registerForActivityResult(
-//        ActivityResultContracts.RequestMultiplePermissions()
-//    ) { permissions ->
-//        val fineGranted = permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)
-//        val coarseGranted = permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
-//
-//        if (fineGranted || coarseGranted) {
-//            // Обычные права получены, теперь можно переходить к фоновым
-//            checkAndRequestBackgroundPermission()
-//        } else {
-//            showToast("Без доступа к геолокации фоновый режим невозможен")
-//        }
-//    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-            settingsOsm()
-//        startLocationPermissionFlow()
+        settingsOsm()
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         return binding.root
@@ -104,165 +93,20 @@ class HomeFragment : Fragment() {
         Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
     }
 
-    private fun registerPermissions(){
-        pLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()){
-            if(it[Manifest.permission.ACCESS_FINE_LOCATION] == true || it[Manifest.permission.ACCESS_BACKGROUND_LOCATION] == true){
-                getTrack()
-                checkLocationEnabled()
-            } else {
-                showToast("Вы не дали разрешения на использование местоположения!")
-            }
-        }
-    }
-
-//    private val backgroundPermissionLauncher = registerForActivityResult(
-//        ActivityResultContracts.RequestPermission()
-//    ) { isGranted ->
-//        if (isGranted) {
-//            getTrack()
-////            checkLocationEnabled()
-//        } else {
-//            showToast("Фоновый доступ отклонен. Приложение не сможет работать в режиме сна")
-//        }
-//    }
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        startLocationPermissionFlow()
-//    }
-
-    private fun checkLocPermission(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            checkPermissionAfter10()
-//            checkAndRequestBackgroundPermission()
-        } else {
-            checkPermissionBefore10()
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun checkPermissionAfter10() {
-        val hasForegroundLocationPermission
-                = ContextCompat.checkSelfPermission(requireActivity(),
-            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-
-        if (hasForegroundLocationPermission){
-            val hasBackgroundLocationPermission
-                    = ContextCompat.checkSelfPermission(requireActivity(),
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
-
-            if (hasBackgroundLocationPermission){
-                getTrack()
-                checkLocationEnabled()
-            } else {
-//                showBackgroundRationaleDialog()
-                pLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    )
-                )
-            }
-        } else {
-            pLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            )
-        }
-    }
-
-//    private fun startLocationPermissionFlow() {
-//        val fineGranted = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-//        val coarseGranted = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-//
-//        if (fineGranted || coarseGranted) {
-//            // Базовые права уже есть, проверяем фоновые
-//            checkAndRequestBackgroundPermission()
-//        } else {
-//            // Базовых прав нет, запрашиваем сначала их
-//            foregroundPermissionLauncher.launch(
-//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-//            )
-//        }
-//    }
-
-//    private fun checkAndRequestBackgroundPermission() {
-//        // Фоновые права появились только в Android 10 (API 29). На старых устройствах они не нужны
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-//            getTrack()
-////            checkLocationEnabled()
-//            return
-//        }
-//
-//        val backgroundGranted = ContextCompat.checkSelfPermission(
-//            requireActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION
-//        ) == PackageManager.PERMISSION_GRANTED
-//
-//        if (backgroundGranted) {
-//            getTrack()
-////            checkLocationEnabled()
-//        } else {
-//            // Google ОБЯЗЫВАЕТ показать объяснение пользователю ПЕРЕД запросом фоновой геолокации
-//            showBackgroundRationaleDialog()
-//        }
-//    }
-
-//    @RequiresApi(Build.VERSION_CODES.Q)
-//    private fun showBackgroundRationaleDialog() {
-//        AlertDialog.Builder(requireActivity())
-//            .setTitle("Требуется фоновый доступ")
-//            .setMessage("Этому приложению необходим доступ к геолокации в фоновом режиме для (укажите вашу причину, например: записи вашего маршрута, когда экран выключен).\n\nНа следующем экране выберите пункт 'Разрешить в любом режиме'.")
-//            .setPositiveButton("Понятно") { _, _ ->
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-//                        data = Uri.fromParts("package", requireActivity().packageName, null)
-//                    }
-//                    startActivity(intent)
-//                    showToast("Пожалуйста, выберите 'Разрешить в любом режиме'")
-//                } else {
-//                    backgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-//                }
-//            }
-//            .setNegativeButton("Отмена") { dialog, _ ->
-//                dialog.dismiss()
-//                showToast("Фоновый режим не активирован")
-//            }
-//            .create()
-//            .show()
-//    }
-
-    private fun checkPermissionBefore10() {
-        if (checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+    private val backgroundPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            showToast("Фоновое разрешение успешно получено!")
             getTrack()
-            checkLocationEnabled()
+//            checkLocationEnabled()
         } else {
-            pLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-        }
-    }
-
-    private fun checkLocationEnabled(){
-        val lManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val isEnabled = lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if (!isEnabled){
-            showToast("Геолокация не включена")
-            DialogManager.showLocEnableDialog(
-                activity as AppCompatActivity,
-                object : DialogManager.Listener{
-                    override fun onClick() {
-                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                    }
-
-                }
-            )
-        } else {
-            showToast("Геолокация включена")
+            showToast("Фоновый доступ отклонен. Приложение не сможет работать в режиме сна")
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        registerPermissions()
         setOnClicks()
         checkServiceState()
         registerLocReceiver()
@@ -279,6 +123,82 @@ class HomeFragment : Fragment() {
         }
 
         switchMain()
+    }
+
+    private fun checkAndRequestBackgroundPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            checkPermissionBefore10()
+            return
+        }
+
+        val backgroundGranted = ContextCompat.checkSelfPermission(
+            requireActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (backgroundGranted) {
+            getTrack()
+        } else {
+            showBackgroundRationaleDialog()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun showBackgroundRationaleDialog() {
+        AlertDialog.Builder(requireActivity())
+            .setTitle("Требуется фоновый доступ")
+            .setMessage("Этому приложению необходим доступ к геолокации " +
+                    "в фоновом режиме для корректной работы приложения при выключенном экране телефона.\n\n" +
+                    "На следующем экране выберите пункт 'Разрешить в любом режиме'.")
+            .setPositiveButton("В настройки") { _, _ ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", requireActivity().packageName, null)
+                    }
+                    startActivity(intent)
+                    showToast("Пожалуйста, выберите 'Разрешить в любом режиме'")
+                } else {
+                    backgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                }
+            }
+            .setNegativeButton("Отмена") { dialog, _ ->
+                dialog.dismiss()
+                showToast("Фоновый режим не активирован")
+            }
+            .create()
+            .show()
+    }
+
+    private fun checkPermissionBefore10() {
+
+        val fineLocation = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (fineLocation) {
+            getTrack()
+        } else {
+            backgroundPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
+    private fun checkLocationEnabled(){
+        val lManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isEnabled = lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if (!isEnabled){
+            showToast("Геолокация не включена")
+            DialogManager.showLocEnableDialog(
+                activity as AppCompatActivity,
+                object : DialogManager.Listener{
+                    override fun onClick() {
+                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    }
+                }
+            )
+        } else {
+            checkAndRequestBackgroundPermission()
+            showToast("Геолокация включена")
+        }
     }
 
     private fun setOnClicks() = with(binding){
@@ -428,8 +348,10 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        checkAndRequestBackgroundPermission()
-        checkLocPermission()
+        checkLocationEnabled()
+
+        Log.d("MyLog150", "onResume")
+
 
         binding.tvOgr15.text = ""
         binding.tvOgr25.text = ""
@@ -454,6 +376,24 @@ class HomeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+
+        val fineLocation = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        val coarseLocation = ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (fineLocation || coarseLocation) {
+            checkAndRequestBackgroundPermission()
+        } else {
+            return
+        }
+
+        Log.d("MyLog150", "onPause")
         mLocOverlay.disableMyLocation()
 
         switch = binding.switch1

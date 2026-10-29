@@ -88,7 +88,7 @@ class UpdateBrakeFragmentChet : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
 
             for (a in myDbManagerBrake.readDbDataBrakeChet()) {
-                listKmPk.add(ListKmAndPk(a.startChet, a.picketStartChet))
+                listKmPk.add(ListKmAndPk(a.startChet, a.picketStartChet, a.fieldChetCustom))
             }
         }
 
@@ -101,7 +101,8 @@ class UpdateBrakeFragmentChet : Fragment() {
     }
 
     data class ListKmAndPk(val km: Int,
-                           val pk: Int){
+                           val pk: Int,
+                           val field: String){
         override fun toString(): String {
             return super.toString()
         }
@@ -125,14 +126,14 @@ class UpdateBrakeFragmentChet : Fragment() {
             if (startKm.toString() != "" && startPk.toString() != ""){
                 if (startPk.toString() == "1" || startPk.toString() == "2" || startPk.toString() == "3" || startPk.toString() == "4" || startPk.toString() == "5" || startPk.toString() == "6" || startPk.toString() == "7" || startPk.toString() == "8" || startPk.toString() == "9" || startPk.toString() == "10"){
 
-                    var list: MutableList<Pair<Int, Int>>
+                    var list: MutableList<Triple<Int, Int, String>>
                     var isSavedYes = false
                     var isSavedNo = false
 
                     for (a in listKmPk.indices) {
-                        list = mutableListOf(Pair(listKmPk[a].km, listKmPk[a].pk))
+                        list = mutableListOf(Triple(listKmPk[a].km, listKmPk[a].pk, listKmPk[a].field))
 
-                        val newListPairKmPk = Pair(startKm, startPk)
+                        val newListPairKmPk = Triple(startKm, startPk, textSpinner)
 
                         if (list.none { it == newListPairKmPk }) {
                             list.add(newListPairKmPk)

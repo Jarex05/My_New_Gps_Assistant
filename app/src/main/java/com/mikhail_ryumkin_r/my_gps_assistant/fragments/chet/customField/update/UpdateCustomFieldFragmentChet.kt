@@ -81,7 +81,7 @@ class UpdateCustomFieldFragmentChet : Fragment() {
         CoroutineScope(Dispatchers.Main).launch {
 
             for (a in myDbManagerCustomField.readDbDataCustomFieldChet()) {
-                listKmPk.add(ListKmAndPk(a.startChetCustom, a.picketStartChetCustom))
+                listKmPk.add(ListKmAndPk(a.startChetCustom, a.picketStartChetCustom, a.fieldChetCustom))
             }
         }
 
@@ -95,7 +95,8 @@ class UpdateCustomFieldFragmentChet : Fragment() {
     }
 
     data class ListKmAndPk(val km: Int,
-                           val pk: Int){
+                           val pk: Int,
+                           val field: String){
         override fun toString(): String {
             return super.toString()
         }
@@ -119,14 +120,14 @@ class UpdateCustomFieldFragmentChet : Fragment() {
             if (startKm.toString() != "" && startPk.toString() != ""){
                 if (startPk.toString() == "1" || startPk.toString() == "2" || startPk.toString() == "3" || startPk.toString() == "4" || startPk.toString() == "5" || startPk.toString() == "6" || startPk.toString() == "7" || startPk.toString() == "8" || startPk.toString() == "9" || startPk.toString() == "10"){
 
-                    var list: MutableList<Pair<Int, Int>>
+                    var list: MutableList<Triple<Int, Int, String>>
                     var isSavedYes = false
                     var isSavedNo = false
 
                     for (a in listKmPk.indices) {
-                        list = mutableListOf(Pair(listKmPk[a].km, listKmPk[a].pk))
+                        list = mutableListOf(Triple(listKmPk[a].km, listKmPk[a].pk, listKmPk[a].field))
 
-                        val newListPairKmPk = Pair(startKm, startPk)
+                        val newListPairKmPk = Triple(startKm, startPk, customField)
 
                         if (list.none { it == newListPairKmPk }) {
                             list.add(newListPairKmPk)
