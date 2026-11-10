@@ -1,5 +1,6 @@
 package com.mikhail_ryumkin_r.my_gps_assistant.location.locationModel
 
+import com.mikhail_ryumkin_r.my_gps_assistant.location.locationService.MyLocationService
 import org.osmdroid.util.GeoPoint
 import java.io.Serializable
 
@@ -9,6 +10,7 @@ data class LocationModel(
     val kmDistance: Int = 0,
     val pkDistance: Int = 0,
     val geoPointsTrack: ArrayList<GeoPoint>,
+    val listOgrFakt: MutableList<MyLocationService.ListOgrFakt1> = mutableListOf(),
     val tvOgr15: String = "",
     val tvOgr25: String = "",
     val tvOgr40: String = "",

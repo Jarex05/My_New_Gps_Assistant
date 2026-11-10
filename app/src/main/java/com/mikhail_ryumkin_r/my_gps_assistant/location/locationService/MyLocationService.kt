@@ -45,7 +45,13 @@ import kotlin.collections.mutableListOf
 import kotlinx.coroutines.channels.Channel
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
+import java.io.Serializable
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -151,6 +157,7 @@ class MyLocationService : LifecycleService() {
     var tvKmPk70: String = ""
     var tvKmPk75: String = ""
 
+    private var idChet: Int = 0
     private var titleStartChet: Int = 0
     private var piketStartChet: Int = 0
     private var faktNachKmChet: Int = 0
@@ -210,6 +217,12 @@ class MyLocationService : LifecycleService() {
     private var customFieldData = ArrayList<ListCustomField>()
     var brakeFieldData = mutableListOf<String>()
     private lateinit var geoPointsTrack: ArrayList<GeoPoint>
+    var listOgrFakt: MutableList<ListOgrFakt1> = mutableListOf()
+    private val _originalListFlow = MutableStateFlow<List<ListOgrFakt1>>(emptyList())
+//    private var idChetRemove = 0
+//    private var idChetUpdate = 0
+//    private var startPkChetUpdate = 0
+    var listOgrFaktUnique: MutableList<ListOgrFakt> = mutableListOf()
 
     private var dataListArray = mutableListOf<ListKm>()
 
@@ -295,6 +308,33 @@ class MyLocationService : LifecycleService() {
         }
     }
 
+    data class ListOgrFakt(val nachalo: Int,
+                             val piketNachalo: Int,
+                             val finish: Int,
+                             val piketFinish: Int,
+                             val speed: Int){
+        override fun toString(): String {
+            return super.toString()
+        }
+    }
+
+    data class ListOgrFakt1(
+        val idChetService: Int,
+        val piketNachalo: Int,
+        val id: String = "${idChetService}_${piketNachalo}"
+    ) : Serializable {
+        override fun toString(): String {
+            return super.toString()
+        }
+    }
+
+    data class ListOgrFaktUpdate(val idChetUpdate: Int,
+                            val piketNachaloUpdate: Int){
+        override fun toString(): String {
+            return super.toString()
+        }
+    }
+
     data class ListKm(var kmStart: Int, var pkStart: Int, var kmFinish: Int, var pkFinish: Int, var speed: Int){
         override fun toString(): String {
             return super.toString()
@@ -311,6 +351,9 @@ class MyLocationService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         SharedPref.setValueDeleteSpeed(baseContext, 0)
+        SharedPref.setValueDeleteId(baseContext, -1)
+        SharedPref.setValueUpdateId(baseContext, 0)
+        SharedPref.setValueUpdateStartPk(baseContext, 0)
         myDbManagerPantograph = MyDbManagerPantograph(applicationContext)
         myDbManagerBrake = MyDbManagerBrake(applicationContext)
         myDbManagerLimitations = MyDbManagerLimitations(applicationContext)
@@ -498,7 +541,7 @@ class MyLocationService : LifecycleService() {
                                 if (number.speed == a && number.kmStart == b &&
                                     number.pkStart == c && number.kmFinish == d &&
                                     number.pkFinish == e) {
-                                    Log.d("MyLog35", "number.kmStart => ${number.kmStart}, " +
+                                    Log.d("MyLog153", "number.kmStart => ${number.kmStart}, " +
                                             "number.pkStart => ${number.pkStart}, " +
                                             "number.kmFinish => ${number.kmFinish}, " +
                                             "number.pkFinish => ${number.pkFinish} " +
@@ -2925,6 +2968,7 @@ class MyLocationService : LifecycleService() {
                             sumCalculateUslChet = (uslChet * 14) + 50
                             for (item in dataListLimitations){
 
+                                idChet = item.idChet
                                 titleStartChet = item.startChet
                                 piketStartChet = item.picketStartChet
                                 titleFinishChet = item.finishChet
@@ -3248,6 +3292,65 @@ class MyLocationService : LifecycleService() {
                                         if (distance >= nachKm15 - 2000 && distance <= endKm15 + sumCalculateUslChet && speed15 == 15){
                                             tvOgr15 = "$speedChet"
                                             tvKmPk15 = "$titleStartChet км $piketStartChet пк - $titleFinishChet км $piketFinishChet пк"
+
+                                            val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+
+//                                            Log.d("MyLog154", "idChet => $idChet, piketStartChet = $piketStartChet")
+
+                                            val idChetRemove = SharedPref.getValueDeleteId(baseContext)
+                                            val idChetUpdate = SharedPref.getValueUpdateId(baseContext)
+                                            val startPkChetUpdate = SharedPref.getValueUpdateStartPk(baseContext)
+
+
+                                            val newItem = ListOgrFakt1( idChetService = idChet, piketNachalo = piketStartChet)
+
+                                            Log.d("MyLog154", "newItem => ${newItem.id} ${newItem.idChetService}, ${newItem.piketNachalo}")
+
+                                            val newItemUpdate = newItem.copy(idChetService = idChetUpdate, piketNachalo = startPkChetUpdate)
+                                            addItem(newItem)
+
+                                            if (idChetRemove != -1) {
+                                                // 1. Вызываем безопасное удаление
+                                                removeItemById(idChetRemove)
+
+                                                // 2. Сразу же сбрасываем значение в SharedPref в дефолтное
+                                                SharedPref.setValueDeleteId(baseContext, -1)
+                                            }
+
+                                            if (startPkChetUpdate != 0) {
+
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    updateItem(newItemUpdate)
+                                                }
+
+                                                SharedPref.setValueUpdateId(baseContext, 0)
+                                                SharedPref.setValueUpdateStartPk(baseContext, 0)
+                                            }
+
+//                                            for (i in _originalListFlow.value.indices) {
+//                                                Log.d("MyLog152", "_originalListFlow => ${_originalListFlow.value[i].id}, ${_originalListFlow.value[i].idChetService}, ${_originalListFlow.value[i].piketNachalo}")
+//                                            }
+
+                                            val uniqueSortedListFlow = _originalListFlow.map { items ->
+                                                items
+                                                    .associateBy { it.idChetService}.values
+                                                    .sortedBy { it.piketNachalo }
+                                            }.distinctUntilChanged()
+
+                                            scope.launch {
+                                                uniqueSortedListFlow.collect { updatedUniqueList ->
+                                                    Log.d("MyLog152", "updatedUniqueList.size => ${updatedUniqueList.size}")
+                                                    listOgrFakt = updatedUniqueList.toMutableList()
+
+                                                    for (i in listOgrFakt.indices) {
+                                                        Log.d("MyLog155", "listOgrFakt => ${listOgrFakt[i].idChetService}, ${listOgrFakt[i].piketNachalo}")
+                                                    }
+
+                                                    for (i in updatedUniqueList.indices) {
+                                                        Log.d("MyLog152", "updatedUniqueList => ${updatedUniqueList[i].idChetService}, ${updatedUniqueList[i].piketNachalo}")
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -3842,6 +3945,7 @@ class MyLocationService : LifecycleService() {
                     kmDistance,
                     pkDistance,
                     geoPointsTrack,
+                    listOgrFakt,
                     tvOgr15,
                     tvOgr25,
                     tvOgr40,
@@ -44732,36 +44836,48 @@ class MyLocationService : LifecycleService() {
 
             isEnd = false
             myEndLimitationSound.clear()
-
-            if (currentZoneId15 == 15) {
-                tvOgr15 = ""
-                tvKmPk15 = ""
-            } else if (currentZoneId25 == 25) {
-                tvOgr25 = ""
-                tvKmPk25 = ""
-            } else if (currentZoneId40 == 40) {
-                tvOgr40 = ""
-                tvKmPk40 = ""
-            } else if (currentZoneId50 == 50) {
-                tvOgr50 = ""
-                tvKmPk50 = ""
-            } else if (currentZoneId55 == 55) {
-                tvOgr55 = ""
-                tvKmPk55 = ""
-            } else if (currentZoneId60 == 60) {
-                tvOgr60 = ""
-                tvKmPk60 = ""
-            } else if (currentZoneId65 == 65) {
-                tvOgr65 = ""
-                tvKmPk65 = ""
-            } else if (currentZoneId70 == 70) {
-                tvOgr70 = ""
-                tvKmPk70 = ""
-            } else if (currentZoneId75 == 75) {
-                tvOgr75 = ""
-                tvKmPk75 = ""
-            }
         }
+    }
+
+    private fun addItem(newItem: ListOgrFakt1) {
+//        _originalListFlow.value += newItem
+        _originalListFlow.update { currentList ->
+            val updatedList = currentList + newItem
+
+            updatedList.sortedBy { it.piketNachalo }
+//            val mergedMap = (currentList + newItems).associateBy { it.id }
+//            mergedMap.values.sortedBy { it.piketNachalo }
+        }
+    }
+
+    private suspend fun updateItem(updatedItem: ListOgrFakt1) = withContext(Dispatchers.Main)  {
+        _originalListFlow.value = _originalListFlow.value.map { currentItem ->
+            if (currentItem.idChetService == updatedItem.idChetService) updatedItem else currentItem
+        }
+    }
+
+    private fun removeItemById(idChetRemove: Int) {
+
+        if (idChetRemove == -1) {
+            Log.e("MyLog156", "Попытка удаления: невалидный ID (-1). Операция отменена.")
+            return
+        }
+
+        _originalListFlow.update { currentList ->
+            // Шаг 2: Проверяем, есть ли вообще элемент с таким idChetService в списке
+            val itemExists = currentList.any { it.idChetService == idChetRemove }
+
+            if (!itemExists) {
+                Log.w("MyLog156", "Элемент с idChetService = $idChetRemove не найден в списке. Удаление пропущено.")
+                return@update currentList // Возвращаем список без изменений, ничего не ломая
+            }
+
+            // Шаг 3: Если проверка пройдена, безопасно удаляем элемент
+            Log.d("MyLog156", "Успешное удаление элемента с idChetService = $idChetRemove")
+            currentList.filterNot { it.idChetService == idChetRemove }
+        }
+//        _originalListFlow.value = _originalListFlow.value.filter { it.idChetService != idChetRemove }
+//        SharedPref.setValueDeleteId(baseContext, -1)
     }
 
     override fun onDestroy() {

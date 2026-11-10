@@ -64,6 +64,8 @@ class HomeFragment : Fragment() {
     private lateinit var pLauncher: ActivityResultLauncher<Array<String>>
     private var locationModel: LocationModel? = null
     private val distanceArray = ArrayList<Float>()
+    private val listOgrFakt: MutableList<ListOgrFakt> = mutableListOf()
+//    val listOgrFakt = mutableListOf<Int>()
     private var firstStart = true
     private lateinit var mLocOverlay: MyLocationNewOverlay
 
@@ -83,6 +85,13 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         return binding.root
+    }
+
+    data class ListOgrFakt(val nachalo: Int,
+                           val piketNachalo: Int){
+        override fun toString(): String {
+            return super.toString()
+        }
     }
 
     private fun settingsOsm() {
@@ -236,6 +245,21 @@ class HomeFragment : Fragment() {
             tvKmPk.text = kmPk
             tvSpeed.text = speed
             updatePolyline(it.geoPointsTrack)
+
+            listOgrFakt.clear()
+
+            for (item in it.listOgrFakt) {
+                listOgrFakt.add(ListOgrFakt(item.idChetService, item.piketNachalo))
+
+                Log.d("MyLog157", "Локальный список listOgrFakt.size => ${listOgrFakt.size}")
+                Log.d("MyLog157", "listOgrFakt => ${item.idChetService}, ${item.piketNachalo}")
+            }
+
+//            for ((nachalo, piketNachalo) in it.listOgrFakt) {
+//                listOgrFakt.add(ListOgrFakt(nachalo, piketNachalo))
+////                Log.d("MyLog152", "listOgrFakt => $nachalo, $piketNachalo \n")
+//                Log.d("MyLog157", "listOgrFakt.size => ${it.listOgrFakt.size}")
+//            }
             val tvOgr15text = it.tvOgr15
             val tvOgr25text = it.tvOgr25
             val tvOgr40text = it.tvOgr40
@@ -255,23 +279,23 @@ class HomeFragment : Fragment() {
             val tvKmPk70text = it.tvKmPk70
             val tvKmPk75text = it.tvKmPk75
             tvOgr15.text = tvOgr15text
-            tvOgr25.text = tvOgr25text
-            tvOgr40.text = tvOgr40text
-            tvOgr50.text = tvOgr50text
-            tvOgr55.text = tvOgr55text
-            tvOgr60.text = tvOgr60text
-            tvOgr65.text = tvOgr65text
-            tvOgr70.text = tvOgr70text
-            tvOgr75.text = tvOgr75text
-            tvKmPk15.text = tvKmPk15text
-            tvKmPk25.text = tvKmPk25text
-            tvKmPk40.text = tvKmPk40text
-            tvKmPk50.text = tvKmPk50text
-            tvKmPk55.text = tvKmPk55text
-            tvKmPk60.text = tvKmPk60text
-            tvKmPk65.text = tvKmPk65text
-            tvKmPk70.text = tvKmPk70text
-            tvKmPk75.text = tvKmPk75text
+//            tvOgr25.text = tvOgr25text
+//            tvOgr40.text = tvOgr40text
+//            tvOgr50.text = tvOgr50text
+//            tvOgr55.text = tvOgr55text
+//            tvOgr60.text = tvOgr60text
+//            tvOgr65.text = tvOgr65text
+//            tvOgr70.text = tvOgr70text
+//            tvOgr75.text = tvOgr75text
+            tvKmPk15.append("\n $tvKmPk15text \n")
+//            tvKmPk25.text = tvKmPk25text
+//            tvKmPk40.text = tvKmPk40text
+//            tvKmPk50.text = tvKmPk50text
+//            tvKmPk55.text = tvKmPk55text
+//            tvKmPk60.text = tvKmPk60text
+//            tvKmPk65.text = tvKmPk65text
+//            tvKmPk70.text = tvKmPk70text
+//            tvKmPk75.text = tvKmPk75text
             locationModel = it
         }
     }
@@ -293,23 +317,23 @@ class HomeFragment : Fragment() {
             binding.tvSpeed.isVisible = binding.tvSpeed.isGone
             binding.tvKmPk.isVisible = binding.tvKmPk.isGone
             binding.tvOgr15.text = ""
-            binding.tvOgr25.text = ""
-            binding.tvOgr40.text = ""
-            binding.tvOgr50.text = ""
-            binding.tvOgr55.text = ""
-            binding.tvOgr60.text = ""
-            binding.tvOgr65.text = ""
-            binding.tvOgr70.text = ""
-            binding.tvOgr75.text = ""
-            binding.tvKmPk15.text = ""
-            binding.tvKmPk25.text = ""
-            binding.tvKmPk40.text = ""
-            binding.tvKmPk50.text = ""
-            binding.tvKmPk55.text = ""
-            binding.tvKmPk60.text = ""
-            binding.tvKmPk65.text = ""
-            binding.tvKmPk70.text = ""
-            binding.tvKmPk75.text = ""
+//            binding.tvOgr25.text = ""
+//            binding.tvOgr40.text = ""
+//            binding.tvOgr50.text = ""
+//            binding.tvOgr55.text = ""
+//            binding.tvOgr60.text = ""
+//            binding.tvOgr65.text = ""
+//            binding.tvOgr70.text = ""
+//            binding.tvOgr75.text = ""
+//            binding.tvKmPk15.text = ""
+//            binding.tvKmPk25.text = ""
+//            binding.tvKmPk40.text = ""
+//            binding.tvKmPk50.text = ""
+//            binding.tvKmPk55.text = ""
+//            binding.tvKmPk60.text = ""
+//            binding.tvKmPk65.text = ""
+//            binding.tvKmPk70.text = ""
+//            binding.tvKmPk75.text = ""
 
         }
         isServiceRunning = !isServiceRunning
@@ -354,23 +378,23 @@ class HomeFragment : Fragment() {
 
 
         binding.tvOgr15.text = ""
-        binding.tvOgr25.text = ""
-        binding.tvOgr40.text = ""
-        binding.tvOgr50.text = ""
-        binding.tvOgr55.text = ""
-        binding.tvOgr60.text = ""
-        binding.tvOgr65.text = ""
-        binding.tvOgr70.text = ""
-        binding.tvOgr75.text = ""
+//        binding.tvOgr25.text = ""
+//        binding.tvOgr40.text = ""
+//        binding.tvOgr50.text = ""
+//        binding.tvOgr55.text = ""
+//        binding.tvOgr60.text = ""
+//        binding.tvOgr65.text = ""
+//        binding.tvOgr70.text = ""
+//        binding.tvOgr75.text = ""
         binding.tvKmPk15.text = ""
-        binding.tvKmPk25.text = ""
-        binding.tvKmPk40.text = ""
-        binding.tvKmPk50.text = ""
-        binding.tvKmPk55.text = ""
-        binding.tvKmPk60.text = ""
-        binding.tvKmPk65.text = ""
-        binding.tvKmPk70.text = ""
-        binding.tvKmPk75.text = ""
+//        binding.tvKmPk25.text = ""
+//        binding.tvKmPk40.text = ""
+//        binding.tvKmPk50.text = ""
+//        binding.tvKmPk55.text = ""
+//        binding.tvKmPk60.text = ""
+//        binding.tvKmPk65.text = ""
+//        binding.tvKmPk70.text = ""
+//        binding.tvKmPk75.text = ""
 
     }
 

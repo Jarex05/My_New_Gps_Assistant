@@ -188,5 +188,44 @@ class SharedPref {
             val shredPrefRecording: SharedPreferences = context.getSharedPreferences("deleteSpeed", Context.MODE_PRIVATE)
             return shredPrefRecording.getInt("deleteSpeed", 0)
         }
+
+        @SuppressLint("UseKtx")
+        fun setValueDeleteId(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("deleteId", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("deleteId", value)
+            editor.apply()
+        }
+
+        fun getValueDeleteId(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("deleteId", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("deleteId", -1)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueUpdateId(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("updateId", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("updateId", value)
+            editor.apply()
+        }
+
+        fun getValueUpdateId(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("updateId", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("updateId", 0)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueUpdateStartPk(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("startPk", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("startPk", value)
+            editor.apply()
+        }
+
+        fun getValueUpdateStartPk(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("startPk", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("startPk", 0)
+        }
     }
 }

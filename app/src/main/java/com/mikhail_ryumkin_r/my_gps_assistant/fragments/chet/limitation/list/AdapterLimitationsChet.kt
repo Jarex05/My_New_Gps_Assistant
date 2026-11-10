@@ -95,21 +95,25 @@ class AdapterLimitationsChet(listMain: ArrayList<ListItemLimitationsChet>, priva
 
     fun removeItemLimitationsChet(pos: Int, dbManagerLimitations: MyDbManagerLimitations){
         dbManagerLimitations.deleteDbDataLimitationsChet(listArray[pos].idChet)
+        var idChet = 0
         var a = 0
         var b = 0
         var c = 0
         var d = 0
         var e = 0
+        idChet = listArray[pos].idChet
         a = listArray[pos].speedChet
         b = listArray[pos].startChet
         c = listArray[pos].picketStartChet
         d = listArray[pos].finishChet
         e = listArray[pos].picketFinishChet
-        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeleteSpeed(it.context, a) }
-        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeleteKmStart(it.context, b) }
-        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeleteKmFinish(it.context, d) }
-        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeletePkStart(it.context, c) }
-        listLimitationsFragmentChet.view?.let { SharedPref.Companion.setValueDeletePkFinish(it.context, e) }
+        listLimitationsFragmentChet.view?.let { SharedPref.setValueDeleteId(it.context, idChet) }
+        listLimitationsFragmentChet.view?.let { SharedPref.setValueDeleteSpeed(it.context, a) }
+        listLimitationsFragmentChet.view?.let { SharedPref.setValueDeleteKmStart(it.context, b) }
+        listLimitationsFragmentChet.view?.let { SharedPref.setValueDeleteKmFinish(it.context, d) }
+        listLimitationsFragmentChet.view?.let { SharedPref.setValueDeletePkStart(it.context, c) }
+        listLimitationsFragmentChet.view?.let { SharedPref.setValueDeletePkFinish(it.context, e) }
+        Log.d("MyLog153", "${listArray[pos].idChet}")
         listArray.removeAt(pos)
         notifyItemRangeChanged(0, listArray.size)
         notifyItemRemoved(pos)
