@@ -216,6 +216,19 @@ class SharedPref {
         }
 
         @SuppressLint("UseKtx")
+        fun setValueUpdateStartKm(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("startKm", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("startKm", value)
+            editor.apply()
+        }
+
+        fun getValueUpdateStartKm(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("startKm", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("startKm", 0)
+        }
+
+        @SuppressLint("UseKtx")
         fun setValueUpdateStartPk(context: Context, value: Int) {
             val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("startPk", Context.MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
@@ -226,6 +239,45 @@ class SharedPref {
         fun getValueUpdateStartPk(context: Context): Int {
             val shredPrefRecording: SharedPreferences = context.getSharedPreferences("startPk", Context.MODE_PRIVATE)
             return shredPrefRecording.getInt("startPk", 0)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueUpdateStartFinish(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("startFinish", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("startFinish", value)
+            editor.apply()
+        }
+
+        fun getValueUpdateStartFinish(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("startFinish", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("startFinish", 0)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueUpdateFinishPk(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("finishPk", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("finishPk", value)
+            editor.apply()
+        }
+
+        fun getValueUpdateFinishPk(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("finishPk", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("finishPk", 0)
+        }
+
+        @SuppressLint("UseKtx")
+        fun setValueUpdateSpeed(context: Context, value: Int) {
+            val sharedPrefRecording: SharedPreferences = context.getSharedPreferences("speed", Context.MODE_PRIVATE)
+            val editor: SharedPreferences.Editor = sharedPrefRecording.edit()
+            editor.putInt("speed", value)
+            editor.apply()
+        }
+
+        fun getValueUpdateSpeed(context: Context): Int {
+            val shredPrefRecording: SharedPreferences = context.getSharedPreferences("speed", Context.MODE_PRIVATE)
+            return shredPrefRecording.getInt("speed", 0)
         }
     }
 }

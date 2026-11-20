@@ -55,6 +55,13 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import kotlin.getValue
 import kotlin.text.toDouble
+import android.graphics.Color
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 
 @Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
@@ -88,7 +95,10 @@ class HomeFragment : Fragment() {
     }
 
     data class ListOgrFakt(val nachalo: Int,
-                           val piketNachalo: Int){
+                           val piketNachalo: Int,
+                           val finish: Int,
+                           val piketFinish: Int,
+                           val speed: Int,){
         override fun toString(): String {
             return super.toString()
         }
@@ -235,9 +245,11 @@ class HomeFragment : Fragment() {
         binding.map.overlays.add(mLocOverlay)
     }
 
-    @SuppressLint("DefaultLocale")
+    @SuppressLint("DefaultLocale", "UseKtx")
     private fun locationUpdate() = with(binding){
         model.locationUpdates.observe(viewLifecycleOwner){
+            // Если нажата кнопка СТОП — игнорируем любые запоздалые сообщения от сервиса
+            if (!isServiceRunning) return@observe
             val distance = "${String.format("%.3f", it.distance / 1000.0f)} км"
             val kmPk = "${it.kmDistance} км ${it.pkDistance} пк"
             val speed = "${String.format("%.0f", 3.6f * it.speed)} км/h"
@@ -248,109 +260,133 @@ class HomeFragment : Fragment() {
 
             listOgrFakt.clear()
 
-            for (item in it.listOgrFakt) {
-                listOgrFakt.add(ListOgrFakt(item.idChetService, item.piketNachalo))
+            // 1. Создаем конструктор красивого текста
+            val builder = SpannableStringBuilder()
 
-                Log.d("MyLog157", "Локальный список listOgrFakt.size => ${listOgrFakt.size}")
-                Log.d("MyLog157", "listOgrFakt => ${item.idChetService}, ${item.piketNachalo}")
+            if (it.listOgrFakt.isEmpty()) {
+                val emptyText = "Ограничений нет"
+                builder.append(emptyText)
+                builder.setSpan(
+                    ForegroundColorSpan(Color.GRAY),
+                    0,
+                    emptyText.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } else {
+                for ((index, item) in it.listOgrFakt.withIndex()) {
+                    // Добавляем данные в локальный список
+                    listOgrFakt.add(
+                        ListOgrFakt(
+                            item.nachalo,
+                            item.piketNachalo,
+                            item.finish,
+                            item.piketFinish,
+                            item.speed
+                        )
+                    )
+
+                    // 1. СКОРОСТЬ (в самое начало, красная, крупная и жирная)
+                    val speedStart = builder.length
+                    val speedText = "${item.speed}  " // Пробелы для отступа от координат
+                    builder.append(speedText)
+
+                    builder.setSpan(
+                        ForegroundColorSpan(Color.parseColor("#D32F2F")), // Насыщенный красный цвет
+                        speedStart,
+                        builder.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    builder.setSpan(
+                        StyleSpan(Typeface.BOLD), // Жирный шрифт
+                        speedStart,
+                        builder.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    builder.setSpan(
+                        RelativeSizeSpan(1.50f), // Увеличиваем размер на 25% (крупнее остального текста)
+                        speedStart,
+                        builder.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    // 2. НАЧАЛО — КОНЕЦ (чуть меньше скорости, но тоже немного жирные)
+                    val coordsStart = builder.length
+                    val coordsText = "${item.nachalo} км ${item.piketNachalo} пк — ${item.finish} км ${item.piketFinish} пк"
+                    builder.append(coordsText)
+
+                    builder.setSpan(
+                        StyleSpan(Typeface.BOLD), // Жирное выделение для координат
+                        coordsStart,
+                        builder.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    builder.setSpan(
+                        RelativeSizeSpan(1.30f), // Чуть больше обычного текста (1.05), но меньше скорости (1.25)
+                        coordsStart,
+                        builder.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    // 3. СБРОС НА НОВУЮ СТРОКУ (если это не последний элемент списка)
+                    if (index < it.listOgrFakt.size - 1) {
+                        builder.append("\n\n")
+                    }
+                }
             }
 
-//            for ((nachalo, piketNachalo) in it.listOgrFakt) {
-//                listOgrFakt.add(ListOgrFakt(nachalo, piketNachalo))
-////                Log.d("MyLog152", "listOgrFakt => $nachalo, $piketNachalo \n")
-//                Log.d("MyLog157", "listOgrFakt.size => ${it.listOgrFakt.size}")
-//            }
-            val tvOgr15text = it.tvOgr15
-            val tvOgr25text = it.tvOgr25
-            val tvOgr40text = it.tvOgr40
-            val tvOgr50text = it.tvOgr50
-            val tvOgr55text = it.tvOgr55
-            val tvOgr60text = it.tvOgr60
-            val tvOgr65text = it.tvOgr65
-            val tvOgr70text = it.tvOgr70
-            val tvOgr75text = it.tvOgr75
-            val tvKmPk15text = it.tvKmPk15
-            val tvKmPk25text = it.tvKmPk25
-            val tvKmPk40text = it.tvKmPk40
-            val tvKmPk50text = it.tvKmPk50
-            val tvKmPk55text = it.tvKmPk55
-            val tvKmPk60text = it.tvKmPk60
-            val tvKmPk65text = it.tvKmPk65
-            val tvKmPk70text = it.tvKmPk70
-            val tvKmPk75text = it.tvKmPk75
-            tvOgr15.text = tvOgr15text
-//            tvOgr25.text = tvOgr25text
-//            tvOgr40.text = tvOgr40text
-//            tvOgr50.text = tvOgr50text
-//            tvOgr55.text = tvOgr55text
-//            tvOgr60.text = tvOgr60text
-//            tvOgr65.text = tvOgr65text
-//            tvOgr70.text = tvOgr70text
-//            tvOgr75.text = tvOgr75text
-            tvKmPk15.append("\n $tvKmPk15text \n")
-//            tvKmPk25.text = tvKmPk25text
-//            tvKmPk40.text = tvKmPk40text
-//            tvKmPk50.text = tvKmPk50text
-//            tvKmPk55.text = tvKmPk55text
-//            tvKmPk60.text = tvKmPk60text
-//            tvKmPk65.text = tvKmPk65text
-//            tvKmPk70.text = tvKmPk70text
-//            tvKmPk75.text = tvKmPk75text
+            // Выводим готовый результат в текстовое поле
+            tvKmPkList.text = builder
             locationModel = it
         }
+    }
+
+    private fun resetUiOnStop() = with(binding) {
+        listOgrFakt.clear()
+        tvKmPkList.text = ""
+
+        // 3. Явно возвращаем видимость переключателю (радиокнопке/свитчу) и скрываем карту/скорость
+        switch1.isVisible = true
+        map.isVisible = false
+        fCenter.isVisible = false
+        tvDistance.isVisible = false
+        tvSpeed.isVisible = false
+        tvKmPk.isVisible = false
     }
 
     @SuppressLint("ImplicitSamInstance")
     private fun startStopService() {
         if (!isServiceRunning && !MyLocationService.isRunning){
+            isServiceRunning = true // Сначала ставим флаг
             startLocService()
 
         } else {
+            isServiceRunning = false // Сначала сбрасываем флаг, чтобы заблокировать запоздалые данные из сервиса!
 
             activity?.stopService(Intent(activity, MyLocationService::class.java))
             binding.fStartStop.setImageResource(R.drawable.is_play)
 
-            switch.isGone = switch.isVisible
-            binding.map.isVisible = binding.map.isGone
-            binding.fCenter.isVisible = binding.fCenter.isGone
-            binding.tvDistance.isVisible = binding.tvDistance.isGone
-            binding.tvSpeed.isVisible = binding.tvSpeed.isGone
-            binding.tvKmPk.isVisible = binding.tvKmPk.isGone
-            binding.tvOgr15.text = ""
-//            binding.tvOgr25.text = ""
-//            binding.tvOgr40.text = ""
-//            binding.tvOgr50.text = ""
-//            binding.tvOgr55.text = ""
-//            binding.tvOgr60.text = ""
-//            binding.tvOgr65.text = ""
-//            binding.tvOgr70.text = ""
-//            binding.tvOgr75.text = ""
-//            binding.tvKmPk15.text = ""
-//            binding.tvKmPk25.text = ""
-//            binding.tvKmPk40.text = ""
-//            binding.tvKmPk50.text = ""
-//            binding.tvKmPk55.text = ""
-//            binding.tvKmPk60.text = ""
-//            binding.tvKmPk65.text = ""
-//            binding.tvKmPk70.text = ""
-//            binding.tvKmPk75.text = ""
+            resetUiOnStop()
 
         }
-        isServiceRunning = !isServiceRunning
     }
 
-    private fun checkServiceState(){
+    private fun checkServiceState() = with(binding) {
         isServiceRunning = MyLocationService.isRunning
-        switch = binding.switch1
+        switch = switch1
         if (isServiceRunning){
             binding.fStartStop.setImageResource(R.drawable.is_stop)
 
-            switch.isVisible = switch.isGone
-            binding.map.isGone = binding.map.isVisible
-            binding.fCenter.isGone = binding.fCenter.isVisible
-            binding.tvDistance.isGone = binding.tvDistance.isVisible
-            binding.tvSpeed.isGone = binding.tvSpeed.isVisible
-            binding.tvKmPk.isGone = binding.tvKmPk.isVisible
+            // Явно скрываем переключатель и показываем рабочие поля
+            switch1.isVisible = false
+            map.isVisible = true
+            fCenter.isVisible = true
+            tvDistance.isVisible = true
+            tvSpeed.isVisible = true
+            tvKmPk.isVisible = true
+        } else {
+            // Если сервис не запущен при открытии фрагмента — приводим экран в исходное состояние
+            fStartStop.setImageResource(R.drawable.is_play)
+            resetUiOnStop()
         }
     }
 
@@ -373,29 +409,6 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         checkLocationEnabled()
-
-        Log.d("MyLog150", "onResume")
-
-
-        binding.tvOgr15.text = ""
-//        binding.tvOgr25.text = ""
-//        binding.tvOgr40.text = ""
-//        binding.tvOgr50.text = ""
-//        binding.tvOgr55.text = ""
-//        binding.tvOgr60.text = ""
-//        binding.tvOgr65.text = ""
-//        binding.tvOgr70.text = ""
-//        binding.tvOgr75.text = ""
-        binding.tvKmPk15.text = ""
-//        binding.tvKmPk25.text = ""
-//        binding.tvKmPk40.text = ""
-//        binding.tvKmPk50.text = ""
-//        binding.tvKmPk55.text = ""
-//        binding.tvKmPk60.text = ""
-//        binding.tvKmPk65.text = ""
-//        binding.tvKmPk70.text = ""
-//        binding.tvKmPk75.text = ""
-
     }
 
     override fun onPause() {

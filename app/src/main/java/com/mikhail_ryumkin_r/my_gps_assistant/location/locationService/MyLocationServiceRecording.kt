@@ -46,6 +46,7 @@ class MyLocationServiceRecording : Service() {
     private var sbL = StringBuilder()
     private var distance1Recording: Float = 0.0f
     private var distance2Recording: Float = 0.0f
+    private var distance3Recording: Float = 0.0f
 
     private var isRedacktorMinusChet = true
     private var isRedacktorPlusChet = true
@@ -110,6 +111,7 @@ class MyLocationServiceRecording : Service() {
         myDbManagerRedacktor = MyDbManagerRedacktor(applicationContext)
         distance1Recording = SharedPref.Companion.getValueKmAddd(baseContext).toFloat()
         distance2Recording = SharedPref.Companion.getValueKmAddd(baseContext).toFloat()
+        distance3Recording = SharedPref.Companion.getValueKmAddd(baseContext).toFloat()
         registerLocReceiverPlus()
         registerLocReceiverMinus()
         startNotificationRecording()
@@ -143,6 +145,7 @@ class MyLocationServiceRecording : Service() {
                     if (v != 0) {
                         distance1Recording -= lastLocationRecording?.distanceTo(currentLocationRecording)!!
                         distance2Recording -= lastLocationRecording?.distanceTo(currentLocationRecording)!!
+                        distance3Recording -= lastLocationRecording?.distanceTo(currentLocationRecording)!!
 
                         CoroutineScope(Dispatchers.IO).launch {
                             calculationKmNechet()
@@ -292,285 +295,469 @@ class MyLocationServiceRecording : Service() {
 
                                 // Начало отнимания метража
 
-                                if (distance2Recording <= faktNachKmRedacktor + 999 && distance2Recording >= faktNachKmRedacktor + 951 && item.minusNechet != "" && isRedaktorMinusNechet){
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (999 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 950 - 98 && isRedaktorMinusNechet){
                                     val minusNechet = item.minusNechet.toInt() / 20
                                     distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 949 && distance2Recording >= faktNachKmRedacktor + 901 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 899 && distance2Recording >= faktNachKmRedacktor + 851 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 849 && distance2Recording >= faktNachKmRedacktor + 801 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 799 && distance2Recording >= faktNachKmRedacktor + 751 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 749 && distance2Recording >= faktNachKmRedacktor + 701 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 699 && distance2Recording >= faktNachKmRedacktor + 651 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 649 && distance2Recording >= faktNachKmRedacktor + 601 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 599 && distance2Recording >= faktNachKmRedacktor + 551 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 549 && distance2Recording >= faktNachKmRedacktor + 501 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 499 && distance2Recording >= faktNachKmRedacktor + 451 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 449 && distance2Recording >= faktNachKmRedacktor + 401 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 399 && distance2Recording >= faktNachKmRedacktor + 351 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 349 && distance2Recording >= faktNachKmRedacktor + 301 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 299 && distance2Recording >= faktNachKmRedacktor + 251 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 249 && distance2Recording >= faktNachKmRedacktor + 201 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 199 && distance2Recording >= faktNachKmRedacktor + 151 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 149 && distance2Recording >= faktNachKmRedacktor + 101 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 99 && distance2Recording >= faktNachKmRedacktor + 51 && item.minusNechet != "" && isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 49 && distance2Recording >= faktNachKmRedacktor + 1 && item.minusNechet != "" && !isRedaktorMinusNechet){
-                                    val minusNechet = item.minusNechet.toInt() / 20
-                                    distance1Recording += minusNechet
-                                    isRedaktorMinusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance1Recording <= faktNachKmRedacktor && distance1Recording >= faktNachKmRedacktor - 49 && item.minusNechet != "" && isRedaktorMinusNechet){
                                     distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet999: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording999: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
                                     isRedaktorMinusNechet = !isRedaktorMinusNechet
                                 }
-                                if (distance1Recording <= faktNachKmRedacktor - 51 && distance1Recording >= faktNachKmRedacktor - 99 && item.minusNechet != "" && !isRedaktorMinusNechet){
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (949 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 900 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet949: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording949: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
                                     isRedaktorMinusNechet = true
                                 }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (899 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 850 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet899: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording899: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (849 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 800 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet849: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording849: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (799 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 750 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet799: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording799: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (749 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 700 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet749: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording749: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (699 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 650 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet699: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording699: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (649 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 600 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet649: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording649: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (599 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 550 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet599: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording599: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (549 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 500 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet549: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording549: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (499 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 450 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet499: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording499: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (449 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 400 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet449: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording449: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (399 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 350 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet399: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording399: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (349 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 300 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet349: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording349: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (299 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 250 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet299: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording299: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (249 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 200 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet249: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording249: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (199 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 150 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet199: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording199: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (149 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 100 - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet149: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording149: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (99 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor + 50 - 98 && isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet99: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording99: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = !isRedaktorMinusNechet
+                                }
+                                if (item.minusNechet.isNotBlank() && distance2Recording <= faktNachKmRedacktor + (49 - item.minusNechet.toInt() / 20 - 100) && distance2Recording >= faktNachKmRedacktor - 98 && !isRedaktorMinusNechet){
+                                    val minusNechet = item.minusNechet.toInt() / 20
+                                    distance1Recording += minusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusNechet49: $minusNechet")
+                                    Log.d("MyLog160", "distance1Recording49: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorMinusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 // Конец отнимания метража
 
                                 // Начало прибавления метража
 
-                                if (distance2Recording <= faktNachKmRedacktor + 999 && distance2Recording >= faktNachKmRedacktor + 951 && item.plusNechet != "" && isRedaktorPlusNechet){
+                                if (distance2Recording <= faktNachKmRedacktor + (999 - 99) && distance2Recording >= faktNachKmRedacktor + 950 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
                                     val plusNechet = item.plusNechet.toInt() / 20
                                     distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 949 && distance2Recording >= faktNachKmRedacktor + 901 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 899 && distance2Recording >= faktNachKmRedacktor + 851 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 849 && distance2Recording >= faktNachKmRedacktor + 801 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 799 && distance2Recording >= faktNachKmRedacktor + 751 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 749 && distance2Recording >= faktNachKmRedacktor + 701 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 699 && distance2Recording >= faktNachKmRedacktor + 651 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 649 && distance2Recording >= faktNachKmRedacktor + 601 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 599 && distance2Recording >= faktNachKmRedacktor + 551 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 549 && distance2Recording >= faktNachKmRedacktor + 501 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 499 && distance2Recording >= faktNachKmRedacktor + 451 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 449 && distance2Recording >= faktNachKmRedacktor + 401 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 399 && distance2Recording >= faktNachKmRedacktor + 351 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 349 && distance2Recording >= faktNachKmRedacktor + 301 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 299 && distance2Recording >= faktNachKmRedacktor + 251 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 249 && distance2Recording >= faktNachKmRedacktor + 201 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 199 && distance2Recording >= faktNachKmRedacktor + 151 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 149 && distance2Recording >= faktNachKmRedacktor + 101 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor + 99 && distance2Recording >= faktNachKmRedacktor + 51 && item.plusNechet != "" && isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
-                                }
-                                if (distance2Recording <= faktNachKmRedacktor + 49 && distance2Recording >= faktNachKmRedacktor + 1 && item.plusNechet != "" && !isRedaktorPlusNechet){
-                                    val plusNechet = item.plusNechet.toInt() / 20
-                                    distance1Recording -= plusNechet
-                                    isRedaktorPlusNechet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording <= faktNachKmRedacktor && distance2Recording >= faktNachKmRedacktor - 49 && item.plusNechet != "" && isRedaktorPlusNechet){
                                     distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet999: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording999: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
                                     isRedaktorPlusNechet = !isRedaktorPlusNechet
                                 }
-                                if (distance2Recording <= faktNachKmRedacktor - 51 && distance2Recording >= faktNachKmRedacktor - 99 && item.plusNechet != "" && !isRedaktorPlusNechet){
+                                if (distance2Recording <= faktNachKmRedacktor + (949 - 99) && distance2Recording >= faktNachKmRedacktor + 900 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet949: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording949: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
                                     isRedaktorPlusNechet = true
                                 }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (899 - 99) && distance2Recording >= faktNachKmRedacktor + 850 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet899: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording899: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (849 - 99) && distance2Recording >= faktNachKmRedacktor + 800 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet849: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording849: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (799 - 99) && distance2Recording >= faktNachKmRedacktor + 750 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet799: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording799: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (749 - 99) && distance2Recording >= faktNachKmRedacktor + 700 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet749: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording749: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (699 - 99) && distance2Recording >= faktNachKmRedacktor + 650 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet699: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording699: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (649 - 99) && distance2Recording >= faktNachKmRedacktor + 600 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet649: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording649: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (599 - 99) && distance2Recording >= faktNachKmRedacktor + 550 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet599: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording599: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (549 - 99) && distance2Recording >= faktNachKmRedacktor + 500 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet549: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording549: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (499 - 99) && distance2Recording >= faktNachKmRedacktor + 450 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet499: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording499: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (449 - 99) && distance2Recording >= faktNachKmRedacktor + 400 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet449: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording449: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (399 - 99) && distance2Recording >= faktNachKmRedacktor + 350 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet399: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording399: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (349 - 99) && distance2Recording >= faktNachKmRedacktor + 300 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet349: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording349: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (299 - 99) && distance2Recording >= faktNachKmRedacktor + 250 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet299: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording299: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (249 - 99) && distance2Recording >= faktNachKmRedacktor + 200 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet249: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording249: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (199 - 99) && distance2Recording >= faktNachKmRedacktor + 150 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet199: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording199: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (149 - 99) && distance2Recording >= faktNachKmRedacktor + 100 - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet149: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording149: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording <= faktNachKmRedacktor + (99 - 99) && distance2Recording >= faktNachKmRedacktor + 50 - 98 && item.plusNechet.isNotBlank() && isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet99: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording99: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = !isRedaktorPlusNechet
+                                }
+                                if (distance2Recording <= faktNachKmRedacktor + (49 - 99) && distance2Recording >= faktNachKmRedacktor - 98 && item.plusNechet.isNotBlank() && !isRedaktorPlusNechet){
+                                    val plusNechet = item.plusNechet.toInt() / 20
+                                    distance1Recording -= plusNechet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusNechet49: $plusNechet")
+                                    Log.d("MyLog160", "distance1Recording49: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedaktorPlusNechet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 // Конец прибавления метража
 
@@ -581,6 +768,7 @@ class MyLocationServiceRecording : Service() {
                     } else {
                         distance1Recording += lastLocationRecording?.distanceTo(currentLocationRecording)!!
                         distance2Recording += lastLocationRecording?.distanceTo(currentLocationRecording)!!
+                        distance3Recording += lastLocationRecording?.distanceTo(currentLocationRecording)!!
 
                         CoroutineScope(Dispatchers.IO).launch {
                             calculationKmChet()
@@ -740,283 +928,467 @@ class MyLocationServiceRecording : Service() {
 
                                 // Начало отнимания метража
 
-                                if (distance2Recording >= faktNachKmRedacktor - 999 && distance2Recording <= faktNachKmRedacktor - 951 && item.minusChet != "" && isRedacktorMinusChet){
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 999 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 950 + 98 && isRedacktorMinusChet){
                                     val minusChet = item.minusChet.toInt() / 20
                                     distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 949 && distance2Recording <= faktNachKmRedacktor - 901 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 899 && distance2Recording <= faktNachKmRedacktor - 851 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 849 && distance2Recording <= faktNachKmRedacktor - 801 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 799 && distance2Recording <= faktNachKmRedacktor - 751 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 749 && distance2Recording <= faktNachKmRedacktor - 701 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 699 && distance2Recording <= faktNachKmRedacktor - 651 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 649 && distance2Recording <= faktNachKmRedacktor - 601 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 599 && distance2Recording <= faktNachKmRedacktor - 551 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 549 && distance2Recording <= faktNachKmRedacktor - 501 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 499 && distance2Recording <= faktNachKmRedacktor - 451 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 449 && distance2Recording <= faktNachKmRedacktor - 401 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 399 && distance2Recording <= faktNachKmRedacktor - 351 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 349 && distance2Recording <= faktNachKmRedacktor - 301 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 299 && distance2Recording <= faktNachKmRedacktor - 251 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 249 && distance2Recording <= faktNachKmRedacktor - 201 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 199 && distance2Recording <= faktNachKmRedacktor - 151 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 149 && distance2Recording <= faktNachKmRedacktor - 101 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 99 && distance2Recording <= faktNachKmRedacktor - 51 && item.minusChet != "" && isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = !isRedacktorMinusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 49 && distance2Recording <= faktNachKmRedacktor - 1 && item.minusChet != "" && !isRedacktorMinusChet){
-                                    val minusChet = item.minusChet.toInt() / 20
-                                    distance1Recording -= minusChet
-                                    isRedacktorMinusChet = true
-                                }
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance1Recording >= faktNachKmRedacktor && distance1Recording <= faktNachKmRedacktor + 49 && item.minusChet != "" && isRedacktorMinusChet){
                                     distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet999: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording999: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
                                     isRedacktorMinusChet = !isRedacktorMinusChet
                                 }
-                                if (distance1Recording >= faktNachKmRedacktor + 51 && distance1Recording <= faktNachKmRedacktor + 99 && item.minusChet != "" && !isRedacktorMinusChet){
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 949 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 900 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet949: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording949: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
                                     isRedacktorMinusChet = true
                                 }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 899 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 850 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet899: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording899: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 849 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 800 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet849: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording849: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 799 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 750 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet799: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording799: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 749 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 700 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet749: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording749: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 699 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 650 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet699: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording699: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 649 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 600 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet649: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording649: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 599 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 550 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet599: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording599: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 549 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 500 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet549: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording549: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 499 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 450 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet499: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording499: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 449 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 400 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet449: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording449: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 399 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 350 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet399: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording399: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 349 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 300 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet349: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording349: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 299 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 250 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet299: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording299: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 249 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 200 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet249: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording249: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 199 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 150 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet199: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording199: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 149 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 100 + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet149: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording149: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 99 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor - 50 + 98 && isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet99: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording99: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = !isRedacktorMinusChet
+                                }
+                                if (item.minusChet.isNotBlank() && distance2Recording >= faktNachKmRedacktor - 49 + item.minusChet.toInt() / 20 + 100 && distance2Recording <= faktNachKmRedacktor + 98 && !isRedacktorMinusChet){
+                                    val minusChet = item.minusChet.toInt() / 20
+                                    distance1Recording -= minusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "minusChet49: $minusChet")
+                                    Log.d("MyLog160", "distance1Recording49: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorMinusChet = true
+                                }
+                                //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 // Конец отнимания метража
 
                                 // Начало прибавления метража
 
-                                if (distance2Recording >= faktNachKmRedacktor - 999 && distance2Recording <= faktNachKmRedacktor - 951 && item.plusChet != "" && isRedacktorPlusChet){
+                                if (distance2Recording >= faktNachKmRedacktor - 999 + 99 && distance2Recording <= faktNachKmRedacktor - 950 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
                                     val plusChet = item.plusChet.toInt() / 20
                                     distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 949 && distance2Recording <= faktNachKmRedacktor - 901 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 899 && distance2Recording <= faktNachKmRedacktor - 851 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 849 && distance2Recording <= faktNachKmRedacktor - 801 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 799 && distance2Recording <= faktNachKmRedacktor - 751 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 749 && distance2Recording <= faktNachKmRedacktor - 701 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 699 && distance2Recording <= faktNachKmRedacktor - 651 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 649 && distance2Recording <= faktNachKmRedacktor - 601 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 599 && distance2Recording <= faktNachKmRedacktor - 551 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 549 && distance2Recording <= faktNachKmRedacktor - 501 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 499 && distance2Recording <= faktNachKmRedacktor - 451 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 449 && distance2Recording <= faktNachKmRedacktor - 401 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 399 && distance2Recording <= faktNachKmRedacktor - 351 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 349 && distance2Recording <= faktNachKmRedacktor - 301 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 299 && distance2Recording <= faktNachKmRedacktor - 251 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 249 && distance2Recording <= faktNachKmRedacktor - 201 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 199 && distance2Recording <= faktNachKmRedacktor - 151 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 149 && distance2Recording <= faktNachKmRedacktor - 101 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor - 99 && distance2Recording <= faktNachKmRedacktor - 51 && item.plusChet != "" && isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = !isRedacktorPlusChet
-                                }
-                                if (distance2Recording >= faktNachKmRedacktor - 49 && distance2Recording <= faktNachKmRedacktor - 1 && item.plusChet != "" && !isRedacktorPlusChet){
-                                    val plusChet = item.plusChet.toInt() / 20
-                                    distance1Recording += plusChet
-                                    isRedacktorPlusChet = true
-                                }
-                                //---------------------------------------------------------------------------------------------------------------------------------------
-
-                                if (distance2Recording >= faktNachKmRedacktor && distance2Recording <= faktNachKmRedacktor + 49 && item.plusChet != "" && isRedacktorPlusChet){
                                     distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet999: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording999: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
                                     isRedacktorPlusChet = !isRedacktorPlusChet
                                 }
-                                if (distance2Recording >= faktNachKmRedacktor + 51 && distance2Recording <= faktNachKmRedacktor + 99 && item.plusChet != "" && !isRedacktorPlusChet){
+                                if (distance2Recording >= faktNachKmRedacktor - 949 + 99 && distance2Recording <= faktNachKmRedacktor - 900 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet949: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording949: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
                                     isRedacktorPlusChet = true
                                 }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 899 + 99 && distance2Recording <= faktNachKmRedacktor - 850 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet899: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording899: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 849 + 99 && distance2Recording <= faktNachKmRedacktor - 800 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet849: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording849: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 799 + 99 && distance2Recording <= faktNachKmRedacktor - 750 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet799: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording799: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 749 + 99 && distance2Recording <= faktNachKmRedacktor - 700 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet749: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording749: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 699 + 99 && distance2Recording <= faktNachKmRedacktor - 650 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet699: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording699: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 649 + 99 && distance2Recording <= faktNachKmRedacktor - 600 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet649: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording649: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 599 + 99 && distance2Recording <= faktNachKmRedacktor - 550 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet599: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording599: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 549 + 99 && distance2Recording <= faktNachKmRedacktor - 50 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet549: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording549: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 499 + 99 && distance2Recording <= faktNachKmRedacktor - 450 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet499: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording499: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 449 + 99 && distance2Recording <= faktNachKmRedacktor - 400 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet449: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording449: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 399 + 99 && distance2Recording <= faktNachKmRedacktor - 350 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet399: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording399: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 349 + 99 && distance2Recording <= faktNachKmRedacktor - 300 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet349: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording349: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 299 + 99 && distance2Recording <= faktNachKmRedacktor - 250 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet299: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording299: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 249 + 99 && distance2Recording <= faktNachKmRedacktor - 200 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet249: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording249: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 199 + 99 && distance2Recording <= faktNachKmRedacktor - 150 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet199: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording199: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 149 + 99 && distance2Recording <= faktNachKmRedacktor - 100 + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet149: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording149: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+
+                                //---------------------------------------------------------------------------------------------------------------------------------------
+
+                                if (distance2Recording >= faktNachKmRedacktor - 99 + 99 && distance2Recording <= faktNachKmRedacktor - 50 + 98 && item.plusChet.isNotBlank() && isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet99: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording99: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = !isRedacktorPlusChet
+                                }
+                                if (distance2Recording >= faktNachKmRedacktor - 49 + 99 && distance2Recording <= faktNachKmRedacktor + 98 && item.plusChet.isNotBlank() && !isRedacktorPlusChet){
+                                    val plusChet = item.plusChet.toInt() / 20
+                                    distance1Recording += plusChet
+                                    distance2Recording = distance1Recording
+                                    Log.d("MyLog160", "plusChet49: $plusChet")
+                                    Log.d("MyLog160", "distance1Recording49: $distance1Recording")
+                                    Log.d("MyLog160", "distance2Recording: $distance2Recording")
+                                    Log.d("MyLog160", "distance3Recording: $distance3Recording")
+                                    isRedacktorPlusChet = true
+                                }
+                                //---------------------------------------------------------------------------------------------------------------------------------------
 
                                 // Конец прибавления метража
                             }

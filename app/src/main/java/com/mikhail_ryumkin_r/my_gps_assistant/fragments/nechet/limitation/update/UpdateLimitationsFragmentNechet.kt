@@ -92,6 +92,12 @@ class UpdateLimitationsFragmentNechet : Fragment() {
                         if (startKm > finishKm){
                             myDbManagerLimitations.updateDbDataLimitationsNechet(startKm, startPk, finishKm, finishPk, speed, switch, args.itemLimitationsNechet.idNechet)
                             SharedPref.Companion.setValueNechetStart(requireActivity(), startKm)
+                            SharedPref.setValueUpdateStartKm(requireActivity(), startKm)
+                            SharedPref.setValueUpdateStartPk(requireActivity(), startPk)
+                            SharedPref.setValueUpdateStartFinish(requireActivity(), finishKm)
+                            SharedPref.setValueUpdateFinishPk(requireActivity(), finishPk)
+                            SharedPref.setValueUpdateSpeed(requireActivity(), speed)
+                            SharedPref.setValueUpdateId(requireActivity(), args.itemLimitationsNechet.idNechet)
                             findNavController().navigate(R.id.action_updateLimitationsFragmentNechet_to_listLimitationsFragmentNechet)
                             showToast("Сохранено!")
                         }
@@ -99,12 +105,24 @@ class UpdateLimitationsFragmentNechet : Fragment() {
                             if (startPk > finishPk){
                                 myDbManagerLimitations.updateDbDataLimitationsNechet(startKm, startPk, finishKm, finishPk, speed, switch, args.itemLimitationsNechet.idNechet)
                                 SharedPref.Companion.setValueNechetStart(requireActivity(), startKm)
+                                SharedPref.setValueUpdateStartKm(requireActivity(), startKm)
+                                SharedPref.setValueUpdateStartPk(requireActivity(), startPk)
+                                SharedPref.setValueUpdateStartFinish(requireActivity(), finishKm)
+                                SharedPref.setValueUpdateFinishPk(requireActivity(), finishPk)
+                                SharedPref.setValueUpdateSpeed(requireActivity(), speed)
+                                SharedPref.setValueUpdateId(requireActivity(), args.itemLimitationsNechet.idNechet)
                                 findNavController().navigate(R.id.action_updateLimitationsFragmentNechet_to_listLimitationsFragmentNechet)
                                 showToast("Сохранено!")
                             }
                             if (startPk == finishPk){
                                 myDbManagerLimitations.updateDbDataLimitationsNechet(startKm, startPk, finishKm, finishPk, speed, switch, args.itemLimitationsNechet.idNechet)
                                 SharedPref.Companion.setValueNechetStart(requireActivity(), startKm)
+                                SharedPref.setValueUpdateStartKm(requireActivity(), startKm)
+                                SharedPref.setValueUpdateStartPk(requireActivity(), startPk)
+                                SharedPref.setValueUpdateStartFinish(requireActivity(), finishKm)
+                                SharedPref.setValueUpdateFinishPk(requireActivity(), finishPk)
+                                SharedPref.setValueUpdateSpeed(requireActivity(), speed)
+                                SharedPref.setValueUpdateId(requireActivity(), args.itemLimitationsNechet.idNechet)
                                 findNavController().navigate(R.id.action_updateLimitationsFragmentNechet_to_listLimitationsFragmentNechet)
                                 showToast("Сохранено!")
                             }

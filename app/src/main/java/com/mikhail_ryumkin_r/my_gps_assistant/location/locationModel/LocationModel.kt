@@ -11,22 +11,5 @@ data class LocationModel(
     val pkDistance: Int = 0,
     val geoPointsTrack: ArrayList<GeoPoint>,
     val listOgrFakt: MutableList<MyLocationService.ListOgrFakt1> = mutableListOf(),
-    val tvOgr15: String = "",
-    val tvOgr25: String = "",
-    val tvOgr40: String = "",
-    val tvOgr50: String = "",
-    val tvOgr55: String = "",
-    val tvOgr60: String = "",
-    val tvOgr65: String = "",
-    val tvOgr70: String = "",
-    val tvOgr75: String = "",
-    val tvKmPk15: String = "",
-    val tvKmPk25: String = "",
-    val tvKmPk40: String = "",
-    val tvKmPk50: String = "",
-    val tvKmPk55: String = "",
-    val tvKmPk60: String = "",
-    val tvKmPk65: String = "",
-    val tvKmPk70: String = "",
-    val tvKmPk75: String = ""
+    val tvKmPkList: String = ""
 ) : Serializable

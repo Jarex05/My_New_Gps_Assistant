@@ -2,6 +2,7 @@ package com.mikhail_ryumkin_r.my_gps_assistant.fragments.nechet.limitation.list
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,21 +94,25 @@ class AdapterLimitationsNechet(listMain: ArrayList<ListItemLimitationsNechet>, p
 
     fun removeItemLimitationsNechet(pos: Int, dbManagerLimitations: MyDbManagerLimitations){
         dbManagerLimitations.deleteDbDataLimitationsNechet(listArray[pos].idNechet)
+        var idNechet = 0
         var a = 0
         var b = 0
         var c = 0
         var d = 0
         var e = 0
+        idNechet = listArray[pos].idNechet
         a = listArray[pos].speedNechet
         b = listArray[pos].startNechet
         c = listArray[pos].picketStartNechet
         d = listArray[pos].finishNechet
         e = listArray[pos].picketFinishNechet
-        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeleteSpeed(it.context, a) }
-        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeleteKmStart(it.context, b) }
-        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeleteKmFinish(it.context, d) }
-        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeletePkStart(it.context, c) }
-        listLimitationsFragmentNechet.view?.let { SharedPref.Companion.setValueDeletePkFinish(it.context, e) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.setValueDeleteId(it.context, idNechet) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.setValueDeleteSpeed(it.context, a) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.setValueDeleteKmStart(it.context, b) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.setValueDeleteKmFinish(it.context, d) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.setValueDeletePkStart(it.context, c) }
+        listLimitationsFragmentNechet.view?.let { SharedPref.setValueDeletePkFinish(it.context, e) }
+        Log.d("MyLog153", "${listArray[pos].idNechet}")
         listArray.removeAt(pos)
         notifyItemRangeChanged(0, listArray.size)
         notifyItemRemoved(pos)
